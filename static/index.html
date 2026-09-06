@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark" data-node="IN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CivicPulse-BRICS — Sovereign Digital Public Infrastructure</title>
+  <meta name="description" content="AI-Powered Digital Public Good for National Infrastructure Planning, Multichannel Citizen Petitions, and CapEx Budget Alignment across BRICS Nations.">
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  
+  <!-- Leaflet CSS for Geospatial Command Maps -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+  
+  <!-- Custom Enterprise Design System -->
+  <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body>
+
+  <!-- ========================================================================
+       TOP EXECUTIVE NAVBAR (WITH ILLUMINATED BRICS SPECTRUM)
+       ======================================================================== -->
+  <header class="navbar">
+    <div class="nav-brand">
+      <div class="nav-logo-box" title="CivicPulse-BRICS Sovereign Core">
+        <svg class="svg-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+        </svg>
+      </div>
+      <div>
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span class="nav-title">CivicPulse-BRICS</span>
+          <span class="beacon-pulse" title="System Operational & Connected"></span>
+        </div>
+        <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+          <span class="nav-badge" id="active-node-badge">
+            <span id="active-flag-container"></span>
+            <span id="active-node-text">INDIA DPI NODE</span>
+          </span>
+          <span class="nav-badge" style="background:rgba(245,158,11,0.12); color:#fbbf24; border:1px solid rgba(245,158,11,0.3);">
+            <svg class="svg-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/>
+            </svg>
+            FIREBASE & BIGQUERY
+          </span>
+          <span style="font-size:0.68rem; color:var(--text-muted); font-family:var(--font-mono);">DPG SPEC v2.5</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="nav-controls">
+      <!-- Sovereign Quick Navigation (Back & Home) -->
+      <div class="nav-nav-group" id="nav-quick-actions" role="navigation" aria-label="Page Navigation">
+        <button class="nav-nav-btn" id="nav-btn-back" title="Go Back (Alt + Left)" data-i18n-title="nav_back" aria-label="Go Back" onclick="window.navGoBack()">
+          <svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="15 18 9 12 15 6"></polyline>
+          </svg>
+          <span data-i18n="nav_back">Back</span>
+        </button>
+        <button class="nav-nav-btn" id="nav-btn-home" title="Go to Home" data-i18n-title="nav_home" aria-label="Go to Home" onclick="window.navGoHome()">
+          <svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+            <polyline points="9 22 9 12 15 12 15 22"></polyline>
+          </svg>
+          <span data-i18n="nav_home">Home</span>
+        </button>
+      </div>
+
+      <div class="nav-divider"></div>
+
+      <!-- BRICS Node Switcher -->
+      <div class="node-select-wrap">
+        <select class="node-select" id="node-selector">
+          <option value="IN">India (Delhi NCR)</option>
+          <option value="BR">Brazil (São Paulo)</option>
+          <option value="ZA">South Africa (Gauteng)</option>
+        </select>
+      </div>
+
+      <!-- Quick Portal Links -->
+      <div style="display:flex; gap:6px;">
+        <a href="/city-official" class="btn btn-secondary btn-sm" title="City Official Command Portal" style="font-size:0.76rem; padding:4px 10px;">
+          <span>🏙️ City Hub</span>
+        </a>
+        <a href="/central-official" class="btn btn-secondary btn-sm" title="Central Official Sovereign Command" style="font-size:0.76rem; padding:4px 10px;">
+          <span>🏛️ Central Hub</span>
+        </a>
+      </div>
+
+      <!-- Theme Mode Toggle -->
+      <button class="theme-toggle-btn" id="theme-toggle" title="Toggle Light/Dark Theme">
+        <span id="theme-icon">
+          <svg class="svg-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
+        </span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ========================================================================
+       MAIN APPLICATION CONTAINER
+       ======================================================================== -->
+  <main class="app-container">
+
+    <!-- Ambient Hero Banner -->
+    <section class="hero-banner">
+      <div class="hero-content">
+        <div class="hero-tag">
+          <span class="beacon-pulse"></span>
+          <span id="hero-jurisdiction-tag">PM GATI SHAKTI & SMART CITIES DPI STREAM</span>
+        </div>
+        <h1 class="hero-title" id="hero-title">National Infrastructure & Capital Investment Command</h1>
+        <p class="hero-subtitle" id="hero-subtitle">
+          Bridging grassroots citizen petitions with national capital expenditure (CapEx) planning across BRICS nations.
+        </p>
+
+        <!-- Metric KPI Summary Bar -->
+        <div class="metrics-grid">
+          <div class="metric-card">
+            <div class="metric-label">
+              <span>Municipal Health Index</span>
+              <svg class="svg-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent-primary)" stroke-width="2">
+                <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+              </svg>
+            </div>
+            <div class="metric-value" id="kpi-health">88 / 100</div>
+            <div class="metric-delta">Operational Nominal</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-label">
+              <span>Active Citizen Grievances</span>
+              <svg class="svg-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2">
+                <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/>
+                <rect x="8" y="2" width="8" height="4" rx="1" ry="1"/>
+              </svg>
+            </div>
+            <div class="metric-value" id="kpi-complaints">16</div>
+            <div class="metric-delta">Multi-channel Ingestion</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-label">
+              <span>Community Demands Upvoted</span>
+              <svg class="svg-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2">
+                <polyline points="18 15 12 9 6 15"/>
+                <line x1="12" y1="9" x2="12" y2="21"/>
+              </svg>
+            </div>
+            <div class="metric-value" id="kpi-demands">27,421</div>
+            <div class="metric-delta">Participatory Budgeting</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-label">
+              <span>Planned CapEx Budget</span>
+              <svg class="svg-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="2">
+                <rect x="2" y="4" width="20" height="16" rx="2"/>
+                <line x1="12" y1="8" x2="12" y2="16"/>
+                <line x1="8" y1="12" x2="16" y2="12"/>
+              </svg>
+            </div>
+            <div class="metric-value" id="kpi-budget">₹18,400 Cr</div>
+            <div class="metric-delta">FY 2026-27 Allocation</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         VIEWPORT A: CITIZEN SUBSYSTEM
+         ====================================================================== -->
+    <div id="citizen-viewport">
+      <!-- Citizen Navigation Tabs -->
+      <nav class="tab-nav">
+        <button class="tab-link active" data-target="cit-tab-report">
+          <svg class="svg-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+            <line x1="12" y1="9" x2="12" y2="13"/>
+            <line x1="12" y1="17" x2="12.01" y2="17"/>
+          </svg>
+          <span>Report Infrastructure Issue</span>
+        </button>
+        <button class="tab-link" data-target="cit-tab-demands">
+          <svg class="svg-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M9 18h6"/>
+            <path d="M10 22h4"/>
+            <path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5A4.61 4.61 0 0 1 8.91 14"/>
+          </svg>
+          <span>Community Demands & Upvoting Wall</span>
+        </button>
+        <button class="tab-link" data-target="cit-tab-track">
+          <svg class="svg-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8"/>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+          <span>Track My Submissions</span>
+        </button>
+        <button class="tab-link" data-target="cit-tab-whatsapp">
+          <svg class="svg-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
+          </svg>
+          <span>WhatsApp & Messaging Bot (DPI)</span>
+        </button>
+      </nav>
+
+      <!-- TAB 1: REPORT INFRASTRUCTURE ISSUE (10+ CATEGORIES) -->
+      <div class="tab-content" id="cit-tab-report">
+        <div style="margin-bottom:20px;">
+          <h2 style="font-size:1.5rem; margin-bottom:4px;">Select Infrastructure Sector</h2>
+          <p style="color:var(--text-secondary); font-size:0.9rem;">
+            Choose the public works domain matching your report across our 10 comprehensive urban sectors:
+          </p>
+        </div>
+
+        <!-- 10+ Sector Cards Grid (Color & Vector Coded) -->
+        <div class="sector-grid" id="sector-grid-container">
+          <!-- Dynamically populated by JS with Vector Icons & Sector Accents -->
+        </div>
+
+        <!-- Incident Submission Form -->
+        <div style="background:var(--bg-card); border:1px solid var(--border-color); border-radius:var(--radius-lg); padding:28px; box-shadow:var(--shadow-md);">
+          <div style="display:flex; align-items:center; gap:10px; margin-bottom:18px;">
+            <svg class="svg-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--accent-primary)" stroke-width="2">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+              <polyline points="14 2 14 8 20 8"/>
+              <line x1="12" y1="18" x2="12" y2="12"/>
+              <line x1="9" y1="15" x2="15" y2="15"/>
+            </svg>
+            <h3 style="margin:0;">Submit Incident Telemetry & Evidence</h3>
+          </div>
+
+          <form id="complaint-form">
+            <div class="form-group">
+              <label class="form-label">Selected Sector</label>
+              <input type="text" class="form-control" id="selected-category-input" readonly value="Roads, Bridges & Arterial Corridors" style="font-weight:700; color:var(--accent-primary);">
+            </div>
+
+            <div class="form-group">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                <label class="form-label" style="margin-bottom:0;" data-i18n="lbl_problem">What is the problem? *</label>
+                <button type="button" class="btn-voice-input" id="btn-voice-desc" title="Speak to describe issue using Gemini / Google Speech AI">
+                  <svg class="svg-icon mic-svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+                    <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                    <line x1="12" y1="19" x2="12" y2="23"/>
+                    <line x1="8" y1="23" x2="16" y2="23"/>
+                  </svg>
+                  <span id="voice-desc-status" data-i18n="btn_voice_input">Speak with AI</span>
+                </button>
+              </div>
+              <div style="position:relative;">
+                <textarea class="form-control" id="complaint-desc-input" placeholder="Describe what is broken, nearest landmark or shop, and how it affects people..." required style="padding-right:42px; min-height:100px;"></textarea>
+                <button type="button" class="btn-textarea-floating-mic" id="btn-textarea-floating-mic" title="Speak with Gemini / Google Speech AI">
+                  <svg class="svg-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+                    <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                    <line x1="12" y1="19" x2="12" y2="23"/>
+                    <line x1="8" y1="23" x2="16" y2="23"/>
+                  </svg>
+                </button>
+              </div>
+              <!-- Live Voice Recording / Gemini Transcribing HUD -->
+              <div id="voice-recording-hud" style="display:none; margin-top:8px; padding:8px 12px; border-radius:8px; background:rgba(239, 68, 68, 0.08); border:1px solid rgba(239,68,68,0.25); color:#ef4444; font-size:0.8rem; align-items:center; justify-content:space-between;">
+                <div style="display:flex; align-items:center; gap:8px;">
+                  <span class="recording-pulse-dot"></span>
+                  <span id="voice-recording-text">Listening... Speak now in Hindi, English, or mother tongue</span>
+                </div>
+                <button type="button" class="btn-stop-rec" id="btn-stop-recording">Done / Stop</button>
+              </div>
+            </div>
+
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+              <div class="form-group">
+                <label class="form-label" data-i18n="lbl_neighborhood_ward">Neighborhood / Ward *</label>
+                <select class="form-control" id="complaint-ward-select">
+                  <!-- Dynamically populated from active BRICS node -->
+                </select>
+              </div>
+              <div class="form-group">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                  <label class="form-label" style="margin-bottom:0;" data-i18n="lbl_street_address">Street Address or Landmark</label>
+                  <button type="button" class="btn-location-detect" id="btn-use-current-location" title="Detect GPS coordinates and fill address">
+                    <svg class="svg-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <polygon points="3 11 22 2 13 21 11 13 3 11"/>
+                    </svg>
+                    <span id="loc-btn-label" data-i18n="btn_use_current_location">Use Current Location</span>
+                  </button>
+                </div>
+                <input type="text" class="form-control" id="complaint-address-input" placeholder="e.g. Outer Ring Road, Near Metro Gate 2">
+                <!-- GPS Location Feedback Chip -->
+                <div id="location-detected-chip" style="display:none; margin-top:6px; font-size:0.75rem; color:#059669; background:rgba(5,150,105,0.08); border:1px solid rgba(5,150,105,0.25); border-radius:6px; padding:4px 8px; align-items:center; justify-content:space-between;">
+                  <span id="location-chip-text">📍 GPS Coordinates Acquired</span>
+                  <button type="button" id="btn-clear-gps" style="background:transparent; border:none; color:#059669; font-weight:700; cursor:pointer; font-size:0.8rem;" title="Clear GPS">×</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Multimodal Evidence: Photo & Voice Note -->
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:8px;">
+              <div class="form-group">
+                <label class="form-label" style="display:flex; align-items:center; gap:6px;">
+                  <svg class="svg-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+                    <circle cx="12" cy="13" r="4"/>
+                  </svg>
+                  <span>Upload Photo (Sentinel AI Vision)</span>
+                </label>
+                <input type="file" class="form-control" id="complaint-photo-input" accept="image/*">
+                <small style="color:var(--text-muted); font-size:0.75rem;">Gemini will analyze structural failure, severity /10, and public risk.</small>
+              </div>
+              <div class="form-group">
+                <label class="form-label" style="display:flex; align-items:center; gap:6px;">
+                  <svg class="svg-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+                    <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                    <line x1="12" y1="19" x2="12" y2="23"/>
+                    <line x1="8" y1="23" x2="16" y2="23"/>
+                  </svg>
+                  <span>Multilingual Voice Note</span>
+                </label>
+                <input type="file" class="form-control" id="complaint-audio-input" accept="audio/*">
+                <small style="color:var(--text-muted); font-size:0.75rem;">Supports native dialects (Hindi, Portuguese, English) with auto-translation.</small>
+              </div>
+            </div>
+
+            <div style="margin-top:20px; display:flex; justify-content:flex-end;">
+              <button type="submit" class="btn btn-primary" id="btn-submit-complaint">
+                <svg class="svg-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <line x1="22" y1="2" x2="11" y2="13"/>
+                  <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+                </svg>
+                <span>Register Complaint & Trigger AI Triage</span>
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- TAB 2: COMMUNITY DEMANDS & UPVOTING WALL -->
+      <div class="tab-content" id="cit-tab-demands" style="display:none;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:12px;">
+          <div>
+            <h2 style="font-size:1.5rem; margin-bottom:4px; display:flex; align-items:center; gap:10px;">
+              <svg class="svg-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--brics-gold)" stroke-width="2">
+                <path d="M9 18h6"/>
+                <path d="M10 22h4"/>
+                <path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5A4.61 4.61 0 0 1 8.91 14"/>
+              </svg>
+              <span>Participatory Budgeting: Community Demands Wall</span>
+            </h2>
+            <p style="color:var(--text-secondary); font-size:0.9rem;">
+              Crowdsource high-impact infrastructure demands. Proposals with high citizen upvotes are fed directly into the <b>National CapEx Planning Commission</b>.
+            </p>
+          </div>
+          <button class="btn btn-primary" id="btn-open-demand-modal">
+            <svg class="svg-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="12" y1="5" x2="12" y2="19"/>
+              <line x1="5" y1="12" x2="19" y2="12"/>
+            </svg>
+            <span>Propose Community Demand</span>
+          </button>
+        </div>
+
+        <!-- Filter and Search Bar -->
+        <div style="display:flex; gap:12px; margin-bottom:20px; flex-wrap:wrap;">
+          <input type="text" class="form-control" id="demand-search-input" placeholder="Search demands by title, ward, or keyword..." style="flex:2; min-width:240px;">
+          <select class="form-control" id="demand-filter-ward" style="flex:1; min-width:180px;">
+            <option value="All Wards">All Sub-Districts / Wards</option>
+          </select>
+        </div>
+
+        <!-- Demands Grid -->
+        <div class="demands-container" id="demands-list-container">
+          <!-- Dynamically populated by JS with Upvote buttons -->
+        </div>
+      </div>
+
+      <!-- TAB 3: TRACK SUBMISSIONS -->
+      <div class="tab-content" id="cit-tab-track" style="display:none;">
+        <div style="margin-bottom:20px;">
+          <h2 style="font-size:1.5rem; margin-bottom:4px; display:flex; align-items:center; gap:10px;">
+            <svg class="svg-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--accent-primary)" stroke-width="2">
+              <circle cx="11" cy="11" r="8"/>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+            </svg>
+            <span>Live Complaint Resolution Tracker</span>
+          </h2>
+          <p style="color:var(--text-secondary); font-size:0.9rem;">
+            Inspect live repair team dispatches, resolution SLAs, and listen to spoken status audio.
+          </p>
+        </div>
+
+        <div style="margin-bottom:16px;">
+          <input type="text" class="form-control" id="track-search-input" placeholder="Enter Complaint ID (e.g. CP-2026...) or street address...">
+        </div>
+
+        <div id="tracked-complaints-list">
+          <!-- Dynamically populated by JS -->
+        </div>
+      </div>
+
+      <!-- TAB 4: WHATSAPP DPI SIMULATOR -->
+      <div class="tab-content" id="cit-tab-whatsapp" style="display:none;">
+        <div style="text-align:center; max-width:650px; margin:0 auto 24px auto;">
+          <h2 style="font-size:1.5rem; margin-bottom:6px; display:flex; align-items:center; justify-content:center; gap:8px;">
+            <svg class="svg-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#25d366" stroke-width="2">
+              <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
+            </svg>
+            <span>GovCitizen Official WhatsApp DPI Gateway</span>
+          </h2>
+          <p style="color:var(--text-secondary); font-size:0.9rem;">
+            Simulating live ingestion of citizen audio notes and text messages via WhatsApp and messaging apps into the Digital Public Good (DPG) stream.
+          </p>
+        </div>
+
+        <div class="whatsapp-chat-container">
+          <div class="wa-header">
+            <div style="display:flex; align-items:center; gap:12px;">
+              <svg class="svg-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#25d366" stroke-width="2">
+                <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
+              </svg>
+              <div>
+                <b style="font-size:0.95rem;">GovCitizen Assistant (Official DPI Node)</b><br>
+                <span style="font-size:0.72rem; color:#dcf8c6;">● Online • Verified Digital Public Good</span>
+              </div>
+            </div>
+            <span class="nav-badge" style="background:#128c7e; color:#ffffff;">WEBHOOK ACTIVE</span>
+          </div>
+
+          <div class="wa-body" id="wa-chat-body">
+            <div class="wa-bubble-bot">
+              <b>Namaste / Olá / Sawubona!</b> I am the automated GovCitizen Assistant. Send a voice note or message describing an infrastructure problem in your area, and I will geotag it and factor it into the <b>National CapEx Priority Index</b>.
+            </div>
+          </div>
+
+          <div style="background:#202c33; padding:14px 18px; border-top:1px solid rgba(255,255,255,0.08);">
+            <div style="display:flex; gap:8px; margin-bottom:10px; flex-wrap:wrap;">
+              <button class="btn btn-secondary btn-sm" id="wa-sample-hi">🇮🇳 Hindi Voice Note</button>
+              <button class="btn btn-secondary btn-sm" id="wa-sample-pt">🇧🇷 Portuguese Note</button>
+              <button class="btn btn-secondary btn-sm" id="wa-sample-en">🇿🇦 English Petition</button>
+            </div>
+            <div style="display:flex; gap:10px;">
+              <input type="text" class="form-control" id="wa-message-input" placeholder="Type WhatsApp message or click a sample..." style="border-radius:24px;">
+              <button class="btn btn-primary" id="btn-wa-send" style="border-radius:50%; width:44px; height:44px; padding:0;">➔</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================================================================
+         VIEWPORT B: GOVERNMENT OFFICIAL COMMAND HUB
+         ====================================================================== -->
+    <div id="government-viewport" style="display:none;">
+      <!-- Live IMD Meteorological Weather Station -->
+      <section style="background:var(--bg-card); border:1px solid var(--border-color); border-radius:var(--radius-lg); padding:20px; margin-bottom:24px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:8px;">
+          <div style="display:flex; align-items:center; gap:10px;">
+            <svg class="svg-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--accent-primary)" stroke-width="2">
+              <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/>
+            </svg>
+            <b style="font-size:1.05rem;">Live Meteorological Telemetry Station</b>
+            <span class="nav-badge">IMD & OPEN-METEO ACTIVE</span>
+          </div>
+          <span style="font-size:0.75rem; color:var(--text-muted);" id="weather-source">Source: Open-Meteo Real-Time Sensor</span>
+        </div>
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:14px;" id="weather-metrics-container">
+          <!-- Dynamically populated by JS -->
+        </div>
+      </section>
+
+      <!-- Live Firebase & BigQuery Cloud Architecture HUD -->
+      <section style="background:linear-gradient(135deg, rgba(245,158,11,0.06), rgba(37,99,235,0.06)); border:1px solid var(--border-subtle); border-radius:var(--radius-lg); padding:16px 20px; margin-bottom:24px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
+        <div style="display:flex; align-items:center; gap:24px; flex-wrap:wrap;">
+          <div style="display:flex; align-items:center; gap:12px;">
+            <div class="icon-box-sm" style="background:rgba(245,158,11,0.15); color:#f59e0b;">
+              <svg class="svg-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/>
+              </svg>
+            </div>
+            <div>
+              <div style="font-size:0.72rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px;">Document Cloud Engine</div>
+              <b style="font-size:0.88rem; color:#f59e0b;" id="hud-firebase-status">Firebase Firestore (Active)</b>
+            </div>
+          </div>
+          <div style="display:flex; align-items:center; gap:12px;">
+            <div class="icon-box-sm" style="background:rgba(37,99,235,0.15); color:#60a5fa;">
+              <svg class="svg-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <ellipse cx="12" cy="5" rx="9" ry="3"/>
+                <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/>
+                <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/>
+              </svg>
+            </div>
+            <div>
+              <div style="font-size:0.72rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px;">National Spatial Telemetry</div>
+              <b style="font-size:0.88rem; color:#60a5fa;" id="hud-bigquery-status">Google BigQuery GIS (POINT Stream)</b>
+            </div>
+          </div>
+          <div style="display:flex; align-items:center; gap:12px;">
+            <div class="icon-box-sm" style="background:rgba(16,185,129,0.15); color:#10b981;">
+              <svg class="svg-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+              </svg>
+            </div>
+            <div>
+              <div style="font-size:0.72rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px;">Data Architecture</div>
+              <b style="font-size:0.88rem; color:#10b981;" id="hud-db-status">Zero CSV • Native Cloud & SQLite DB</b>
+            </div>
+          </div>
+        </div>
+        <div style="display:flex; gap:10px; align-items:center;">
+          <button class="btn btn-secondary btn-sm" id="btn-stream-bigquery" title="Stream GIS partitions into Google BigQuery">
+            <svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="17 8 12 3 7 8"/>
+              <line x1="12" y1="3" x2="12" y2="15"/>
+            </svg>
+            <span>Stream to BigQuery</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- Government Navigation Tabs -->
+      <nav class="tab-nav">
+        <button class="tab-link active" data-target="gov-tab-megaplan">
+          <svg class="svg-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="2" y="2" width="20" height="8" rx="2" ry="2"/>
+            <rect x="2" y="14" width="20" height="8" rx="2" ry="2"/>
+            <line x1="6" y1="6" x2="6.01" y2="6"/>
+            <line x1="6" y1="18" x2="6.01" y2="18"/>
+          </svg>
+          <span>AI Mega-Planning & Master Projects</span>
+        </button>
+        <button class="tab-link" data-target="gov-tab-queue">
+          <svg class="svg-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
+          </svg>
+          <span>Operational Repair Queue</span>
+        </button>
+        <button class="tab-link" data-target="gov-tab-budget">
+          <svg class="svg-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="20" x2="18" y2="10"/>
+            <line x1="12" y1="20" x2="12" y2="4"/>
+            <line x1="6" y1="20" x2="6" y2="14"/>
+          </svg>
+          <span>CapEx & Demographic Misalignment Matrix</span>
+        </button>
+        <button class="tab-link" data-target="gov-tab-map">
+          <svg class="svg-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/>
+            <line x1="8" y1="2" x2="8" y2="18"/>
+            <line x1="16" y1="6" x2="16" y2="22"/>
+          </svg>
+          <span>2D/3D Geospatial Command Center</span>
+        </button>
+        <button class="tab-link" data-target="gov-tab-dpg">
+          <svg class="svg-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          </svg>
+          <span>DPG Standards & Open Specs</span>
+        </button>
+      </nav>
+
+      <!-- GOV TAB 1: AI MEGA-PLANNING & MASTER PROJECTS -->
+      <div class="tab-content" id="gov-tab-megaplan">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:12px;">
+          <div>
+            <h2 style="font-size:1.5rem; margin-bottom:4px; display:flex; align-items:center; gap:10px;">
+              <svg class="svg-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent-primary)" stroke-width="2">
+                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+              </svg>
+              <span>Gemini 2.5 AI Mega-Infrastructure Planning Engine</span>
+            </h2>
+            <p style="color:var(--text-secondary); font-size:0.9rem;">
+              Synthesizing thousands of citizen complaints, crowdsourced community upvotes, and demographic census data into multi-crore national capital master projects.
+            </p>
+          </div>
+          <button class="btn btn-primary" id="btn-refresh-megaplan">
+            <svg class="svg-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="23 4 23 10 17 10"/>
+              <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+            </svg>
+            <span>Regenerate AI Infrastructure Plan</span>
+          </button>
+        </div>
+
+        <div class="megaplan-grid" id="megaplan-container">
+          <!-- Dynamically populated with High-Impact Projects -->
+        </div>
+      </div>
+
+      <!-- GOV TAB 2: OPERATIONAL REPAIR QUEUE -->
+      <div class="tab-content" id="gov-tab-queue" style="display:none;">
+        <div style="margin-bottom:20px;">
+          <h2 style="font-size:1.5rem; margin-bottom:4px; display:flex; align-items:center; gap:10px;">
+            <svg class="svg-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--accent-primary)" stroke-width="2">
+              <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
+            </svg>
+            <span>Operational Defect Queue & Crew Assignment</span>
+          </h2>
+          <p style="color:var(--text-secondary); font-size:0.9rem;">
+            Assign field repair teams and update resolution status for active citizen complaints:
+          </p>
+        </div>
+
+        <div id="gov-complaints-container">
+          <!-- Dynamically populated by JS with Send Team / Mark Fixed buttons -->
+        </div>
+      </div>
+
+      <!-- GOV TAB 3: BUDGET MISALIGNMENT MATRIX -->
+      <div class="tab-content" id="gov-tab-budget" style="display:none;">
+        <div style="margin-bottom:20px;">
+          <h2 style="font-size:1.5rem; margin-bottom:4px; display:flex; align-items:center; gap:10px;">
+            <svg class="svg-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--accent-primary)" stroke-width="2">
+              <line x1="18" y1="20" x2="18" y2="10"/>
+              <line x1="12" y1="20" x2="12" y2="4"/>
+              <line x1="6" y1="20" x2="6" y2="14"/>
+            </svg>
+            <span>Public Spending & Demographic Misalignment Matrix</span>
+          </h2>
+          <p style="color:var(--text-secondary); font-size:0.9rem;">
+            Correlating citizen demand volume against demographic density and planned municipal capital expenditure (CapEx):
+          </p>
+        </div>
+
+        <div style="background:var(--bg-card); border:1px solid var(--border-color); border-radius:var(--radius-lg); overflow-x:auto; box-shadow:var(--shadow-md);">
+          <table style="width:100%; border-collapse:collapse; text-align:left; font-size:0.88rem;" id="budget-table">
+            <thead>
+              <tr style="border-bottom:1px solid var(--border-subtle); background:rgba(255,255,255,0.03);">
+                <th style="padding:14px 16px;">Sub-District / Ward</th>
+                <th style="padding:14px 16px;">Sector</th>
+                <th style="padding:14px 16px;">Population & Vulnerability</th>
+                <th style="padding:14px 16px;">Planned CapEx Budget</th>
+                <th style="padding:14px 16px;">Citizen Demand Share</th>
+                <th style="padding:14px 16px;">Funding Status</th>
+                <th style="padding:14px 16px;">Policy Directive</th>
+              </tr>
+            </thead>
+            <tbody id="budget-tbody">
+              <!-- Dynamically populated by JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- GOV TAB 4: GEOSPATIAL COMMAND MAP -->
+      <div class="tab-content" id="gov-tab-map" style="display:none;">
+        <div style="margin-bottom:20px;">
+          <h2 style="font-size:1.5rem; margin-bottom:4px; display:flex; align-items:center; gap:10px;">
+            <svg class="svg-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--accent-primary)" stroke-width="2">
+              <polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/>
+              <line x1="8" y1="2" x2="8" y2="18"/>
+              <line x1="16" y1="6" x2="16" y2="22"/>
+            </svg>
+            <span>Geospatial Incident Command Center</span>
+          </h2>
+          <p style="color:var(--text-secondary); font-size:0.9rem;">
+            3D coordinate telemetry with severity classification • Colored glowing pins indicate incident status and hotspots.
+          </p>
+        </div>
+
+        <div id="map"></div>
+      </div>
+
+      <!-- GOV TAB 5: DPG STANDARDS & OPEN SPECS -->
+      <div class="tab-content" id="gov-tab-dpg" style="display:none;">
+        <div style="margin-bottom:20px;">
+          <h2 style="font-size:1.5rem; margin-bottom:4px; display:flex; align-items:center; gap:10px;">
+            <svg class="svg-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--accent-primary)" stroke-width="2">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            </svg>
+            <span>Digital Public Good (DPG) Open Architecture</span>
+          </h2>
+          <p style="color:var(--text-secondary); font-size:0.9rem;">
+            Engineered according to the 9 Digital Public Goods Alliance (DPGA) standard indicators for national sovereign infrastructure:
+          </p>
+        </div>
+
+        <div id="dpg-indicators-container" style="display:grid; gap:12px;">
+          <!-- Dynamically populated by JS -->
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ========================================================================
+       MODAL: PROPOSE COMMUNITY DEMAND
+       ======================================================================== -->
+  <div class="modal-overlay" id="demand-modal">
+    <div class="modal-box">
+      <button class="modal-close" id="btn-close-demand-modal">&times;</button>
+      <h3 style="margin-bottom:6px; display:flex; align-items:center; gap:8px;">
+        <svg class="svg-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--brics-gold)" stroke-width="2">
+          <path d="M9 18h6"/>
+          <path d="M10 22h4"/>
+          <path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5A4.61 4.61 0 0 1 8.91 14"/>
+        </svg>
+        <span>Propose High-Impact Community Demand</span>
+      </h3>
+      <p style="color:var(--text-secondary); font-size:0.85rem; margin-bottom:18px;">
+        Proposals with verified citizen upvotes are fed directly into the National CapEx Planning Commission.
+      </p>
+
+      <form id="propose-demand-form">
+        <div class="form-group">
+          <label class="form-label">Project Title / Core Demand *</label>
+          <input type="text" class="form-control" id="modal-demand-title" placeholder="e.g. 6-Lane Elevated Flyover over Outer Ring Road" required>
+        </div>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px;">
+          <div class="form-group">
+            <label class="form-label">Sector *</label>
+            <select class="form-control" id="modal-demand-sector">
+              <!-- Populated by JS -->
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Sub-District / Ward *</label>
+            <select class="form-control" id="modal-demand-ward">
+              <!-- Populated by JS -->
+            </select>
+          </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px;">
+          <div class="form-group">
+            <label class="form-label">Estimated Capital Budget</label>
+            <input type="text" class="form-control" id="modal-demand-budget" placeholder="e.g. ₹850 Cr / R$ 600 Mi">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Estimated Citizens Benefited</label>
+            <input type="text" class="form-control" id="modal-demand-beneficiaries" placeholder="e.g. 150,000 residents">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Justification & Community Impact *</label>
+          <textarea class="form-control" id="modal-demand-desc" placeholder="Explain why this project is essential and what systemic bottlenecks it will resolve..." required></textarea>
+        </div>
+
+        <div style="display:flex; justify-content:flex-end; gap:12px; margin-top:14px;">
+          <button type="button" class="btn btn-secondary" id="btn-cancel-demand-modal">Cancel</button>
+          <button type="submit" class="btn btn-primary">
+            <span>Submit for Citizen Voting</span>
+            <svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="5" y1="12" x2="19" y2="12"/>
+              <polyline points="12 5 19 12 12 19"/>
+            </svg>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Leaflet JS for Geospatial Maps -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  
+  <!-- Internationalization (i18n) Engine -->
+  <script src="/static/js/i18n.js"></script>
+  <!-- Core Modular JS Application -->
+  <script src="/static/js/app.js"></script>
+  <script src="/static/js/citizen.js"></script>
+  <script src="/static/js/government.js"></script>
+</body>
+</html>

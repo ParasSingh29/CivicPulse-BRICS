@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark" data-node="IN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CivicPulse-BRICS — Citizen Sovereign Portal</title>
+  <meta name="description" content="Dedicated Grassroots Citizen Portal for 10+ Public Works Sectors, AI Grievance Ingestion, Participatory Budgeting Demands Wall, and Live WhatsApp DPI.">
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  
+  <!-- Custom Enterprise Design System -->
+  <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body>
+
+  <!-- ========================================================================
+       TOP EXECUTIVE NAVBAR (CITIZEN SOVEREIGN PORTAL)
+       ======================================================================== -->
+  <header class="navbar">
+    <div class="nav-brand">
+      <div class="nav-logo-box" title="CivicPulse-BRICS Citizen Core" style="background:linear-gradient(135deg, #059669, #10b981);">
+        <svg class="svg-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+          <circle cx="12" cy="7" r="4"/>
+        </svg>
+      </div>
+      <div>
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span class="nav-title">CivicPulse-BRICS</span>
+          <span class="beacon-pulse" style="background:#10b981;" title="Citizen Gateway Connected"></span>
+        </div>
+        <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+          <span class="nav-badge" id="active-node-badge">
+            <span id="active-flag-container"></span>
+            <span id="active-node-text">India (Delhi NCR)</span>
+          </span>
+          <span class="nav-badge" style="background:rgba(16,185,129,0.12); color:#10b981; border:1px solid rgba(16,185,129,0.3);">
+            Citizen Portal
+          </span>
+          <span style="font-size:0.68rem; color:var(--text-muted); font-family:var(--font-mono);">Open Standard</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="nav-controls">
+      <!-- Sovereign Quick Navigation (Back & Home) -->
+      <div class="nav-nav-group" id="nav-quick-actions" role="navigation" aria-label="Page Navigation">
+        <button class="nav-nav-btn" id="nav-btn-back" title="Go Back (Alt + Left)" data-i18n-title="nav_back" aria-label="Go Back" onclick="window.navGoBack()">
+          <svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="15 18 9 12 15 6"></polyline>
+          </svg>
+          <span data-i18n="nav_back">Back</span>
+        </button>
+        <button class="nav-nav-btn" id="nav-btn-home" title="Go to Home" data-i18n-title="nav_home" aria-label="Go to Home" onclick="window.navGoHome()">
+          <svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+            <polyline points="9 22 9 12 15 12 15 22"></polyline>
+          </svg>
+          <span data-i18n="nav_home">Home</span>
+        </button>
+      </div>
+
+      <div class="nav-divider"></div>
+
+      <!-- Auto-Detected Sovereign Jurisdiction Node Pill -->
+      <div class="node-detected-pill" id="node-detected-badge" title="Auto-Detected Sovereign Jurisdiction Node">
+        <span id="node-detected-flag">🇮🇳</span>
+        <span id="node-detected-label">India (Delhi NCR)</span>
+        <span class="beacon-pulse" style="width:7px; height:7px; background:#10b981;"></span>
+      </div>
+
+      <!-- Sovereign Language Selector -->
+      <div class="lang-select-wrap">
+        <select class="lang-select" id="lang-selector" title="Select Platform Language">
+          <option value="en">🇬🇧 English</option>
+          <option value="hi">🇮🇳 हिन्दी</option>
+          <option value="pt">🇧🇷 Português</option>
+          <option value="zu">🇿🇦 isiZulu</option>
+          <option value="af">🇿🇦 Afrikaans</option>
+          <option value="ta">🇮🇳 தமிழ்</option>
+          <option value="te">🇮🇳 తెలుగు</option>
+          <option value="ru">🇷🇺 Русский</option>
+          <option value="zh">🇨🇳 中文</option>
+        </select>
+      </div>
+
+      <!-- User Profile Badge -->
+      <div class="user-profile-pill" id="user-profile-pill">
+        <div class="user-profile-avatar" style="background:#059669;">P</div>
+        <div style="line-height:1.2;">
+          <div style="font-weight:700;" id="user-display-name">Priya Sharma</div>
+          <div style="font-size:0.7rem; color:var(--text-muted);" id="user-display-role">Verified Resident • Delhi</div>
+        </div>
+      </div>
+
+      <!-- Theme Mode Toggle -->
+      <button class="theme-toggle-btn" id="theme-toggle" title="Toggle Light/Dark Theme">
+        <span id="theme-icon">
+          <svg class="svg-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
+        </span>
+      </button>
+
+      <!-- Logout / Switch Portal Button -->
+      <button class="btn-logout" id="btn-logout" title="Sign out and return to Sovereign Login Gateway">
+        <svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+          <polyline points="16 17 21 12 16 7"/>
+          <line x1="21" y1="12" x2="9" y2="12"/>
+        </svg>
+        <span>Sign Out</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ========================================================================
+       MAIN CITIZEN APPLICATION CONTAINER
+       ======================================================================== -->
+  <main class="app-container">
+
+    <!-- Ambient Hero Banner -->
+    <section class="hero-banner" style="border-top:3px solid #10b981;">
+      <div class="hero-content">
+        <div class="hero-tag">
+          <span class="beacon-pulse" style="background:#10b981;"></span>
+          <span id="hero-jurisdiction-tag" data-i18n="cit_hero_tag">Active Citizen Portal</span>
+        </div>
+        <h1 class="hero-title" id="hero-title" data-i18n="cit_hero_title">Report Issues & Community Needs</h1>
+        <p class="hero-subtitle" id="hero-subtitle" data-i18n="cit_hero_subtitle">
+          Easily report local problems, vote on projects your community needs, and track ongoing repairs with live voice and photo updates.
+        </p>
+
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         TAB 0: CITIZEN HOME OVERVIEW & INTERACTIVE LAUNCHPAD
+         ==================================================================== -->
+    <div class="tab-content" id="cit-tab-home">
+
+      <!-- Section Title -->
+      <div style="margin-bottom:18px;">
+        <h3 style="font-size:1.25rem; font-weight:700; margin:0 0 4px 0;" data-i18n="cit_launchpad_title">What would you like to do?</h3>
+        <p style="color:var(--text-secondary); font-size:0.88rem; margin:0;" data-i18n="cit_launchpad_subtitle">
+          Choose an option below to get started:
+        </p>
+      </div>
+
+      <!-- 4 Interactive Citizen Launch Cards -->
+      <div class="home-launch-grid">
+        
+        <!-- CARD 1: REPORT ISSUE -->
+        <div class="home-launch-card" style="--card-accent: #f59e0b;" data-open-tab="cit-tab-report">
+          <div>
+            <div class="launch-card-header">
+              <div class="launch-card-icon" style="color:#f59e0b; background:rgba(245,158,11,0.1); border-color:rgba(245,158,11,0.25);">
+                <svg class="svg-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                  <line x1="12" y1="9" x2="12" y2="13"/>
+                  <line x1="12" y1="17" x2="12.01" y2="17"/>
+                </svg>
+              </div>
+              <span class="launch-card-badge" style="color:#f59e0b; background:rgba(245,158,11,0.12); border:1px solid rgba(245,158,11,0.3);">
+                Quick AI Review
+              </span>
+            </div>
+            <h4 class="launch-card-title" data-i18n="card_report_title">Report an Issue</h4>
+            <p class="launch-card-desc" data-i18n="card_report_desc">
+              Report broken roads, dark streetlights, water leaks, or garbage issues with a quick photo or voice note.
+            </p>
+            <div class="launch-card-tags">
+              <span class="launch-card-tag">10+ Categories</span>
+              <span class="launch-card-tag">Photo Review</span>
+              <span class="launch-card-tag">Voice Message</span>
+              <span class="launch-card-tag">Auto-Location</span>
+            </div>
+          </div>
+          <div class="launch-card-action">
+            <span style="font-size:0.78rem; color:var(--text-muted); font-weight:600;">Avg. response: 4s</span>
+            <button class="launch-card-btn" style="background:#f59e0b;" data-open-tab="cit-tab-report">
+              <span data-i18n="card_report_btn">Report an Issue</span>
+              <svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="5" y1="12" x2="19" y2="12"/>
+                <polyline points="12 5 19 12 12 19"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- CARD 2: COMMUNITY DEMANDS -->
+        <div class="home-launch-card" style="--card-accent: #10b981;" data-open-tab="cit-tab-demands">
+          <div>
+            <div class="launch-card-header">
+              <div class="launch-card-icon" style="color:#10b981; background:rgba(16,185,129,0.1); border-color:rgba(16,185,129,0.25);">
+                <svg class="svg-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M9 18h6"/>
+                  <path d="M10 22h4"/>
+                  <path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5A4.61 4.61 0 0 1 8.91 14"/>
+                </svg>
+              </div>
+              <span class="launch-card-badge" style="color:#10b981; background:rgba(16,185,129,0.12); border:1px solid rgba(16,185,129,0.3);">
+                27,421 Votes Cast
+              </span>
+            </div>
+            <h4 class="launch-card-title" data-i18n="card_demands_title">Community Requests & Voting</h4>
+            <p class="launch-card-desc" data-i18n="card_demands_desc">
+              Vote for neighborhood improvements like new parks, road widening, and clean water projects to guide city spending.
+            </p>
+            <div class="launch-card-tags">
+              <span class="launch-card-tag">Public Voting</span>
+              <span class="launch-card-tag">Local Budget</span>
+              <span class="launch-card-tag">Ward Projects</span>
+              <span class="launch-card-tag">Live Count</span>
+            </div>
+          </div>
+          <div class="launch-card-action">
+            <span style="font-size:0.78rem; color:var(--text-muted); font-weight:600;">Active in 8 Wards</span>
+            <button class="launch-card-btn" style="background:#10b981;" data-open-tab="cit-tab-demands">
+              <span data-i18n="card_demands_btn">View Community Requests</span>
+              <svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="5" y1="12" x2="19" y2="12"/>
+                <polyline points="12 5 19 12 12 19"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- CARD 3: TRACK SUBMISSIONS -->
+        <div class="home-launch-card" style="--card-accent: #3b82f6;" data-open-tab="cit-tab-track">
+          <div>
+            <div class="launch-card-header">
+              <div class="launch-card-icon" style="color:#3b82f6; background:rgba(59,130,246,0.1); border-color:rgba(59,130,246,0.25);">
+                <svg class="svg-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="11" cy="11" r="8"/>
+                  <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                </svg>
+              </div>
+              <span class="launch-card-badge" style="color:#60a5fa; background:rgba(59,130,246,0.12); border:1px solid rgba(59,130,246,0.3);">
+                Live Progress
+              </span>
+            </div>
+            <h4 class="launch-card-title" data-i18n="card_track_title">Track My Reports</h4>
+            <p class="launch-card-desc" data-i18n="card_track_desc">
+              Check the progress of your reported issues, see assigned repair workers, and listen to voice status updates.
+            </p>
+            <div class="launch-card-tags">
+              <span class="launch-card-tag">Step-by-Step Status</span>
+              <span class="launch-card-tag">Voice Briefing</span>
+              <span class="launch-card-tag">Repair Crew Map</span>
+              <span class="launch-card-tag">Proof Photos</span>
+            </div>
+          </div>
+          <div class="launch-card-action">
+            <span style="font-size:0.78rem; color:var(--text-muted); font-weight:600;">Tracked live</span>
+            <button class="launch-card-btn" style="background:#3b82f6;" data-open-tab="cit-tab-track">
+              <span data-i18n="card_track_btn">Track My Reports</span>
+              <svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="5" y1="12" x2="19" y2="12"/>
+                <polyline points="12 5 19 12 12 19"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- CARD 4: WHATSAPP BOT -->
+        <div class="home-launch-card" style="--card-accent: #8b5cf6;" data-open-tab="cit-tab-whatsapp">
+          <div>
+            <div class="launch-card-header">
+              <div class="launch-card-icon" style="color:#8b5cf6; background:rgba(139,92,246,0.1); border-color:rgba(139,92,246,0.25);">
+                <svg class="svg-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
+                </svg>
+              </div>
+              <span class="launch-card-badge" style="color:#a78bfa; background:rgba(139,92,246,0.12); border:1px solid rgba(139,92,246,0.3);">
+                24/7 on WhatsApp
+              </span>
+            </div>
+            <h4 class="launch-card-title" data-i18n="card_whatsapp_title">WhatsApp Assistant</h4>
+            <p class="launch-card-desc" data-i18n="card_whatsapp_desc">
+              Chat with us on WhatsApp to report issues or ask questions in Hindi, English, Portuguese, or your local language.
+            </p>
+            <div class="launch-card-tags">
+              <span class="launch-card-tag">No App Needed</span>
+              <span class="launch-card-tag">Any Language</span>
+              <span class="launch-card-tag">Smart Chat</span>
+              <span class="launch-card-tag">Instant Ticket</span>
+            </div>
+          </div>
+          <div class="launch-card-action">
+            <span style="font-size:0.78rem; color:var(--text-muted); font-weight:600;">Instant reply</span>
+            <button class="launch-card-btn" style="background:#8b5cf6;" data-open-tab="cit-tab-whatsapp">
+              <span data-i18n="card_whatsapp_btn">Open WhatsApp Chat</span>
+              <svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="5" y1="12" x2="19" y2="12"/>
+                <polyline points="12 5 19 12 12 19"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Home Activity & Insights Panel -->
+      <div class="home-insights-grid">
+        <div class="home-insights-panel">
+          <h3>
+            <svg class="svg-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+              <polyline points="22 4 12 14.01 9 11.01"/>
+            </svg>
+            <span>Recently Fixed in Your Area</span>
+          </h3>
+          <div class="home-activity-list">
+            <div class="home-activity-item">
+              <div class="home-activity-icon" style="background:rgba(16,185,129,0.15); color:#10b981;">
+                <svg class="svg-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+              </div>
+              <div style="flex-grow:1;">
+                <div class="home-activity-title">Pothole Repaired • Sector 4 Main Road</div>
+                <div class="home-activity-meta">
+                  <span style="color:#10b981; font-weight:600;">Fixed</span> • 2 hours ago • Road Repair Crew #07
+                </div>
+              </div>
+            </div>
+            <div class="home-activity-item">
+              <div class="home-activity-icon" style="background:rgba(16,185,129,0.15); color:#10b981;">
+                <svg class="svg-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+              </div>
+              <div style="flex-grow:1;">
+                <div class="home-activity-title">Drain Blockage Cleared • 2nd Cross</div>
+                <div class="home-activity-meta">
+                  <span style="color:#10b981; font-weight:600;">Fixed</span> • Yesterday • Sanitation Team #12
+                </div>
+              </div>
+            </div>
+            <div class="home-activity-item">
+              <div class="home-activity-icon" style="background:rgba(59,130,246,0.15); color:#60a5fa;">
+                <svg class="svg-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"/>
+                  <line x1="12" y1="8" x2="12" y2="12"/>
+                  <line x1="12" y1="16" x2="12.01" y2="16"/>
+                </svg>
+              </div>
+              <div style="flex-grow:1;">
+                <div class="home-activity-title">Streetlight Replacement • Boundary Road</div>
+                <div class="home-activity-meta">
+                  <span style="color:#60a5fa; font-weight:600;">In Progress</span> • ETA 25 mins • Electrician Team #03
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="home-insights-panel">
+          <h3>
+            <svg class="svg-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--brics-gold)" stroke-width="2">
+              <circle cx="12" cy="12" r="10"/>
+              <line x1="12" y1="16" x2="12" y2="12"/>
+              <line x1="12" y1="8" x2="12.01" y2="8"/>
+            </svg>
+            <span>Community Notices & Events</span>
+          </h3>
+          <div class="home-activity-list">
+            <div class="home-activity-item">
+              <div class="home-activity-icon" style="background:rgba(245,158,11,0.15); color:#f59e0b;">
+                <svg class="svg-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                  <line x1="16" y1="2" x2="16" y2="6"/>
+                  <line x1="8" y1="2" x2="8" y2="6"/>
+                  <line x1="3" y1="10" x2="21" y2="10"/>
+                </svg>
+              </div>
+              <div style="flex-grow:1;">
+                <div class="home-activity-title">Neighborhood Budget Meeting</div>
+                <div class="home-activity-meta">
+                  Friday, 11:00 AM • Community Center & Online
+                </div>
+              </div>
+            </div>
+            <div class="home-activity-item">
+              <div class="home-activity-icon" style="background:rgba(139,92,246,0.15); color:#a78bfa;">
+                <svg class="svg-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                </svg>
+              </div>
+              <div style="flex-grow:1;">
+                <div class="home-activity-title">Budget Update: Top Voted Projects Funded</div>
+                <div class="home-activity-meta">
+                  Top 3 community requests approved for this year
+                </div>
+              </div>
+            </div>
+            <div class="home-activity-item">
+              <div class="home-activity-icon" style="background:rgba(239,68,68,0.15); color:#f87171;">
+                <svg class="svg-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                </svg>
+              </div>
+              <div style="flex-grow:1;">
+                <div class="home-activity-title">24/7 City Helpline (Dial 1916)</div>
+                <div class="home-activity-meta">
+                  Call 1916 or use WhatsApp for urgent hazards
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ====================================================================
+         TAB 1: REPORT ISSUE (10+ CATEGORIES)
+         ==================================================================== -->
+    <div class="tab-content" id="cit-tab-report" style="display:none;">
+      <!-- Breadcrumb Bar -->
+      <div class="back-to-home-bar">
+        <button class="back-to-home-btn" data-open-tab="cit-tab-home">
+          <svg class="svg-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="15 18 9 12 15 6"/>
+          </svg>
+          <span data-i18n="back_to_citizen_home">← Back to Home</span>
+        </button>
+        <span class="submodule-context-badge" data-i18n="badge_report_context">Report an Issue</span>
+      </div>
+
+      <div style="margin-bottom:20px;">
+        <h2 style="font-size:1.5rem; margin-bottom:4px;" data-i18n="sec_choose_category">Choose a Category</h2>
+        <p style="color:var(--text-secondary); font-size:0.9rem;" data-i18n="sec_choose_category_sub">
+          Pick the category matching your issue across our 10 city sectors:
+        </p>
+      </div>
+
+      <!-- 10+ Sector Cards Grid (Color & Vector Coded) -->
+      <div class="sector-grid" id="sector-grid-container">
+        <!-- Dynamically populated by JS with Vector Icons & Sector Accents -->
+      </div>
+
+      <div style="text-align:center; padding:18px 24px; background:rgba(255,255,255,0.02); border:1px dashed var(--border-subtle); border-radius:var(--radius-lg); margin-top:24px;">
+        <span style="font-size:0.88rem; color:var(--text-secondary); display:inline-flex; align-items:center; gap:8px;">
+          <svg class="svg-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent-primary)" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="16" x2="12" y2="12"></line>
+            <line x1="12" y1="8" x2="12.01" y2="8"></line>
+          </svg>
+          <span data-i18n="sec_category_prompt">Click any category above to open the quick report form with photo or voice note.</span>
+        </span>
+      </div>
+    </div>
+
+    <!-- TAB 2: COMMUNITY DEMANDS & UPVOTING WALL -->
+    <div class="tab-content" id="cit-tab-demands" style="display:none;">
+      <!-- Breadcrumb Bar -->
+      <div class="back-to-home-bar">
+        <button class="back-to-home-btn" data-open-tab="cit-tab-home">
+          <svg class="svg-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="15 18 9 12 15 6"/>
+          </svg>
+          <span data-i18n="back_to_citizen_home">← Back to Home</span>
+        </button>
+        <span class="submodule-context-badge" data-i18n="badge_demands_context">Community Requests</span>
+      </div>
+
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:12px;">
+        <div>
+          <h2 style="font-size:1.5rem; margin-bottom:4px; display:flex; align-items:center; gap:10px;">
+            <svg class="svg-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--brics-gold)" stroke-width="2">
+              <path d="M9 18h6"/>
+              <path d="M10 22h4"/>
+              <path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5A4.61 4.61 0 0 1 8.91 14"/>
+            </svg>
+            <span data-i18n="sec_demands_title">Community Requests & Voting</span>
+          </h2>
+          <p style="color:var(--text-secondary); font-size:0.9rem;" data-i18n="sec_demands_sub">
+            Vote for neighborhood improvements like new parks, road widening, and clean water projects to guide city spending.
+          </p>
+        </div>
+        <button class="btn btn-primary" id="btn-open-demand-modal" style="background:#059669;">
+          <svg class="svg-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="12" y1="5" x2="12" y2="19"/>
+            <line x1="5" y1="12" x2="19" y2="12"/>
+          </svg>
+          <span data-i18n="btn_propose_project">+ Propose a Project</span>
+        </button>
+      </div>
+
+      <!-- Filter and Search Bar -->
+      <div style="display:flex; gap:12px; margin-bottom:20px; flex-wrap:wrap;">
+        <input type="text" class="form-control" id="demand-search-input" placeholder="Search projects by title, neighborhood, or keyword..." data-i18n-placeholder="ph_search_demands" style="flex:2; min-width:240px;">
+        <select class="form-control" id="demand-filter-ward" style="flex:1; min-width:180px;">
+          <option value="All Wards" data-i18n="opt_all_wards">All Neighborhoods / Wards</option>
+        </select>
+      </div>
+
+      <!-- Demands Grid -->
+      <div class="demands-container" id="demands-list-container">
+        <!-- Dynamically populated by JS with Upvote buttons -->
+      </div>
+    </div>
+
+    <!-- TAB 3: TRACK SUBMISSIONS -->
+    <div class="tab-content" id="cit-tab-track" style="display:none;">
+      <!-- Breadcrumb Bar -->
+      <div class="back-to-home-bar">
+        <button class="back-to-home-btn" data-open-tab="cit-tab-home">
+          <svg class="svg-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="15 18 9 12 15 6"/>
+          </svg>
+          <span data-i18n="back_to_citizen_home">← Back to Home</span>
+        </button>
+        <span class="submodule-context-badge" data-i18n="badge_track_context">Track Reports</span>
+      </div>
+
+      <div style="margin-bottom:20px;">
+        <h2 style="font-size:1.5rem; margin-bottom:4px; display:flex; align-items:center; gap:10px;">
+          <svg class="svg-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--accent-primary)" stroke-width="2">
+            <circle cx="11" cy="11" r="8"/>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+          <span data-i18n="sec_track_title">Track Your Reports</span>
+        </h2>
+        <p style="color:var(--text-secondary); font-size:0.9rem;" data-i18n="sec_track_sub">
+          Check the progress of your reported issues, see assigned repair workers, and listen to voice status updates.
+        </p>
+      </div>
+
+      <div style="margin-bottom:16px;">
+        <input type="text" class="form-control" id="track-search-input" placeholder="Enter Report ID (e.g. CP-2026...) or street address..." data-i18n-placeholder="ph_search_track">
+      </div>
+
+      <div id="tracked-complaints-list">
+        <!-- Dynamically populated by JS -->
+      </div>
+    </div>
+
+    <!-- TAB 4: WHATSAPP BOT -->
+    <div class="tab-content" id="cit-tab-whatsapp" style="display:none;">
+      <!-- Breadcrumb Bar -->
+      <div class="back-to-home-bar">
+        <button class="back-to-home-btn" data-open-tab="cit-tab-home">
+          <svg class="svg-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="15 18 9 12 15 6"/>
+          </svg>
+          <span data-i18n="back_to_citizen_home">← Back to Home</span>
+        </button>
+        <span class="submodule-context-badge" data-i18n="badge_wa_context">WhatsApp Chat</span>
+      </div>
+
+      <div style="text-align:center; max-width:650px; margin:0 auto 24px auto;">
+        <h2 style="font-size:1.5rem; margin-bottom:6px; display:flex; align-items:center; justify-content:center; gap:8px;">
+          <svg class="svg-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#25d366" stroke-width="2">
+            <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
+          </svg>
+          <span data-i18n="sec_wa_title">Chat with CivicPulse on WhatsApp</span>
+        </h2>
+        <p style="color:var(--text-secondary); font-size:0.9rem;" data-i18n="sec_wa_sub">
+          Send a quick text, photo, or voice message just like chatting with a friend.
+        </p>
+      </div>
+
+      <div class="whatsapp-chat-container">
+        <div class="wa-header">
+          <div style="display:flex; align-items:center; gap:12px;">
+            <svg class="svg-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#25d366" stroke-width="2">
+              <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
+            </svg>
+            <div>
+              <b style="font-size:0.95rem;" data-i18n="wa_assistant_name">CivicPulse Assistant (Verified Support)</b><br>
+              <span style="font-size:0.72rem; color:#dcf8c6;" data-i18n="wa_online_status">● Online • Instant Help</span>
+            </div>
+          </div>
+          <span class="nav-badge" style="background:#128c7e; color:#ffffff;" data-i18n="badge_online">ONLINE</span>
+        </div>
+
+        <div class="wa-body" id="wa-chat-body">
+          <div class="wa-bubble-bot" data-i18n="wa_bot_greeting">
+            <b>Hello / Namaste / Olá!</b> How can I help you today? Send a voice message or type what is broken in your neighborhood, and I will report it immediately.
+          </div>
+        </div>
+
+        <div style="background:#202c33; padding:14px 18px; border-top:1px solid rgba(255,255,255,0.08);">
+          <div style="display:flex; gap:8px; margin-bottom:10px; flex-wrap:wrap;">
+            <button class="btn btn-secondary btn-sm" id="wa-sample-hi" data-i18n="btn_wa_sample_hi">🇮🇳 Hindi Voice Note</button>
+            <button class="btn btn-secondary btn-sm" id="wa-sample-pt" data-i18n="btn_wa_sample_pt">🇧🇷 Portuguese Note</button>
+            <button class="btn btn-secondary btn-sm" id="wa-sample-en" data-i18n="btn_wa_sample_en">🇿🇦 English Message</button>
+          </div>
+          <div style="display:flex; gap:10px;">
+            <input type="text" class="form-control" id="wa-message-input" placeholder="Type message or click a sample..." data-i18n-placeholder="ph_wa_input" style="border-radius:24px;">
+            <button class="btn btn-primary" id="btn-wa-send" style="border-radius:50%; width:44px; height:44px; padding:0; background:#25d366; color:#ffffff;">➔</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ========================================================================
+       MODAL: REPORT AN ISSUE (OPENS ON CATEGORY CLICK)
+       ======================================================================== -->
+  <div class="modal-overlay" id="incident-modal">
+    <div class="modal-box" style="max-width:680px; max-height:90vh; overflow-y:auto;">
+      <button class="modal-close" id="btn-close-incident-modal" title="Close modal">&times;</button>
+      
+      <div style="display:flex; align-items:center; gap:12px; margin-bottom:18px;">
+        <div id="modal-incident-icon-wrap" style="width:42px; height:42px; border-radius:12px; display:flex; align-items:center; justify-content:center; background:rgba(245,158,11,0.15); border:1px solid rgba(245,158,11,0.3); color:#f59e0b; flex-shrink:0;">
+          <svg class="svg-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/>
+            <line x1="12" y1="18" x2="12" y2="12"/>
+            <line x1="9" y1="15" x2="15" y2="15"/>
+          </svg>
+        </div>
+        <div>
+          <h3 style="margin:0 0 4px 0; font-size:1.25rem;" id="modal-incident-title" data-i18n="modal_report_title">Report an Issue</h3>
+          <p style="margin:0; font-size:0.8rem; color:var(--text-secondary);" id="modal-incident-subtitle" data-i18n="modal_report_sub">Add details, photos, or voice notes for fast resolution.</p>
+        </div>
+      </div>
+
+      <form id="complaint-form">
+        <div class="form-group">
+          <label class="form-label" data-i18n="lbl_selected_category">Selected Category</label>
+          <input type="text" class="form-control" id="selected-category-input" readonly value="Roads & Bridges" style="font-weight:700; color:var(--accent-primary);">
+        </div>
+
+        <div class="form-group">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+            <label class="form-label" style="margin-bottom:0;" data-i18n="lbl_problem">What is the problem? *</label>
+            <button type="button" class="btn-voice-input" id="btn-voice-desc" title="Speak to describe issue using Gemini / Google Speech AI">
+              <svg class="svg-icon mic-svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+                <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                <line x1="12" y1="19" x2="12" y2="23"/>
+                <line x1="8" y1="23" x2="16" y2="23"/>
+              </svg>
+              <span id="voice-desc-status" data-i18n="btn_voice_input">Speak with AI</span>
+            </button>
+          </div>
+          <div style="position:relative;">
+            <textarea class="form-control" id="complaint-desc-input" placeholder="Describe what is broken, nearest landmark or shop, and how it affects people..." data-i18n-placeholder="ph_desc" required style="padding-right:42px; min-height:100px;"></textarea>
+            <button type="button" class="btn-textarea-floating-mic" id="btn-textarea-floating-mic" title="Speak with Gemini / Google Speech AI">
+              <svg class="svg-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+                <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                <line x1="12" y1="19" x2="12" y2="23"/>
+                <line x1="8" y1="23" x2="16" y2="23"/>
+              </svg>
+            </button>
+          </div>
+          <!-- Live Voice Recording / Gemini Transcribing HUD -->
+          <div id="voice-recording-hud" style="display:none; margin-top:8px; padding:8px 12px; border-radius:8px; background:rgba(239, 68, 68, 0.08); border:1px solid rgba(239,68,68,0.25); color:#ef4444; font-size:0.8rem; align-items:center; justify-content:space-between;">
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span class="recording-pulse-dot"></span>
+              <span id="voice-recording-text" data-i18n="voice_listening">Listening... Speak now in Hindi, English, or mother tongue</span>
+            </div>
+            <button type="button" class="btn-stop-rec" id="btn-stop-recording" data-i18n="btn_stop_rec">Done / Stop</button>
+          </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+          <div class="form-group">
+            <label class="form-label" data-i18n="lbl_neighborhood_ward">Neighborhood / Ward *</label>
+            <select class="form-control" id="complaint-ward-select">
+              <!-- Dynamically populated from active BRICS node -->
+            </select>
+          </div>
+          <div class="form-group">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+              <label class="form-label" style="margin-bottom:0;" data-i18n="lbl_street_address">Street Address or Landmark</label>
+              <button type="button" class="btn-location-detect" id="btn-use-current-location" title="Detect GPS coordinates and fill address">
+                <svg class="svg-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polygon points="3 11 22 2 13 21 11 13 3 11"/>
+                </svg>
+                <span id="loc-btn-label" data-i18n="btn_use_current_location">Use Current Location</span>
+              </button>
+            </div>
+            <input type="text" class="form-control" id="complaint-address-input" placeholder="e.g. Outer Ring Road, Near Metro Gate 2" data-i18n-placeholder="ph_street_address">
+            <!-- GPS Location Feedback Chip -->
+            <div id="location-detected-chip" style="display:none; margin-top:6px; font-size:0.75rem; color:#059669; background:rgba(5,150,105,0.08); border:1px solid rgba(5,150,105,0.25); border-radius:6px; padding:4px 8px; align-items:center; justify-content:space-between;">
+              <span id="location-chip-text" data-i18n="gps_acquired">📍 GPS Coordinates Acquired</span>
+              <button type="button" id="btn-clear-gps" style="background:transparent; border:none; color:#059669; font-weight:700; cursor:pointer; font-size:0.8rem;" title="Clear GPS">×</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Multimodal Evidence: Photo & Voice Note -->
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:8px;">
+          <div class="form-group">
+            <label class="form-label" style="display:flex; align-items:center; gap:6px;">
+              <svg class="svg-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+                <circle cx="12" cy="13" r="4"/>
+              </svg>
+              <span data-i18n="lbl_add_photo">Add a Photo (Optional)</span>
+            </label>
+            <input type="file" class="form-control" id="complaint-photo-input" accept="image/*">
+            <small style="color:var(--text-muted); font-size:0.75rem;" data-i18n="lbl_add_photo_hint">Our AI automatically checks the damage severity to speed up repairs.</small>
+          </div>
+          <div class="form-group">
+            <label class="form-label" style="display:flex; align-items:center; gap:6px;">
+              <svg class="svg-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+                <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                <line x1="12" y1="19" x2="12" y2="23"/>
+                <line x1="8" y1="23" x2="16" y2="23"/>
+              </svg>
+              <span data-i18n="lbl_add_voice">Add a Voice Note (Optional)</span>
+            </label>
+            <input type="file" class="form-control" id="complaint-audio-input" accept="audio/*">
+            <small style="color:var(--text-muted); font-size:0.75rem;" data-i18n="lbl_add_voice_hint">Speak in Hindi, English, Portuguese, or your mother tongue.</small>
+          </div>
+        </div>
+
+        <div style="margin-top:20px; display:flex; justify-content:flex-end; gap:12px;">
+          <button type="button" class="btn btn-secondary" id="btn-cancel-incident-modal" data-i18n="btn_cancel">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="btn-submit-complaint" style="background:#059669;">
+            <svg class="svg-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="22" y1="2" x2="11" y2="13"/>
+              <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+            </svg>
+            <span data-i18n="btn_submit_report">Submit Report</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       MODAL: PROPOSE A COMMUNITY PROJECT
+       ======================================================================== -->
+  <div class="modal-overlay" id="demand-modal">
+    <div class="modal-box">
+      <button class="modal-close" id="btn-close-demand-modal">&times;</button>
+      <h3 style="margin-bottom:6px; display:flex; align-items:center; gap:8px;">
+        <svg class="svg-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--brics-gold)" stroke-width="2">
+          <path d="M9 18h6"/>
+          <path d="M10 22h4"/>
+          <path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5A4.61 4.61 0 0 1 8.91 14"/>
+        </svg>
+        <span data-i18n="modal_propose_title">Propose a Community Project</span>
+      </h3>
+      <p style="color:var(--text-secondary); font-size:0.85rem; margin-bottom:18px;" data-i18n="modal_propose_sub">
+        Projects with high citizen votes are submitted directly to city planners for funding.
+      </p>
+
+      <form id="propose-demand-form">
+        <div class="form-group">
+          <label class="form-label" data-i18n="lbl_project_title">Project Title *</label>
+          <input type="text" class="form-control" id="modal-demand-title" placeholder="e.g. New Park and Solar Lighting in Sector 4" data-i18n-placeholder="ph_project_title" required>
+        </div>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px;">
+          <div class="form-group">
+            <label class="form-label" data-i18n="lbl_category">Category *</label>
+            <select class="form-control" id="modal-demand-sector">
+              <!-- Populated by JS -->
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" data-i18n="lbl_neighborhood_ward">Neighborhood / Ward *</label>
+            <select class="form-control" id="modal-demand-ward">
+              <!-- Populated by JS -->
+            </select>
+          </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px;">
+          <div class="form-group">
+            <label class="form-label" data-i18n="lbl_budget">Estimated Cost</label>
+            <input type="text" class="form-control" id="modal-demand-budget" placeholder="e.g. ₹50 Lakhs / R$ 300,000" data-i18n-placeholder="ph_budget">
+          </div>
+          <div class="form-group">
+            <label class="form-label" data-i18n="lbl_est_beneficiaries">Estimated People Benefited</label>
+            <input type="text" class="form-control" id="modal-demand-beneficiaries" placeholder="e.g. 5,000 residents" data-i18n-placeholder="ph_beneficiaries">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" data-i18n="lbl_why_needed">Why is this project needed? *</label>
+          <textarea class="form-control" id="modal-demand-desc" placeholder="Explain why this project is important and how it will improve our neighborhood..." data-i18n-placeholder="ph_why_needed" required></textarea>
+        </div>
+
+        <div style="display:flex; justify-content:flex-end; gap:12px; margin-top:14px;">
+          <button type="button" class="btn btn-secondary" id="btn-cancel-demand-modal" data-i18n="btn_cancel">Cancel</button>
+          <button type="submit" class="btn btn-primary" style="background:#059669;">
+            <span data-i18n="btn_submit_voting">Submit for Voting</span>
+            <svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="5" y1="12" x2="19" y2="12"/>
+              <polyline points="12 5 19 12 12 19"/>
+            </svg>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Internationalization (i18n) Engine -->
+  <script src="/static/js/i18n.js"></script>
+  <!-- Shared App State & Core Services -->
+  <script src="/static/js/app.js"></script>
+  <!-- Dedicated Citizen Subsystem -->
+  <script src="/static/js/citizen.js"></script>
+</body>
+</html>

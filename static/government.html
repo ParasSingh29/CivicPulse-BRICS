@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark" data-node="IN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CivicPulse-BRICS — Government Command Hub</title>
+  <meta name="description" content="Dedicated Government Official & Planning Commission Command Console for Gemini 2.5 AI Mega-Planning, BigQuery Spatial Telemetry, Operational Repair Dispatches, and CapEx Misalignment Matrix.">
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  
+  <!-- Leaflet CSS for Geospatial Command Maps -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+  
+  <!-- Custom Enterprise Design System -->
+  <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body>
+
+  <!-- ========================================================================
+       TOP EXECUTIVE NAVBAR (GOVERNMENT COMMAND HUB)
+       ======================================================================== -->
+  <header class="navbar">
+    <div class="nav-brand">
+      <div class="nav-logo-box" title="CivicPulse-BRICS Government Command Core" style="background:linear-gradient(135deg, var(--btn-grad-start), var(--btn-grad-end));">
+        <svg class="svg-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="3" y1="21" x2="21" y2="21"/>
+          <line x1="4" y1="10" x2="20" y2="10"/>
+          <polyline points="12 2 20 10 4 10 12 2"/>
+          <line x1="6" y1="10" x2="6" y2="21"/>
+          <line x1="10" y1="10" x2="10" y2="21"/>
+          <line x1="14" y1="10" x2="14" y2="21"/>
+          <line x1="18" y1="10" x2="18" y2="21"/>
+        </svg>
+      </div>
+      <div>
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span class="nav-title">CivicPulse-BRICS</span>
+          <span class="beacon-pulse" title="Command Center Operational"></span>
+        </div>
+        <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+          <span class="nav-badge" id="active-node-badge">
+            <span id="active-flag-container"></span>
+            <span id="active-node-text">India (Delhi NCR)</span>
+          </span>
+          <span class="nav-badge" style="background:rgba(234,88,12,0.14); color:var(--accent-primary); border:1px solid var(--border-color);" data-i18n="gov_badge_clearance">
+            Admin Access
+          </span>
+          <span class="nav-badge" style="background:rgba(245,158,11,0.12); color:#fbbf24; border:1px solid rgba(245,158,11,0.3);">
+            <svg class="svg-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/>
+            </svg>
+            <span data-i18n="badge_live_data">Live Cloud Data</span>
+          </span>
+          <span style="font-size:0.68rem; color:var(--text-muted); font-family:var(--font-mono);" data-i18n="badge_open_standard">Open Standard</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="nav-controls">
+      <!-- Sovereign Quick Navigation (Back & Home) -->
+      <div class="nav-nav-group" id="nav-quick-actions" role="navigation" aria-label="Page Navigation">
+        <button class="nav-nav-btn" id="nav-btn-back" title="Go Back (Alt + Left)" data-i18n-title="nav_back" aria-label="Go Back" onclick="window.navGoBack()">
+          <svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="15 18 9 12 15 6"></polyline>
+          </svg>
+          <span data-i18n="nav_back">Back</span>
+        </button>
+        <button class="nav-nav-btn" id="nav-btn-home" title="Go to Home" data-i18n-title="nav_home" aria-label="Go to Home" onclick="window.navGoHome()">
+          <svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+            <polyline points="9 22 9 12 15 12 15 22"></polyline>
+          </svg>
+          <span data-i18n="nav_home">Home</span>
+        </button>
+      </div>
+
+      <div class="nav-divider"></div>
+
+      <!-- Auto-Detected Sovereign Jurisdiction Node Pill -->
+      <div class="node-detected-pill" id="node-detected-badge" title="Auto-Detected Sovereign Jurisdiction Node">
+        <span id="node-detected-flag">🇮🇳</span>
+        <span id="node-detected-label">India (Delhi NCR)</span>
+        <span class="beacon-pulse" style="width:7px; height:7px; background:#10b981;"></span>
+      </div>
+
+      <!-- Sovereign Language Selector -->
+      <div class="lang-select-wrap">
+        <select class="lang-select" id="lang-selector" title="Select Platform Language">
+          <option value="en">🇬🇧 English</option>
+          <option value="hi">🇮🇳 हिन्दी</option>
+          <option value="pt">🇧🇷 Português</option>
+          <option value="zu">🇿🇦 isiZulu</option>
+          <option value="af">🇿🇦 Afrikaans</option>
+          <option value="ta">🇮🇳 தமிழ்</option>
+          <option value="te">🇮🇳 తెలుగు</option>
+          <option value="ru">🇷🇺 Русский</option>
+          <option value="zh">🇨🇳 中文</option>
+        </select>
+      </div>
+
+      <!-- User Profile Badge -->
+      <div class="user-profile-pill" id="user-profile-pill">
+        <div class="user-profile-avatar">DG</div>
+        <div style="line-height:1.2;">
+          <div style="font-weight:700;" id="user-display-name">Dr. Rajesh Verma</div>
+          <div style="font-size:0.7rem; color:var(--text-muted);" id="user-display-role">City Director • Urban Affairs</div>
+        </div>
+      </div>
+
+      <!-- Theme Mode Toggle -->
+      <button class="theme-toggle-btn" id="theme-toggle" title="Toggle Light/Dark Theme">
+        <span id="theme-icon">
+          <svg class="svg-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
+        </span>
+      </button>
+
+      <!-- Logout / Exit Command Button -->
+      <button class="btn-logout" id="btn-logout" title="Exit command center and return to Sovereign Login Gateway" data-i18n-title="btn_exit_command">
+        <svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+          <polyline points="16 17 21 12 16 7"/>
+          <line x1="21" y1="12" x2="9" y2="12"/>
+        </svg>
+        <span data-i18n="btn_exit_command">Exit Portal</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ========================================================================
+       MAIN GOVERNMENT COMMAND CONTAINER
+       ======================================================================== -->
+  <main class="app-container">
+
+    <!-- Ambient Hero Banner -->
+    <section class="hero-banner">
+      <div class="hero-content">
+        <div class="hero-tag">
+          <span class="beacon-pulse"></span>
+          <span id="hero-jurisdiction-tag" data-i18n="gov_hero_tag">City Planning & Operations</span>
+        </div>
+        <h1 class="hero-title" id="hero-title" data-i18n="gov_hero_title">City Projects & Operations Command</h1>
+        <p class="hero-subtitle" id="hero-subtitle" data-i18n="gov_hero_subtitle">
+          Track citizen reports, assign repair teams, plan major infrastructure projects, and review city budgets with AI insights.
+        </p>
+
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         TAB 0: GOVERNMENT EXECUTIVE COMMAND HOME & LAUNCHPAD
+         ==================================================================== -->
+    <div class="tab-content" id="gov-tab-home">
+      <!-- Executive Welcome & Clearance HUD -->
+      <div class="home-welcome-card" style="border-left:5px solid var(--accent-primary);">
+        <div class="home-welcome-info">
+          <h2>
+            <span data-i18n="gov_welcome_title">Operations Overview</span>
+            <span class="beacon-pulse"></span>
+          </h2>
+          <p data-i18n="gov_welcome_desc">
+            View real-time citizen reports, AI planning recommendations, and budget allocations. Access dedicated City or Central command below:
+          </p>
+          <div style="display:flex; gap:10px; margin-top:10px; flex-wrap:wrap;">
+            <a href="/city-official" class="btn btn-primary btn-sm" style="background:#059669; border-color:#059669;">
+              <span>City Official Portal (Delhi, Mumbai, SP, Joburg) →</span>
+            </a>
+            <a href="/central-official" class="btn btn-primary btn-sm" style="background:#2563eb; border-color:#2563eb;">
+              <span>Central Official Portal (National & BRICS Planning) →</span>
+            </a>
+          </div>
+        </div>
+        <div class="home-welcome-badges">
+          <div class="home-welcome-badge" style="color:#ef4444; border-color:rgba(239,68,68,0.3); background:rgba(239,68,68,0.08);">
+            <svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+            </svg>
+            <span data-i18n="gov_badge_clearance">Admin Access</span>
+          </div>
+          <div class="home-welcome-badge">
+            <svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+              <circle cx="12" cy="7" r="4"/>
+            </svg>
+            <span>Dr. Rajesh Verma • City Director</span>
+          </div>
+          <div class="home-welcome-badge" style="color:#10b981; border-color:rgba(16,185,129,0.3); background:rgba(16,185,129,0.08);">
+            <svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+            </svg>
+            <span data-i18n="gov_badge_uptime">99.98% System Uptime</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Live Weather Station -->
+      <section style="background:var(--bg-card); border:1px solid var(--border-color); border-radius:var(--radius-lg); padding:20px; margin-bottom:24px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:8px;">
+          <div style="display:flex; align-items:center; gap:10px;">
+            <svg class="svg-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--accent-primary)" stroke-width="2">
+              <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/>
+            </svg>
+            <b style="font-size:1.05rem;" data-i18n="sec_live_weather">Live City Weather</b>
+            <span class="nav-badge" data-i18n="badge_sensor_data">Live Sensor Data</span>
+          </div>
+          <span style="font-size:0.75rem; color:var(--text-muted);" id="weather-source" data-i18n="lbl_weather_source">Source: Open-Meteo Real-Time Sensor</span>
+        </div>
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:14px;" id="weather-metrics-container">
+          <!-- Dynamically populated by JS -->
+        </div>
+      </section>
+
+      <!-- Live Cloud Architecture HUD -->
+      <section style="background:linear-gradient(135deg, rgba(245,158,11,0.06), rgba(37,99,235,0.06)); border:1px solid var(--border-subtle); border-radius:var(--radius-lg); padding:16px 20px; margin-bottom:28px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
+        <div style="display:flex; align-items:center; gap:24px; flex-wrap:wrap;">
+          <div style="display:flex; align-items:center; gap:12px;">
+            <div class="icon-box-sm" style="background:rgba(245,158,11,0.15); color:#f59e0b;">
+              <svg class="svg-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/>
+              </svg>
+            </div>
+            <div>
+              <div style="font-size:0.72rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px;" data-i18n="lbl_database">Database</div>
+              <b style="font-size:0.88rem; color:#f59e0b;" id="hud-firebase-status">Firestore (Active)</b>
+            </div>
+          </div>
+          <div style="display:flex; align-items:center; gap:12px;">
+            <div class="icon-box-sm" style="background:rgba(37,99,235,0.15); color:#60a5fa;">
+              <svg class="svg-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <ellipse cx="12" cy="5" rx="9" ry="3"/>
+                <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/>
+                <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/>
+              </svg>
+            </div>
+            <div>
+              <div style="font-size:0.72rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px;" data-i18n="lbl_city_map_data">City Map Data</div>
+              <b style="font-size:0.88rem; color:#60a5fa;" id="hud-bigquery-status">Live GIS Stream</b>
+            </div>
+          </div>
+          <div style="display:flex; align-items:center; gap:12px;">
+            <div class="icon-box-sm" style="background:rgba(16,185,129,0.15); color:#10b981;">
+              <svg class="svg-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+              </svg>
+            </div>
+            <div>
+              <div style="font-size:0.72rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px;" data-i18n="lbl_storage">Storage</div>
+              <b style="font-size:0.88rem; color:#10b981;" id="hud-db-status">Cloud & Local DB</b>
+            </div>
+          </div>
+        </div>
+        <div style="display:flex; gap:10px; align-items:center;">
+          <button class="btn btn-secondary btn-sm" id="btn-stream-bigquery" title="Sync GIS partitions into BigQuery">
+            <svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="17 8 12 3 7 8"/>
+              <line x1="12" y1="3" x2="12" y2="15"/>
+            </svg>
+            <span data-i18n="btn_sync_map_data">Sync Map Data</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- Section Title -->
+      <div style="margin-bottom:18px;">
+        <h3 style="font-size:1.25rem; font-weight:700; margin:0 0 4px 0;" data-i18n="gov_launchpad_title">City Management Modules</h3>
+        <p style="color:var(--text-secondary); font-size:0.88rem; margin:0;" data-i18n="gov_launchpad_subtitle">
+          Select any tool below to manage city operations:
+        </p>
+      </div>
+
+      <!-- 5 Interactive Command Module Cards -->
+      <div class="home-launch-grid">
+        
+        <!-- CARD 1: GEMINI PLANNING -->
+        <div class="home-launch-card" style="--card-accent: #3b82f6;" data-open-tab="gov-tab-megaplan">
+          <div>
+            <div class="launch-card-header">
+              <div class="launch-card-icon" style="color:#3b82f6; background:rgba(59,130,246,0.1); border-color:rgba(59,130,246,0.25);">
+                <svg class="svg-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                </svg>
+              </div>
+              <span class="launch-card-badge" style="color:#60a5fa; background:rgba(59,130,246,0.12); border:1px solid rgba(59,130,246,0.3);">
+                AI Suggestions
+              </span>
+            </div>
+            <h4 class="launch-card-title" data-i18n="card_megaplan_title">AI City Project Planner</h4>
+            <p class="launch-card-desc" data-i18n="card_megaplan_desc">
+              Combines citizen requests and neighborhood data to recommend major projects with estimated costs and benefits.
+            </p>
+            <div class="launch-card-tags">
+              <span class="launch-card-tag">Long-term Projects</span>
+              <span class="launch-card-tag">Cost Estimates</span>
+              <span class="launch-card-tag">Green Impact</span>
+              <span class="launch-card-tag">Priority Rankings</span>
+            </div>
+          </div>
+          <div class="launch-card-action">
+            <span style="font-size:0.78rem; color:var(--text-muted); font-weight:600;">AI recommendations active</span>
+            <button class="launch-card-btn" style="background:#3b82f6;" data-open-tab="gov-tab-megaplan">
+              <span data-i18n="card_megaplan_btn">Open Planning Tool</span>
+              <svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="5" y1="12" x2="19" y2="12"/>
+                <polyline points="12 5 19 12 12 19"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- CARD 2: DEFECT QUEUE -->
+        <div class="home-launch-card" style="--card-accent: #f59e0b;" data-open-tab="gov-tab-queue">
+          <div>
+            <div class="launch-card-header">
+              <div class="launch-card-icon" style="color:#f59e0b; background:rgba(245,158,11,0.1); border-color:rgba(245,158,11,0.25);">
+                <svg class="svg-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
+                </svg>
+              </div>
+              <span class="launch-card-badge" style="color:#f59e0b; background:rgba(245,158,11,0.12); border:1px solid rgba(245,158,11,0.3);">
+                16 Pending Tasks
+              </span>
+            </div>
+            <h4 class="launch-card-title" data-i18n="card_queue_title">Repairs & Work Orders</h4>
+            <p class="launch-card-desc" data-i18n="card_queue_desc">
+              Review incoming citizen complaints, dispatch repair teams, track completion deadlines, and approve finished work.
+            </p>
+            <div class="launch-card-tags">
+              <span class="launch-card-tag">Team Dispatch</span>
+              <span class="launch-card-tag">Deadlines</span>
+              <span class="launch-card-tag">Urgent Issues</span>
+              <span class="launch-card-tag">Work Approval</span>
+            </div>
+          </div>
+          <div class="launch-card-action">
+            <span style="font-size:0.78rem; color:var(--text-muted); font-weight:600;">8 urgent repairs</span>
+            <button class="launch-card-btn" style="background:#f59e0b;" data-open-tab="gov-tab-queue">
+              <span data-i18n="card_queue_btn">View Repair Queue</span>
+              <svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="5" y1="12" x2="19" y2="12"/>
+                <polyline points="12 5 19 12 12 19"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- CARD 3: CAPEX MISALIGNMENT -->
+        <div class="home-launch-card" style="--card-accent: #ec4899;" data-open-tab="gov-tab-budget">
+          <div>
+            <div class="launch-card-header">
+              <div class="launch-card-icon" style="color:#ec4899; background:rgba(236,72,153,0.1); border-color:rgba(236,72,153,0.25);">
+                <svg class="svg-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <line x1="18" y1="20" x2="18" y2="10"/>
+                  <line x1="12" y1="20" x2="12" y2="4"/>
+                  <line x1="6" y1="20" x2="6" y2="14"/>
+                </svg>
+              </div>
+              <span class="launch-card-badge" style="color:#f472b6; background:rgba(236,72,153,0.12); border:1px solid rgba(236,72,153,0.3);">
+                Budget Audit
+              </span>
+            </div>
+            <h4 class="launch-card-title" data-i18n="card_budget_title">Budget & Funding Balance</h4>
+            <p class="launch-card-desc" data-i18n="card_budget_desc">
+              Compare public spending across neighborhoods to ensure underserved areas receive fair funding and resources.
+            </p>
+            <div class="launch-card-tags">
+              <span class="launch-card-tag">Fair Spending</span>
+              <span class="launch-card-tag">Ward Comparison</span>
+              <span class="launch-card-tag">Resource Needs</span>
+              <span class="launch-card-tag">Budget Advice</span>
+            </div>
+          </div>
+          <div class="launch-card-action">
+            <span style="font-size:0.78rem; color:var(--text-muted); font-weight:600;">6 disparities flagged</span>
+            <button class="launch-card-btn" style="background:#ec4899;" data-open-tab="gov-tab-budget">
+              <span data-i18n="card_budget_btn">Open Budget Tool</span>
+              <svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="5" y1="12" x2="19" y2="12"/>
+                <polyline points="12 5 19 12 12 19"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- CARD 4: GEOSPATIAL COMMAND MAP -->
+        <div class="home-launch-card" style="--card-accent: #10b981;" data-open-tab="gov-tab-map">
+          <div>
+            <div class="launch-card-header">
+              <div class="launch-card-icon" style="color:#10b981; background:rgba(16,185,129,0.1); border-color:rgba(16,185,129,0.25);">
+                <svg class="svg-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/>
+                  <line x1="8" y1="2" x2="8" y2="18"/>
+                  <line x1="16" y1="6" x2="16" y2="22"/>
+                </svg>
+              </div>
+              <span class="launch-card-badge" style="color:#10b981; background:rgba(16,185,129,0.12); border:1px solid rgba(16,185,129,0.3);">
+                Interactive Map
+              </span>
+            </div>
+            <h4 class="launch-card-title" data-i18n="card_map_title">Live City Map</h4>
+            <p class="launch-card-desc" data-i18n="card_map_desc">
+              Interactive map showing reported issues, repair crew locations, neighborhood boundaries, and incident hot spots.
+            </p>
+            <div class="launch-card-tags">
+              <span class="launch-card-tag">Issue Map</span>
+              <span class="launch-card-tag">Ward Boundaries</span>
+              <span class="launch-card-tag">Hotspots</span>
+              <span class="launch-card-tag">Vehicle Tracking</span>
+            </div>
+          </div>
+          <div class="launch-card-action">
+            <span style="font-size:0.78rem; color:var(--text-muted); font-weight:600;">16 active locations</span>
+            <button class="launch-card-btn" style="background:#10b981;" data-open-tab="gov-tab-map">
+              <span data-i18n="card_map_btn">Open City Map</span>
+              <svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="5" y1="12" x2="19" y2="12"/>
+                <polyline points="12 5 19 12 12 19"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- CARD 5: DPG STANDARDS -->
+        <div class="home-launch-card" style="--card-accent: #8b5cf6;" data-open-tab="gov-tab-dpg">
+          <div>
+            <div class="launch-card-header">
+              <div class="launch-card-icon" style="color:#8b5cf6; background:rgba(139,92,246,0.1); border-color:rgba(139,92,246,0.25);">
+                <svg class="svg-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                </svg>
+              </div>
+              <span class="launch-card-badge" style="color:#a78bfa; background:rgba(139,92,246,0.12); border:1px solid rgba(139,92,246,0.3);">
+                Open Standards
+              </span>
+            </div>
+            <h4 class="launch-card-title" data-i18n="card_dpg_title">Data Standards & Compliance</h4>
+            <p class="launch-card-desc" data-i18n="card_dpg_desc">
+              Check open digital standards compliance, view API documentation, and review data privacy guidelines.
+            </p>
+            <div class="launch-card-tags">
+              <span class="launch-card-tag">Open Standards</span>
+              <span class="launch-card-tag">API Docs</span>
+              <span class="launch-card-tag">Data Privacy</span>
+              <span class="launch-card-tag">Open Code</span>
+            </div>
+          </div>
+          <div class="launch-card-action">
+            <span style="font-size:0.78rem; color:var(--text-muted); font-weight:600;">100% compliant</span>
+            <button class="launch-card-btn" style="background:#8b5cf6;" data-open-tab="gov-tab-dpg">
+              <span data-i18n="card_dpg_btn">View Standards</span>
+              <svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="5" y1="12" x2="19" y2="12"/>
+                <polyline points="12 5 19 12 12 19"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Executive Directives Feed & Recent Orders -->
+      <div class="home-insights-grid">
+        <div class="home-insights-panel">
+          <h3>
+            <svg class="svg-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent-primary)" stroke-width="2">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+              <polyline points="14 2 14 8 20 8"/>
+              <line x1="16" y1="13" x2="8" y2="13"/>
+              <line x1="16" y1="17" x2="8" y2="17"/>
+              <polyline points="10 9 9 9 8 9"/>
+            </svg>
+            <span data-i18n="sec_recent_directives">Recent City Directives & Actions</span>
+          </h3>
+          <div class="home-activity-list">
+            <div class="home-activity-item">
+              <div class="home-activity-icon" style="background:rgba(37,99,235,0.15); color:#60a5fa;">
+                <svg class="svg-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="9 11 12 14 22 4"/>
+                  <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+                </svg>
+              </div>
+              <div style="flex-grow:1;">
+                <div class="home-activity-title">Order #2026-884: Drainage Upgrade Phase II</div>
+                <div class="home-activity-meta">
+                  <span style="color:#60a5fa; font-weight:600;">Approved</span> • ₹180 Cr Budget • Zonal Engineering
+                </div>
+              </div>
+            </div>
+            <div class="home-activity-item">
+              <div class="home-activity-icon" style="background:rgba(16,185,129,0.15); color:#10b981;">
+                <svg class="svg-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+              </div>
+              <div style="flex-grow:1;">
+                <div class="home-activity-title">Order #2026-883: Rapid Pothole Repair Schedule</div>
+                <div class="home-activity-meta">
+                  <span style="color:#10b981; font-weight:600;">Active</span> • 100% Wards • 4.2h Average Fix Time
+                </div>
+              </div>
+            </div>
+            <div class="home-activity-item">
+              <div class="home-activity-icon" style="background:rgba(245,158,11,0.15); color:#f59e0b;">
+                <svg class="svg-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                </svg>
+              </div>
+              <div style="flex-grow:1;">
+                <div class="home-activity-title">Order #2026-882: City Map Data Sync</div>
+                <div class="home-activity-meta">
+                  <span style="color:#f59e0b; font-weight:600;">Synced</span> • 1,420 Partitions Streamed • Ministry Cloud
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="home-insights-panel">
+          <h3>
+            <svg class="svg-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2">
+              <circle cx="12" cy="12" r="10"/>
+              <path d="M12 6v6l4 2"/>
+            </svg>
+            <span data-i18n="sec_repair_status">City Repair Operations Status</span>
+          </h3>
+          <div class="home-activity-list">
+            <div class="home-activity-item">
+              <div class="home-activity-icon" style="background:rgba(16,185,129,0.15); color:#10b981;">
+                <svg class="svg-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+                </svg>
+              </div>
+              <div style="flex-grow:1;">
+                <div class="home-activity-title">City Infrastructure Health: 88/100</div>
+                <div class="home-activity-meta">
+                  Good Condition • 14 Key Bridges & Corridors Monitored
+                </div>
+              </div>
+            </div>
+            <div class="home-activity-item">
+              <div class="home-activity-icon" style="background:rgba(59,130,246,0.15); color:#60a5fa;">
+                <svg class="svg-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                  <circle cx="9" cy="7" r="4"/>
+                  <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                  <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                </svg>
+              </div>
+              <div style="flex-grow:1;">
+                <div class="home-activity-title">Active Field Repair Teams</div>
+                <div class="home-activity-meta">
+                  42 Teams Active across 3 BRICS Hubs (India, Brazil, SA)
+                </div>
+              </div>
+            </div>
+            <div class="home-activity-item">
+              <div class="home-activity-icon" style="background:rgba(139,92,246,0.15); color:#a78bfa;">
+                <svg class="svg-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <ellipse cx="12" cy="5" rx="9" ry="3"/>
+                  <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/>
+                  <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/>
+                </svg>
+              </div>
+              <div style="flex-grow:1;">
+                <div class="home-activity-title">Citizen Budget Influence</div>
+                <div class="home-activity-meta">
+                  27,421 verified citizen votes influencing this year's projects
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ====================================================================
+         GOV TAB 1: AI PLANNING & PROJECTS
+         ==================================================================== -->
+    <div class="tab-content" id="gov-tab-megaplan" style="display:none;">
+      <!-- Breadcrumb Bar -->
+      <div class="back-to-home-bar">
+        <button class="back-to-home-btn" data-open-tab="gov-tab-home">
+          <svg class="svg-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="15 18 9 12 15 6"/>
+          </svg>
+          <span data-i18n="return_to_executive_cmd">← Back to Overview</span>
+        </button>
+        <span class="submodule-context-badge" data-i18n="badge_planning_context">City Planning</span>
+      </div>
+
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:12px;">
+        <div>
+          <h2 style="font-size:1.5rem; margin-bottom:4px; display:flex; align-items:center; gap:10px;">
+            <svg class="svg-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent-primary)" stroke-width="2">
+              <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+            </svg>
+            <span data-i18n="sec_megaplan_title">AI Infrastructure Recommendations</span>
+          </h2>
+          <p style="color:var(--text-secondary); font-size:0.9rem;" data-i18n="sec_megaplan_sub">
+            High-impact project proposals automatically generated by analyzing citizen requests, traffic bottlenecks, and demographic priorities.
+          </p>
+        </div>
+        <button class="btn btn-primary" id="btn-refresh-megaplan">
+          <svg class="svg-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="23 4 23 10 17 10"/>
+            <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+          </svg>
+          <span data-i18n="btn_update_plan">Update AI Plan</span>
+        </button>
+      </div>
+
+      <div class="megaplan-grid" id="megaplan-container">
+        <!-- Dynamically populated with High-Impact Projects -->
+      </div>
+    </div>
+
+    <!-- GOV TAB 2: OPERATIONAL REPAIR QUEUE -->
+    <div class="tab-content" id="gov-tab-queue" style="display:none;">
+      <!-- Breadcrumb Bar -->
+      <div class="back-to-home-bar">
+        <button class="back-to-home-btn" data-open-tab="gov-tab-home">
+          <svg class="svg-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="15 18 9 12 15 6"/>
+          </svg>
+          <span data-i18n="return_to_executive_cmd">← Back to Overview</span>
+        </button>
+        <span class="submodule-context-badge" data-i18n="badge_queue_context">Repairs & Dispatches</span>
+      </div>
+
+      <div style="margin-bottom:20px;">
+        <h2 style="font-size:1.5rem; margin-bottom:4px; display:flex; align-items:center; gap:10px;">
+          <svg class="svg-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--accent-primary)" stroke-width="2">
+            <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
+          </svg>
+          <span data-i18n="sec_queue_title">Reported Issues & Repair Queue</span>
+        </h2>
+        <p style="color:var(--text-secondary); font-size:0.9rem;" data-i18n="sec_queue_sub">
+          Filter and manage citizen complaints, dispatch field workers, and approve completed repairs:
+        </p>
+      </div>
+
+      <div id="gov-complaints-container">
+        <!-- Dynamically populated by JS with Send Team / Mark Fixed buttons -->
+      </div>
+    </div>
+
+    <!-- GOV TAB 3: BUDGET MISALIGNMENT MATRIX -->
+    <div class="tab-content" id="gov-tab-budget" style="display:none;">
+      <!-- Breadcrumb Bar -->
+      <div class="back-to-home-bar">
+        <button class="back-to-home-btn" data-open-tab="gov-tab-home">
+          <svg class="svg-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="15 18 9 12 15 6"/>
+          </svg>
+          <span data-i18n="return_to_executive_cmd">← Back to Overview</span>
+        </button>
+        <span class="submodule-context-badge" data-i18n="badge_budget_context">Budget Analysis</span>
+      </div>
+
+      <div style="margin-bottom:20px;">
+        <h2 style="font-size:1.5rem; margin-bottom:4px; display:flex; align-items:center; gap:10px;">
+          <svg class="svg-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--accent-primary)" stroke-width="2">
+            <line x1="18" y1="20" x2="18" y2="10"/>
+            <line x1="12" y1="20" x2="12" y2="4"/>
+            <line x1="6" y1="20" x2="6" y2="14"/>
+          </svg>
+          <span data-i18n="sec_budget_title">Ward Budget & Spending Equity</span>
+        </h2>
+        <p style="color:var(--text-secondary); font-size:0.9rem;" data-i18n="sec_budget_sub">
+          Compare municipal investment against neighborhood needs to balance infrastructure spending:
+        </p>
+      </div>
+
+      <div style="background:var(--bg-card); border:1px solid var(--border-color); border-radius:var(--radius-lg); overflow-x:auto; box-shadow:var(--shadow-md);">
+        <table style="width:100%; border-collapse:collapse; text-align:left; font-size:0.88rem;" id="budget-table">
+          <thead>
+            <tr style="border-bottom:1px solid var(--border-subtle); background:rgba(255,255,255,0.03);">
+              <th style="padding:14px 16px;" data-i18n="th_ward_budget">Neighborhood / Ward</th>
+              <th style="padding:14px 16px;" data-i18n="th_category">Category</th>
+              <th style="padding:14px 16px;" data-i18n="th_population_vulnerability">Population & Vulnerability</th>
+              <th style="padding:14px 16px;" data-i18n="th_planned_budget">Planned Budget</th>
+              <th style="padding:14px 16px;" data-i18n="th_demand_share">Citizen Demand Share</th>
+              <th style="padding:14px 16px;" data-i18n="th_funding_status">Funding Status</th>
+              <th style="padding:14px 16px;" data-i18n="th_recommended_action">Recommended Action</th>
+            </tr>
+          </thead>
+          <tbody id="budget-tbody">
+            <!-- Dynamically populated by JS -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- GOV TAB 4: GEOSPATIAL COMMAND MAP -->
+    <div class="tab-content" id="gov-tab-map" style="display:none;">
+      <!-- Breadcrumb Bar -->
+      <div class="back-to-home-bar">
+        <button class="back-to-home-btn" data-open-tab="gov-tab-home">
+          <svg class="svg-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="15 18 9 12 15 6"/>
+          </svg>
+          <span data-i18n="return_to_executive_cmd">← Back to Overview</span>
+        </button>
+        <span class="submodule-context-badge" data-i18n="badge_map_context">City Map</span>
+      </div>
+
+      <div style="margin-bottom:20px;">
+        <h2 style="font-size:1.5rem; margin-bottom:4px; display:flex; align-items:center; gap:10px;">
+          <svg class="svg-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--accent-primary)" stroke-width="2">
+            <polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/>
+            <line x1="8" y1="2" x2="8" y2="18"/>
+            <line x1="16" y1="6" x2="16" y2="22"/>
+          </svg>
+          <span data-i18n="sec_map_title">Live City Incident Map</span>
+        </h2>
+        <p style="color:var(--text-secondary); font-size:0.9rem;" data-i18n="sec_map_sub">
+          Colored markers show issue status, priority hot spots, and repair crew locations:
+        </p>
+      </div>
+
+      <div id="map"></div>
+    </div>
+
+    <!-- GOV TAB 5: DPG STANDARDS & OPEN SPECS -->
+    <div class="tab-content" id="gov-tab-dpg" style="display:none;">
+      <!-- Breadcrumb Bar -->
+      <div class="back-to-home-bar">
+        <button class="back-to-home-btn" data-open-tab="gov-tab-home">
+          <svg class="svg-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="15 18 9 12 15 6"/>
+          </svg>
+          <span data-i18n="return_to_executive_cmd">← Back to Overview</span>
+        </button>
+        <span class="submodule-context-badge" data-i18n="badge_dpg_context">Open Standards</span>
+      </div>
+
+      <div style="margin-bottom:20px;">
+        <h2 style="font-size:1.5rem; margin-bottom:4px; display:flex; align-items:center; gap:10px;">
+          <svg class="svg-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--accent-primary)" stroke-width="2">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          </svg>
+          <span data-i18n="sec_dpg_title">Digital Public Good Standards</span>
+        </h2>
+        <p style="color:var(--text-secondary); font-size:0.9rem;" data-i18n="sec_dpg_sub">
+          Compliance with 9 open source and digital public good indicators:
+        </p>
+      </div>
+
+      <div id="dpg-indicators-container" style="display:grid; gap:12px;">
+        <!-- Dynamically populated by JS -->
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Leaflet JS for Geospatial Maps -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  
+  <!-- Sovereign Internationalization (i18n) Engine -->
+  <script src="/static/js/i18n.js"></script>
+  <!-- Shared App State & Core Services -->
+  <script src="/static/js/app.js"></script>
+  <!-- Dedicated Government Subsystem -->
+  <script src="/static/js/government.js"></script>
+</body>
+</html>

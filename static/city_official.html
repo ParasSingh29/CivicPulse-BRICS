@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark" data-node="IN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CivicPulse-BRICS — City Official Portal</title>
+  <meta name="description" content="Dedicated Municipal Command Portal for City Officials: Resolve city-scoped citizen problems, synthesize local area AI infrastructure proposals, and upvote peer cities' reports.">
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  
+  <!-- Custom Enterprise Design System -->
+  <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body>
+
+  <!-- ========================================================================
+       TOP EXECUTIVE NAVBAR (CITY OFFICIAL HUB)
+       ======================================================================== -->
+  <header class="navbar">
+    <div class="nav-brand">
+      <div class="nav-logo-box" title="City Official Command Core" style="background:linear-gradient(135deg, #059669, #047857);">
+        <svg class="svg-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 21h18M3 7v14M21 7v14M6 11h4M6 15h4M14 11h4M14 15h4M9 3l3-2 3 2v4H9V3z"/>
+        </svg>
+      </div>
+      <div>
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span class="nav-title">CivicPulse-BRICS</span>
+          <span class="beacon-pulse" style="background:#10b981;" title="Municipal Node Connected"></span>
+        </div>
+        <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+          <span class="nav-badge" id="active-city-badge" style="background:rgba(16,185,129,0.14); color:#10b981; border:1px solid rgba(16,185,129,0.3);">
+            <span id="active-flag-container">🇮🇳</span>
+            <span id="city-nav-title">Delhi Municipal Command</span>
+          </span>
+          <span class="nav-badge" style="background:rgba(234,88,12,0.12); color:#fbbf24; border:1px solid rgba(234,88,12,0.3);">
+            City Officer Access
+          </span>
+          <span style="font-size:0.68rem; color:var(--text-muted); font-family:var(--font-mono);">DPI MUNICIPAL v2.5</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="nav-controls">
+      <!-- Sovereign Quick Navigation (Back & Home) -->
+      <div class="nav-nav-group" id="nav-quick-actions" role="navigation" aria-label="Page Navigation">
+        <button class="nav-nav-btn" id="nav-btn-back" title="Go Back" data-i18n-title="nav_back" onclick="window.navGoBack()">
+          <svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="15 18 9 12 15 6"></polyline>
+          </svg>
+          <span data-i18n="nav_back">Back</span>
+        </button>
+        <button class="nav-nav-btn" id="nav-btn-home" title="Go to City Overview" data-i18n-title="nav_home" onclick="window.navGoHome()">
+          <svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+            <polyline points="9 22 9 12 15 12 15 22"></polyline>
+          </svg>
+          <span data-i18n="nav_home">Overview</span>
+        </button>
+      </div>
+
+      <div class="nav-divider"></div>
+
+      <!-- City Jurisdiction Switcher Pill -->
+      <div class="city-switcher-pill" title="Switch City Municipality View">
+        <span>📍 City:</span>
+        <select id="city-selector">
+          <option value="Delhi" selected>🇮🇳 Delhi NCR</option>
+          <option value="Mumbai">🇮🇳 Mumbai MMRDA</option>
+          <option value="Bengaluru">🇮🇳 Bengaluru BBMP</option>
+          <option value="São Paulo">🇧🇷 São Paulo RMSP</option>
+          <option value="Johannesburg">🇿🇦 Johannesburg Gauteng</option>
+        </select>
+      </div>
+
+      <!-- Sovereign Language Selector -->
+      <div class="lang-select-wrap">
+        <select class="lang-select" id="lang-selector" title="Select Platform Language">
+          <option value="en">🇬🇧 English</option>
+          <option value="hi">🇮🇳 हिन्दी</option>
+          <option value="pt">🇧🇷 Português</option>
+          <option value="zu">🇿🇦 isiZulu</option>
+          <option value="ru">🇷🇺 Русский</option>
+          <option value="zh">🇨🇳 中文</option>
+        </select>
+      </div>
+
+      <!-- User Profile Badge -->
+      <div class="user-profile-pill" id="user-profile-pill">
+        <div class="user-profile-avatar" style="background:#059669;">VS</div>
+        <div style="line-height:1.2;">
+          <div style="font-weight:700;" id="officer-display-name">Er. Vikram Sharma</div>
+          <div style="font-size:0.7rem; color:var(--text-muted);" id="officer-display-role">Chief Executive Engineer • Delhi PWD</div>
+        </div>
+      </div>
+
+      <!-- Theme Mode Toggle -->
+      <button class="theme-toggle-btn" id="theme-toggle" title="Toggle Light/Dark Theme">
+        <span id="theme-icon">
+          <svg class="svg-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
+        </span>
+      </button>
+
+      <!-- Portal Switcher / Central Link -->
+      <a href="/central-official" class="btn btn-secondary btn-sm" title="Switch to Central Official Sovereign Command" style="display:flex; align-items:center; gap:6px;">
+        <svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="3" y1="21" x2="21" y2="21"/><line x1="4" y1="10" x2="20" y2="10"/><polyline points="12 2 20 10 4 10 12 2"/>
+        </svg>
+        <span>Central Portal →</span>
+      </a>
+
+      <!-- Logout Button -->
+      <button class="btn-logout" id="btn-logout" title="Exit portal">
+        <svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
+        </svg>
+        <span>Exit</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ========================================================================
+       MAIN CITY OFFICIAL CONTAINER
+       ======================================================================== -->
+  <!-- ========================================================================
+       MAIN CITY OFFICIAL CONTAINER
+       ======================================================================== -->
+  <main class="app-container">
+
+    <!-- ====================================================================
+         TAB 0: CITY OFFICIAL HOME OVERVIEW & INTERACTIVE LAUNCHPAD
+         ==================================================================== -->
+    <div class="tab-content" id="city-tab-home">
+      <!-- Ambient Hero Banner -->
+      <section class="hero-banner" style="border-left: 5px solid #10b981;">
+        <div class="hero-content">
+          <div class="hero-tag">
+            <span class="beacon-pulse" style="background:#10b981;"></span>
+            <span id="hero-jurisdiction-tag">MUNICIPAL JURISDICTION & AREA AI COMMAND</span>
+          </div>
+          <h1 class="hero-title">
+            City Official Command — <span id="hero-city-name" style="color:#10b981;">Delhi</span>
+          </h1>
+          <p class="hero-subtitle">
+            Manage and resolve citizen problems strictly for your city, review AI suggestions for major structural projects, escalate reports to the Central Government, and upvote peer cities' proposals.
+          </p>
+        </div>
+      </section>
+
+      <!-- Municipal Health HUD & Red/Yellow/Green Metrics -->
+      <section class="kpi-grid" style="margin-bottom:28px;">
+        <div class="kpi-card">
+          <div class="kpi-label">Total City Problems</div>
+          <div class="kpi-value" id="kpi-total-problems" style="color:var(--text-primary);">--</div>
+          <div class="kpi-delta" id="kpi-city-scope">Scoped to Delhi Municipal Basin</div>
+        </div>
+        <div class="kpi-card" style="border-left: 4px solid #ef4444;">
+          <div class="kpi-label" style="color:#ef4444;">● Red (Critical / Pending)</div>
+          <div class="kpi-value" id="kpi-red-problems" style="color:#ef4444;">--</div>
+          <div class="kpi-delta alert">Awaiting Crew Dispatch</div>
+        </div>
+        <div class="kpi-card" style="border-left: 4px solid #f59e0b;">
+          <div class="kpi-label" style="color:#f59e0b;">● Yellow (In Progress)</div>
+          <div class="kpi-value" id="kpi-yellow-problems" style="color:#f59e0b;">--</div>
+          <div class="kpi-delta" style="color:#f59e0b;">Teams Dispatched On-Site</div>
+        </div>
+        <div class="kpi-card" style="border-left: 4px solid #10b981;">
+          <div class="kpi-label" style="color:#10b981;">● Green (Resolved)</div>
+          <div class="kpi-value" id="kpi-green-problems" style="color:#10b981;">--</div>
+          <div class="kpi-delta" style="color:#10b981;">Work Inspected & Closed</div>
+        </div>
+      </section>
+
+      <!-- Multi-Segment RYG Progress Bar -->
+      <section style="background:var(--bg-card); border:1px solid var(--border-color); border-radius:var(--radius-lg); padding:16px 20px; margin-bottom:32px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+          <div style="font-weight:700; font-size:0.92rem;">
+            Municipal Problem Resolution Balance — <span id="ryg-city-name">Delhi</span>
+          </div>
+          <div class="ryg-legend">
+            <span class="ryg-legend-item"><span class="ryg-dot ryg-dot-red"></span> Red: Critical/Pending (<span id="count-red-badge">0</span>)</span>
+            <span class="ryg-legend-item"><span class="ryg-dot ryg-dot-yellow"></span> Yellow: In Progress (<span id="count-yellow-badge">0</span>)</span>
+            <span class="ryg-legend-item"><span class="ryg-dot ryg-dot-green"></span> Green: Resolved (<span id="count-green-badge">0</span>)</span>
+            <span class="nav-badge" id="health-index-badge" style="background:rgba(16,185,129,0.12); color:#10b981;">Health Index: 85%</span>
+          </div>
+        </div>
+        <div class="ryg-bar-wrap">
+          <div class="ryg-seg-red" id="ryg-bar-red" style="width: 30%;"></div>
+          <div class="ryg-seg-yellow" id="ryg-bar-yellow" style="width: 20%;"></div>
+          <div class="ryg-seg-green" id="ryg-bar-green" style="width: 50%;"></div>
+        </div>
+      </section>
+
+      <!-- Launchpad Section Title -->
+      <div style="margin-bottom:18px;">
+        <h3 style="font-size:1.25rem; font-weight:700; margin:0 0 4px 0;">Municipal Operations Launchpad</h3>
+        <p style="color:var(--text-secondary); font-size:0.88rem; margin:0;">
+          Select a tool below to access dedicated city workspace modules:
+        </p>
+      </div>
+
+      <!-- 4 Interactive City Official Launch Cards -->
+      <div class="home-launch-grid" style="grid-template-columns:repeat(auto-fit, minmax(250px, 1fr));">
+        
+        <!-- CARD 1: REPAIR QUEUE -->
+        <div class="home-launch-card" style="--card-accent: #10b981;" data-open-tab="city-tab-complaints">
+          <div>
+            <div class="launch-card-header">
+              <div class="launch-card-icon" style="color:#10b981; background:rgba(16,185,129,0.1); border-color:rgba(16,185,129,0.25);">
+                <svg class="svg-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
+                </svg>
+              </div>
+              <span class="launch-card-badge" style="color:#10b981; background:rgba(16,185,129,0.12); border:1px solid rgba(16,185,129,0.3);">
+                City Scope
+              </span>
+            </div>
+            <h4 class="launch-card-title">City Repair Queue</h4>
+            <p class="launch-card-desc">
+              Manage city-scoped citizen problems, dispatch repair teams, update incident status, and inspect closed work.
+            </p>
+            <div class="launch-card-tags">
+              <span class="launch-card-tag">Red/Yellow/Green</span>
+              <span class="launch-card-tag">Dispatch Crews</span>
+              <span class="launch-card-tag">Live GPS</span>
+            </div>
+          </div>
+          <div class="launch-card-action" style="color:#10b981;">
+            <span>Open Repair Queue</span>
+            <span>→</span>
+          </div>
+        </div>
+
+        <!-- CARD 2: LOCAL AI SUGGESTIONS -->
+        <div class="home-launch-card" style="--card-accent: #3b82f6;" data-open-tab="city-tab-ai-plan">
+          <div>
+            <div class="launch-card-header">
+              <div class="launch-card-icon" style="color:#60a5fa; background:rgba(59,130,246,0.1); border-color:rgba(59,130,246,0.25);">
+                <svg class="svg-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+                </svg>
+              </div>
+              <span class="launch-card-badge" style="color:#60a5fa; background:rgba(59,130,246,0.12); border:1px solid rgba(59,130,246,0.3);">
+                Gemini AI
+              </span>
+            </div>
+            <h4 class="launch-card-title">Local Area AI Planner</h4>
+            <p class="launch-card-desc">
+              Review AI suggestions for major structural projects (like elevated metro lines for traffic) synthesized from complaints.
+            </p>
+            <div class="launch-card-tags">
+              <span class="launch-card-tag">Systemic Root Cause</span>
+              <span class="launch-card-tag">CapEx Estimates</span>
+              <span class="launch-card-tag">Direct Escalation</span>
+            </div>
+          </div>
+          <div class="launch-card-action" style="color:#60a5fa;">
+            <span>View AI Suggestions</span>
+            <span>→</span>
+          </div>
+        </div>
+
+        <!-- CARD 3: INTER-CITY PROPOSALS -->
+        <div class="home-launch-card" style="--card-accent: #f59e0b;" data-open-tab="city-tab-proposals">
+          <div>
+            <div class="launch-card-header">
+              <div class="launch-card-icon" style="color:#fbbf24; background:rgba(245,158,11,0.1); border-color:rgba(245,158,11,0.25);">
+                <svg class="svg-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/>
+                </svg>
+              </div>
+              <span class="launch-card-badge" style="color:#fbbf24; background:rgba(245,158,11,0.12); border:1px solid rgba(245,158,11,0.3);">
+                BRICS Mesh
+              </span>
+            </div>
+            <h4 class="launch-card-title">Inter-City Proposals</h4>
+            <p class="launch-card-desc">
+              Explore strategic infrastructure proposals submitted to Centre by municipal engineers across cities and upvote peer projects.
+            </p>
+            <div class="launch-card-tags">
+              <span class="launch-card-tag">Peer Consensus</span>
+              <span class="launch-card-tag">Upvote Wall</span>
+              <span class="launch-card-tag">Central Review</span>
+            </div>
+          </div>
+          <div class="launch-card-action" style="color:#fbbf24;">
+            <span>Explore City Proposals</span>
+            <span>→</span>
+          </div>
+        </div>
+
+        <!-- CARD 4: FILE PROPOSAL -->
+        <div class="home-launch-card" style="--card-accent: #ec4899;" id="btn-trigger-file-proposal-home">
+          <div>
+            <div class="launch-card-header">
+              <div class="launch-card-icon" style="color:#f472b6; background:rgba(236,72,153,0.1); border-color:rgba(236,72,153,0.25);">
+                <svg class="svg-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+                </svg>
+              </div>
+              <span class="launch-card-badge" style="color:#f472b6; background:rgba(236,72,153,0.12); border:1px solid rgba(236,72,153,0.3);">
+                CapEx Direct
+              </span>
+            </div>
+            <h4 class="launch-card-title">File New Proposal</h4>
+            <p class="launch-card-desc">
+              Submit a new strategic municipal infrastructure proposal directly to the National Planning Commission for central funding.
+            </p>
+            <div class="launch-card-tags">
+              <span class="launch-card-tag">Direct Submission</span>
+              <span class="launch-card-tag">Budget Request</span>
+              <span class="launch-card-tag">Telemetry Backed</span>
+            </div>
+          </div>
+          <div class="launch-card-action" style="color:#f472b6;">
+            <span>+ Open Proposal Form</span>
+            <span>→</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ========================================================================
+         TAB 1: CITY-SCOPED COMPLAINTS & REPAIR OPERATIONS
+         ======================================================================== -->
+    <div class="tab-content" id="city-tab-complaints" style="display:none;">
+      <!-- Sub-Nav Back Bar -->
+      <div style="margin-bottom:20px; display:flex; align-items:center; justify-content:space-between;">
+        <button class="btn btn-secondary btn-sm" onclick="window.navGoHome()">
+          <span>← Return to Home Overview</span>
+        </button>
+        <span class="nav-badge" style="background:rgba(16,185,129,0.12); color:#10b981;">Operational Defect Queue</span>
+      </div>
+
+      <section id="section-complaints" style="margin-bottom:36px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:12px;">
+          <div>
+            <h2 style="font-size:1.4rem; display:flex; align-items:center; gap:8px;">
+              <svg class="svg-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--accent-primary)" stroke-width="2">
+                <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
+              </svg>
+              <span>City Problems Filed & Work Orders</span>
+            </h2>
+            <p style="color:var(--text-secondary); font-size:0.88rem;">
+              Showing problems filed exclusively for <b id="complaints-city-label" style="color:var(--text-primary);">Delhi</b>. Review, dispatch crews, and approve repairs:
+            </p>
+          </div>
+
+          <!-- Filter Controls -->
+          <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+            <select class="form-control" id="complaints-sector-filter" style="width:auto; padding:6px 12px; font-size:0.84rem;">
+              <option value="All Sectors">All Infrastructure Sectors</option>
+              <option value="Roads, Bridges & Arterial Corridors">Roads, Bridges & Transit</option>
+              <option value="Public Transport & Transit Hubs">Public Transport</option>
+              <option value="Water Supply & Pipeline Leakage">Water Supply</option>
+              <option value="Stormwater Drainage & Monsoon Floods">Drainage & Floods</option>
+              <option value="Electricity, Streetlights & Grid">Electricity & Grid</option>
+              <option value="Public Health, Clinics & Vector Control">Public Health</option>
+            </select>
+
+            <select class="form-control" id="complaints-status-filter" style="width:auto; padding:6px 12px; font-size:0.84rem;">
+              <option value="All">All Statuses</option>
+              <option value="Pending">Red: Pending / Critical</option>
+              <option value="In Progress">Yellow: In Progress</option>
+              <option value="Resolved">Green: Resolved</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Complaints List Container -->
+        <div id="city-complaints-container">
+          <!-- Dynamically rendered by JS -->
+        </div>
+      </section>
+    </div>
+
+    <!-- ========================================================================
+         TAB 2: LOCAL AREA AI STRATEGIC REVIEW PANEL
+         ======================================================================== -->
+    <div class="tab-content" id="city-tab-ai-plan" style="display:none;">
+      <!-- Sub-Nav Back Bar -->
+      <div style="margin-bottom:20px; display:flex; align-items:center; justify-content:space-between;">
+        <button class="btn btn-secondary btn-sm" onclick="window.navGoHome()">
+          <span>← Return to Home Overview</span>
+        </button>
+        <span class="nav-badge" style="background:rgba(59,130,246,0.12); color:#60a5fa;">AI Area Planning Engine</span>
+      </div>
+
+      <section id="section-ai-plan" style="margin-bottom:40px; background:linear-gradient(135deg, rgba(59,130,246,0.06), rgba(16,185,129,0.06)); border:1px solid rgba(59,130,246,0.25); border-radius:var(--radius-xl); padding:24px;">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:20px; flex-wrap:wrap; gap:12px;">
+          <div>
+            <div style="display:inline-flex; align-items:center; gap:6px; background:rgba(59,130,246,0.12); color:#60a5fa; border:1px solid rgba(59,130,246,0.3); border-radius:var(--radius-full); padding:3px 12px; font-size:0.75rem; font-weight:700; margin-bottom:8px;">
+              <svg class="svg-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+              <span>GEMINI 2.5 LOCAL AREA AI SYNTHESIZER</span>
+            </div>
+            <h2 style="font-size:1.4rem; color:var(--text-primary); margin-bottom:4px;">
+              AI Strategic Area Review & Structural Infrastructure Suggestions
+            </h2>
+            <p style="color:var(--text-secondary); font-size:0.88rem; max-width:850px;">
+              AI analyzes all complaints filed in <b class="current-city-text" style="color:#60a5fa;">Delhi</b> to identify chronic systemic root causes and formulate larger capital projects (e.g. chronic traffic congestion generates an elevated metro corridor recommendation). You can inspect and directly file these reports to Central Government.
+            </p>
+          </div>
+          <button class="btn btn-secondary btn-sm" id="btn-refresh-city-ai" style="border-color:rgba(59,130,246,0.4); color:#60a5fa;">
+            <svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+            <span>Regenerate AI Analysis</span>
+          </button>
+        </div>
+
+        <!-- AI City Suggestions Cards -->
+        <div id="city-ai-suggestions-grid" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(360px, 1fr)); gap:20px;">
+          <!-- Dynamically rendered by JS -->
+        </div>
+      </section>
+    </div>
+
+    <!-- ========================================================================
+         TAB 3: INTER-CITY PROPOSALS REGISTRY & PEER UPVOTING HUB
+         ======================================================================== -->
+    <div class="tab-content" id="city-tab-proposals" style="display:none;">
+      <!-- Sub-Nav Back Bar -->
+      <div style="margin-bottom:20px; display:flex; align-items:center; justify-content:space-between;">
+        <button class="btn btn-secondary btn-sm" onclick="window.navGoHome()">
+          <span>← Return to Home Overview</span>
+        </button>
+        <span class="nav-badge" style="background:rgba(245,158,11,0.12); color:#fbbf24;">Inter-City Proposals Feed</span>
+      </div>
+
+      <section id="section-proposals" style="margin-bottom:40px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:18px; flex-wrap:wrap; gap:12px;">
+          <div>
+            <div style="display:inline-flex; align-items:center; gap:6px; background:rgba(245,158,11,0.12); color:#fbbf24; border:1px solid rgba(245,158,11,0.3); border-radius:var(--radius-full); padding:3px 12px; font-size:0.75rem; font-weight:700; margin-bottom:8px;">
+              <svg class="svg-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="18 15 12 9 6 15"/></svg>
+              <span>REGIONAL CONSENSUS & PEER COOPERATION</span>
+            </div>
+            <h2 style="font-size:1.4rem; color:var(--text-primary); margin-bottom:4px;">
+              Inter-City Strategic Proposals & Peer Upvoting Wall
+            </h2>
+            <p style="color:var(--text-secondary); font-size:0.88rem;">
+              Proposals submitted by municipal officers to Central Command across all cities. Review peer cities' plans and cast your official upvote to signal regional backing to the Centre:
+            </p>
+          </div>
+
+          <div style="display:flex; gap:10px; align-items:center;">
+            <select class="form-control" id="proposals-city-filter" style="width:auto; padding:6px 12px; font-size:0.84rem;">
+              <option value="All Cities">All Submitting Cities</option>
+              <option value="Delhi">Delhi NCR</option>
+              <option value="Mumbai">Mumbai MMRDA</option>
+              <option value="Bengaluru">Bengaluru BBMP</option>
+              <option value="São Paulo">São Paulo RMSP</option>
+              <option value="Johannesburg">Johannesburg Gauteng</option>
+            </select>
+            <button class="btn btn-primary btn-sm" id="btn-trigger-file-proposal">
+              <svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              <span>File New Proposal to Centre</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Proposals Feed Container -->
+        <div id="city-proposals-feed">
+          <!-- Dynamically rendered by JS -->
+        </div>
+      </section>
+    </div>
+
+
+  </main>
+
+  <!-- ========================================================================
+       MODAL: FILE MUNICIPAL PROPOSAL TO CENTRAL COMMAND
+       ======================================================================== -->
+  <div class="modal-backdrop" id="file-proposal-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.75); backdrop-filter:blur(6px); z-index:9999; align-items:center; justify-content:center; padding:20px;">
+    <div style="background:var(--bg-card); border:1px solid var(--border-color); border-radius:var(--radius-xl); max-width:680px; width:100%; max-height:90vh; overflow-y:auto; padding:28px; box-shadow:var(--shadow-lg); position:relative;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:18px; border-bottom:1px solid var(--border-subtle); padding-bottom:14px;">
+        <div style="display:flex; align-items:center; gap:10px;">
+          <div style="width:36px; height:36px; border-radius:10px; background:rgba(16,185,129,0.15); color:#10b981; display:flex; align-items:center; justify-content:center;">
+            <svg class="svg-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
+          </div>
+          <div>
+            <h3 style="font-size:1.2rem; font-weight:800; margin:0;">File Strategic Report / Proposal to Centre</h3>
+            <span style="font-size:0.75rem; color:var(--text-muted);">Direct Submission to National Planning Commission & Central Command</span>
+          </div>
+        </div>
+        <button type="button" id="btn-close-proposal-modal" style="background:none; border:none; color:var(--text-muted); font-size:1.5rem; cursor:pointer;">&times;</button>
+      </div>
+
+      <form id="form-file-proposal">
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:14px;">
+          <div class="form-group">
+            <label class="form-label">Submitting City *</label>
+            <input type="text" class="form-control" id="prop-input-city" value="Delhi" required readonly>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Submitting Officer *</label>
+            <input type="text" class="form-control" id="prop-input-officer" value="Er. Vikram Sharma" required>
+          </div>
+        </div>
+
+        <div class="form-group" style="margin-bottom:14px;">
+          <label class="form-label">Proposal Title *</label>
+          <input type="text" class="form-control" id="prop-input-title" placeholder="e.g. Outer Ring Road Phase-IV Elevated Metro Feeder Line" required>
+        </div>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:14px;">
+          <div class="form-group">
+            <label class="form-label">Infrastructure Category *</label>
+            <select class="form-control" id="prop-input-category" required>
+              <option value="Roads, Bridges & Arterial Corridors">Roads, Bridges & Arterial Corridors</option>
+              <option value="Public Transport & Transit Hubs">Public Transport & Transit Hubs</option>
+              <option value="Stormwater Drainage & Monsoon Floods">Stormwater Drainage & Monsoon Floods</option>
+              <option value="Water Supply & Pipeline Leakage">Water Supply & Pipeline Leakage</option>
+              <option value="Electricity, Streetlights & Grid">Electricity, Streetlights & Grid</option>
+              <option value="Public Health, Clinics & Vector Control">Public Health & Hospital Facilities</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Estimated CapEx (Budget) *</label>
+            <input type="text" class="form-control" id="prop-input-capex" placeholder="e.g. ₹1,450 Crore / R$ 850 Mi" required>
+          </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:14px;">
+          <div class="form-group">
+            <label class="form-label">Implementation Timeline</label>
+            <input type="text" class="form-control" id="prop-input-timeline" placeholder="e.g. 24 Months" value="24 Months">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Demographic & Commuter Impact</label>
+            <input type="text" class="form-control" id="prop-input-impact" placeholder="e.g. 1.8 Million commuters daily" required>
+          </div>
+        </div>
+
+        <div class="form-group" style="margin-bottom:18px;">
+          <label class="form-label">Technical Justification & Telemetry Evidence *</label>
+          <textarea class="form-control" id="prop-input-justification" rows="4" placeholder="Describe the systemic root-cause problems observed in citizen complaints that warrant this structural capital expenditure..." required></textarea>
+        </div>
+
+        <div style="display:flex; justify-content:flex-end; gap:10px;">
+          <button type="button" class="btn btn-secondary" id="btn-cancel-proposal">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="btn-submit-proposal" style="background:#059669; border-color:#059669;">
+            <span>Transmit Proposal to Centre</span>
+            <svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Shared Sovereign i18n & App Core -->
+  <script src="/static/js/i18n.js"></script>
+  <script src="/static/js/app.js"></script>
+  <!-- Dedicated City Official Subsystem -->
+  <script src="/static/js/city_official.js"></script>
+</body>
+</html>

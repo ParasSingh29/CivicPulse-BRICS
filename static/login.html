@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark" data-node="IN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CivicPulse-BRICS — Sovereign Login Gateway</title>
+  <meta name="description" content="Sovereign Digital Public Infrastructure (DPI) Entry Point for Citizen Participatory Budgeting and Government Capital Expenditure (CapEx) Planning across BRICS Nations.">
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  
+  <!-- Custom Enterprise Design System -->
+  <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body>
+
+  <!-- Top Ambient Action Bar -->
+  <div style="position:absolute; top:20px; right:24px; display:flex; gap:12px; align-items:center; z-index:20;">
+    <!-- Sovereign BRICS Node Selector -->
+    <div class="node-select-wrap">
+      <select class="node-select" id="login-node-select">
+        <option value="IN">🇮🇳 India (Delhi NCR)</option>
+        <option value="BR">🇧🇷 Brazil (São Paulo)</option>
+        <option value="ZA">🇿🇦 South Africa (Gauteng)</option>
+      </select>
+    </div>
+
+    <!-- Sovereign Language Selector -->
+    <div class="lang-select-wrap">
+      <select class="lang-select" id="lang-selector" title="Select Platform Language">
+        <option value="en">🇬🇧 English</option>
+        <option value="hi">🇮🇳 हिन्दी</option>
+        <option value="pt">🇧🇷 Português</option>
+        <option value="zu">🇿🇦 isiZulu</option>
+        <option value="af">🇿🇦 Afrikaans</option>
+        <option value="ta">🇮🇳 தமிழ்</option>
+        <option value="te">🇮🇳 తెలుగు</option>
+        <option value="ru">🇷🇺 Русский</option>
+        <option value="zh">🇨🇳 中文</option>
+      </select>
+    </div>
+
+    <!-- Theme Toggle -->
+    <button class="theme-toggle-btn" id="login-theme-toggle" title="Toggle Light/Dark Theme">
+      <span id="login-theme-icon">
+        <svg class="svg-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+      </span>
+    </button>
+  </div>
+
+  <!-- Main Sovereign Login Wrapper -->
+  <div class="login-wrapper">
+    <div class="login-container">
+      
+      <!-- Brand Header -->
+      <div class="login-brand">
+        <div class="login-logo-wrap">
+          <svg class="svg-icon" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+          </svg>
+        </div>
+        <h1 class="login-title">CivicPulse-BRICS</h1>
+        <p class="login-subtitle" data-i18n="login_hero_sub">
+          Connecting citizens and city planners to build better neighborhoods together across BRICS communities.
+        </p>
+
+        <div class="login-node-bar">
+          <span class="nav-badge" id="active-login-badge" style="display:inline-flex; align-items:center; gap:8px;">
+            <span id="login-flag-container">
+              <svg class="flag-svg" viewBox="0 0 24 16" width="22" height="15"><rect width="24" height="5.33" fill="#ff9933"/><rect y="5.33" width="24" height="5.33" fill="#ffffff"/><rect y="10.66" width="24" height="5.33" fill="#138808"/><circle cx="12" cy="8" r="2.1" fill="none" stroke="#000080" stroke-width="0.7"/><circle cx="12" cy="8" r="0.5" fill="#000080"/></svg>
+            </span>
+            <span data-i18n="badge_cloud_connected">Cloud Connected</span>
+          </span>
+          <span class="nav-badge" style="background:rgba(245,158,11,0.12); color:#fbbf24; border:1px solid rgba(245,158,11,0.3);" data-i18n="badge_live_data">
+            Live Cloud Data
+          </span>
+          <span class="nav-badge" style="background:rgba(16,185,129,0.12); color:#10b981; border:1px solid rgba(16,185,129,0.3);" data-i18n="badge_open_standard">
+            Open Standard
+          </span>
+        </div>
+      </div>
+
+      <!-- 3 Dedicated Sovereign Login Blocks (Citizen, City Official, Central Official) -->
+      <div class="portal-grid" style="grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));">
+        
+        <!-- BLOCK 1: CITIZEN PORTAL LOGIN -->
+        <div class="portal-card citizen-card">
+          <div class="portal-header">
+            <div class="portal-icon" style="background:rgba(16,185,129,0.15); color:#10b981; border:1px solid rgba(16,185,129,0.3);">
+              <svg class="svg-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                <circle cx="12" cy="7" r="4"/>
+              </svg>
+            </div>
+            <div>
+              <div class="portal-title" data-i18n="card_citizen_title">Citizen Portal</div>
+              <span class="portal-tag" style="color:#10b981;" data-i18n="card_citizen_tag">For Residents & Communities</span>
+            </div>
+          </div>
+
+          <p class="portal-desc" data-i18n="card_citizen_desc">
+            Report local problems, vote on neighborhood improvements, and track repairs in real time.
+          </p>
+
+          <form id="citizen-login-form" class="portal-login-form">
+            <div class="form-group">
+              <label class="form-label" for="citizen-email" data-i18n="lbl_citizen_email">Resident Email or Username *</label>
+              <input type="email" class="form-control" id="citizen-email" value="citizen@delhi.gov.in" placeholder="e.g. resident@delhi.gov.in" data-i18n-placeholder="ph_citizen_email" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="citizen-password" data-i18n="lbl_password">Password *</label>
+              <input type="password" class="form-control" id="citizen-password" value="CivicPulse2026!" required>
+            </div>
+
+            <button type="submit" class="btn-portal-action" id="btn-submit-citizen" style="background:#059669; color:#ffffff; box-shadow:0 4px 16px rgba(5,150,105,0.35); margin-top:4px;">
+              <span data-i18n="btn_sign_in_citizen">Sign In to Citizen Portal</span>
+              <svg class="svg-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </button>
+
+            <div class="login-divider">
+              <span data-i18n="lbl_or">OR</span>
+            </div>
+
+            <button type="button" class="btn-demo-quick" id="btn-demo-citizen">
+              <svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+              <span data-i18n="btn_demo_citizen">Enter Citizen Portal (1-Click Demo)</span>
+            </button>
+          </form>
+        </div>
+
+        <!-- BLOCK 2: CITY OFFICIAL PORTAL LOGIN -->
+        <div class="portal-card" style="border-top: 3px solid #10b981;">
+          <div class="portal-header">
+            <div class="portal-icon" style="background:rgba(16,185,129,0.15); color:#10b981; border:1px solid rgba(16,185,129,0.3);">
+              <svg class="svg-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 21h18M3 7v14M21 7v14M6 11h4M6 15h4M14 11h4M14 15h4M9 3l3-2 3 2v4H9V3z"/>
+              </svg>
+            </div>
+            <div>
+              <div class="portal-title">City Official Portal</div>
+              <span class="portal-tag" style="color:#10b981;">Municipal Operations & AI</span>
+            </div>
+          </div>
+
+          <p class="portal-desc">
+            Review and resolve complaints for your city, synthesize AI structural plans, file reports to Centre, and upvote peer cities.
+          </p>
+
+          <form id="city-login-form" class="portal-login-form">
+            <div class="form-group">
+              <label class="form-label" for="city-email">Municipal Official Email *</label>
+              <input type="email" class="form-control" id="city-email" value="vikram.sharma@delhi.gov.in" placeholder="e.g. vikram.sharma@delhi.gov.in" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="city-password">Password *</label>
+              <input type="password" class="form-control" id="city-password" value="CivicPulse2026!" required>
+            </div>
+
+            <button type="submit" class="btn-portal-action" id="btn-submit-city" style="background:#059669; color:#ffffff; margin-top:4px;">
+              <span>Sign In to City Official Portal</span>
+              <svg class="svg-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </button>
+
+            <div class="login-divider">
+              <span data-i18n="lbl_or">OR</span>
+            </div>
+
+            <button type="button" class="btn-demo-quick" id="btn-demo-city" style="border-color:rgba(16,185,129,0.3); color:#10b981;">
+              <svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+              <span>Enter City Official Portal (1-Click Demo)</span>
+            </button>
+          </form>
+        </div>
+
+        <!-- BLOCK 3: CENTRAL OFFICIAL GOVERNMENT HUB LOGIN -->
+        <div class="portal-card gov-card" style="border-top: 3px solid #2563eb;">
+          <div class="portal-header">
+            <div class="portal-icon" style="background:rgba(37,99,235,0.15); color:#60a5fa; border:1px solid rgba(37,99,235,0.3);">
+              <svg class="svg-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="3" y1="21" x2="21" y2="21"/>
+                <line x1="4" y1="10" x2="20" y2="10"/>
+                <polyline points="12 2 20 10 4 10 12 2"/>
+                <line x1="6" y1="10" x2="6" y2="21"/>
+                <line x1="10" y1="10" x2="10" y2="21"/>
+                <line x1="14" y1="10" x2="14" y2="21"/>
+                <line x1="18" y1="10" x2="18" y2="21"/>
+              </svg>
+            </div>
+            <div>
+              <div class="portal-title" data-i18n="card_gov_title">Government Hub</div>
+              <span class="portal-tag" style="color:#60a5fa;" data-i18n="card_gov_tag">Central Planning & BRICS</span>
+            </div>
+          </div>
+
+          <p class="portal-desc" data-i18n="card_gov_desc">
+            Supervise assigned city officers and problem health meters, sanction city proposals, synthesize BRICS Joint Ventures, and review partner requests.
+          </p>
+
+          <form id="gov-login-form" class="portal-login-form">
+            <div class="form-group">
+              <label class="form-label" for="gov-email" data-i18n="lbl_gov_email">Official Government Email *</label>
+              <input type="email" class="form-control" id="gov-email" value="director.general@brics.gov" placeholder="e.g. official@brics.gov" data-i18n-placeholder="ph_gov_email" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="gov-password" data-i18n="lbl_password">Password *</label>
+              <input type="password" class="form-control" id="gov-password" value="CivicPulse2026!" required>
+            </div>
+
+            <button type="submit" class="btn-portal-action btn-primary" id="btn-submit-gov" style="background:#2563eb; border-color:#2563eb; margin-top:4px;">
+              <span data-i18n="btn_sign_in_gov">Sign In to Government Hub</span>
+              <svg class="svg-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </button>
+
+            <div class="login-divider">
+              <span data-i18n="lbl_or">OR</span>
+            </div>
+
+            <button type="button" class="btn-demo-quick" id="btn-demo-gov" style="border-color:rgba(37,99,235,0.3); color:#60a5fa;">
+              <svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+              <span data-i18n="btn_demo_gov">Enter Central Official Portal (1-Click Demo)</span>
+            </button>
+          </form>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Internationalization (i18n) Engine -->
+  <script src="/static/js/i18n.js"></script>
+  <!-- Shared Vector Icon Registry -->
+  <script src="/static/js/app.js"></script>
+  <!-- Login Controller -->
+  <script src="/static/js/login.js"></script>
+</body>
+</html>
