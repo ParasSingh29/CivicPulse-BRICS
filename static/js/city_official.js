@@ -22,14 +22,20 @@ const CITY_OFFICER_MAP = {
   'Johannesburg': { id: 'OFF-JHB-05', name: 'Dir. Sipho Nkosi', role: 'Executive Infrastructure Director • JRA & City Power', flag: '🇿🇦', node: 'ZA' }
 };
 
-document.addEventListener('DOMContentLoaded', async () => {
-  // Check stored city preference
+window.initCityOfficialPortal = async function() {
   const savedCity = localStorage.getItem('civicpulse_city') || 'Delhi';
   setCity(savedCity);
 
   setupCityOfficialEvents();
   await refreshCityOfficialDashboard();
-});
+};
+
+if (document.readyState === 'interactive' || document.readyState === 'complete') {
+  window.initCityOfficialPortal();
+} else {
+  document.addEventListener('DOMContentLoaded', window.initCityOfficialPortal);
+}
+
 
 function setCity(city) {
   activeCity = city;
@@ -86,15 +92,7 @@ function setCity(city) {
 // 1. EVENT LISTENERS
 // ==============================================================================
 function setupCityOfficialEvents() {
-  // City Selector Change
-  const citySelector = document.getElementById('city-selector');
-  if (citySelector) {
-    citySelector.addEventListener('change', async (e) => {
-      setCity(e.target.value);
-      await refreshCityOfficialDashboard();
-      showToast(`Switched to ${e.target.value} Municipal Command Console`, 'info');
-    });
-  }
+  // City is fixed to the officer's assigned jurisdiction — no switcher event needed.
 
   // Sector and Status filters for complaints
   const sectorFilter = document.getElementById('complaints-sector-filter');
@@ -125,6 +123,7 @@ function setupCityOfficialEvents() {
   // Modal Open / Close
   const btnOpenModal = document.getElementById('btn-open-file-proposal-modal');
   const btnTriggerModal = document.getElementById('btn-trigger-file-proposal');
+  const btnTriggerHome = document.getElementById('btn-trigger-file-proposal-home');
   const btnCloseModal = document.getElementById('btn-close-proposal-modal');
   const btnCancelModal = document.getElementById('btn-cancel-proposal');
   const modalEl = document.getElementById('file-proposal-modal');
@@ -134,6 +133,7 @@ function setupCityOfficialEvents() {
 
   if (btnOpenModal) btnOpenModal.addEventListener('click', openModal);
   if (btnTriggerModal) btnTriggerModal.addEventListener('click', openModal);
+  if (btnTriggerHome) btnTriggerHome.addEventListener('click', openModal);
   if (btnCloseModal) btnCloseModal.addEventListener('click', closeModal);
   if (btnCancelModal) btnCancelModal.addEventListener('click', closeModal);
 
@@ -160,19 +160,37 @@ async function refreshCityOfficialDashboard() {
   ]);
 }
 
+function getCleanCityDescription(desc) {
+  if (!desc) return '';
+  let cleaned = String(desc);
+  cleaned = cleaned.replace(/\[Priority\]:\s*[^.\n\r]+(\([^\)]*\))?/gi, '');
+  cleaned = cleaned.replace(/Priority:\s*(High|Medium|Low|Critical|Urgent)/gi, '');
+  cleaned = cleaned.replace(/\[Location\]:\s*[^.\n\r]+/gi, '');
+  cleaned = cleaned.replace(/near Ward \d+ - [^,.]+(,\s*[^,.]+)?\.?/gi, '');
+  cleaned = cleaned.replace(/Testing E2E reporting for sector \[[^\]]+\]:\s*/gi, '');
+  cleaned = cleaned.replace(/for sector \[[^\]]+\]:\s*/gi, '');
+  cleaned = cleaned.replace(/\[Status\]:\s*[^.\n\r]+/gi, '');
+  cleaned = cleaned.split('\n').map(l => l.trim()).filter(Boolean).join('\n\n');
+  return cleaned || desc;
+}
+
 // ==============================================================================
 // 2. CITY COMPLAINTS & REPAIR OPERATIONS (SCOPED STRICTLY TO CITY)
 // ==============================================================================
-async function loadCityComplaints() {
+window.loadCityComplaints = async function loadCityComplaints() {
   const container = document.getElementById('city-complaints-container');
   if (!container) return;
 
   try {
     const res = await fetch(`/api/complaints?city=${encodeURIComponent(activeCity)}`);
+    if (!res.ok) {
+      throw new Error(`HTTP ${res.status} ${res.statusText}`);
+    }
     const allCityComplaints = await res.json();
+    window.cachedCityComplaints = allCityComplaints;
 
     // Update KPIs and RYG Multi-Segment Bar
-    updateMunicipalHealthHUD(allCityComplaints);
+    try { updateMunicipalHealthHUD(allCityComplaints); } catch(e) { console.warn('HUD error:', e); }
 
     // Apply Client Filter
     const sectorFilter = document.getElementById('complaints-sector-filter')?.value || 'All Sectors';
@@ -201,6 +219,12 @@ async function loadCityComplaints() {
       return;
     }
 
+    const mapPinIcon = (window.AppIcons && window.AppIcons.map_pin) || '📍';
+    const wrenchIcon = (window.AppIcons && window.AppIcons.wrench) || '🔧';
+    const checkIcon = (window.AppIcons && window.AppIcons.check) || '✓';
+    const refreshIcon = (window.AppIcons && window.AppIcons.refresh) || '🔄';
+    const navIcon = (window.AppIcons && window.AppIcons.navigation) || '🗺️';
+
     container.innerHTML = filtered.map(c => {
       const loc = c.location || {};
       const lat = loc.latitude || 28.6139;
@@ -211,59 +235,111 @@ async function loadCityComplaints() {
       const isProg = status.includes('Progress') || status.includes('dispatched');
       const isRes = status.includes('Resolved') || status.includes('closed');
 
-      let statusBadge = `<span class="pill pill-pending">● Red: Pending Action</span>`;
-      if (isRes) statusBadge = `<span class="pill pill-resolved">● Green: Resolved</span>`;
-      else if (isProg) statusBadge = `<span class="pill pill-progress">● Yellow: Crew Dispatched</span>`;
+      let statusBadge = `<span class="pill pill-pending">${window.getTranslation('status_red_pending_action', '● Red: Pending Action')}</span>`;
+      if (isRes) statusBadge = `<span class="pill pill-resolved">${window.getTranslation('status_green_resolved', '● Green: Resolved')}</span>`;
+      else if (isProg) statusBadge = `<span class="pill pill-progress">${window.getTranslation('status_yellow_crew_dispatched', '● Yellow: Crew Dispatched')}</span>`;
+
+      const prioMatch = (c.description || '').match(/\[Priority\]:\s*([^.\n\r]+)/i);
+      let prioVal = prioMatch ? prioMatch[1].trim().split('-')[0].trim() : 'Medium';
+      if (!prioVal) prioVal = 'Medium';
+      let prioColor = '#f59e0b';
+      let prioBg = 'rgba(245,158,11,0.14)';
+      let prioBorder = 'rgba(245,158,11,0.35)';
+      if (/high|critical|urgent/i.test(prioVal) || /critical/i.test(c.description)) {
+        prioColor = '#ef4444'; prioBg = 'rgba(239,68,68,0.14)'; prioBorder = 'rgba(239,68,68,0.35)';
+        if (!prioMatch) prioVal = 'High';
+      } else if (/low/i.test(prioVal)) {
+        prioColor = '#10b981'; prioBg = 'rgba(16,185,129,0.14)'; prioBorder = 'rgba(16,185,129,0.35)';
+      }
+
+      const descFn = (typeof formatDescriptionHTML === 'function') ? formatDescriptionHTML : (window.formatDescriptionHTML || (d => d));
+      const descHTML = descFn(c.description);
 
       return `
-        <div style="background:var(--bg-card); border:1px solid var(--border-color); border-radius:var(--radius-lg); padding:20px; margin-bottom:14px; box-shadow:var(--shadow-sm);">
-          <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px; flex-wrap:wrap; gap:8px;">
-            <div>
-              <span style="font-family:var(--font-mono); font-size:0.85rem; font-weight:700; color:var(--accent-primary);">#${c.id}</span>
-              <b style="margin-left:8px; font-size:1.05rem;">${c.category}</b>
+        <div style="background:var(--bg-card); border:1px solid var(--border-color); border-radius:var(--radius-lg); padding:16px 20px; margin-bottom:12px; box-shadow:var(--shadow-sm);">
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:10px; padding-bottom:10px; border-bottom:1px solid rgba(255,255,255,0.06);">
+            <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+              <span style="font-family:var(--font-mono); font-size:0.85rem; font-weight:700; color:var(--accent-primary); background:rgba(245,158,11,0.1); padding:3px 8px; border-radius:4px; border:1px solid rgba(245,158,11,0.25);">#${c.id}</span>
+              <b style="font-size:1.05rem; color:var(--text-primary);">${c.category}</b>
             </div>
-            ${statusBadge}
+            <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+              ${statusBadge}
+              <span class="pill" style="color:${prioColor}; background:${prioBg}; border:1px solid ${prioBorder}; font-weight:600;">⚡ ${window.getTranslation('label_priority', 'Priority')}: ${(window.getTranslation('prio_' + (prioVal || 'medium').toLowerCase())) || (window.getTranslation(prioVal)) || prioVal}</span>
+            </div>
           </div>
 
-          <p style="font-size:0.92rem; color:var(--text-secondary); margin-bottom:12px; line-height:1.5;">${c.description}</p>
-
-          <div style="font-size:0.8rem; color:var(--text-muted); margin-bottom:14px; display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
-            <span>${window.AppIcons.map_pin}</span>
-            <span>Location: <b>${address}</b> • Date: ${c.timestamp}</span>
+          <div style="font-size:0.82rem; color:var(--text-muted); margin-bottom:12px; display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
+            <span>${mapPinIcon}</span>
+            <span>${window.getTranslation('label_location', 'Location')}: <b>${address}</b> • ${window.getTranslation('lbl_date', 'Date')}: ${c.timestamp}</span>
           </div>
+
+          ${(c.photo_url || c.resolution_photo) ? `
+            <div style="display:flex; gap:12px; margin-bottom:12px; flex-wrap:wrap; align-items:center;">
+              ${c.photo_url ? `
+                <div style="position:relative; width:130px; height:85px; border-radius:8px; overflow:hidden; border:1px solid var(--border-color); background:rgba(0,0,0,0.3); cursor:pointer;" onclick="openImageLightbox('${c.photo_url}', 'Reported Issue (#${c.id})')">
+                  <img src="${c.photo_url}" alt="Reported Problem" style="width:100%; height:100%; object-fit:cover;">
+                  <span style="position:absolute; bottom:0; left:0; right:0; background:rgba(0,0,0,0.7); font-size:0.65rem; color:#fff; text-align:center; padding:2px;">📸 Issue Photo</span>
+                </div>
+              ` : ''}
+              ${c.resolution_photo ? `
+                <div style="position:relative; width:130px; height:85px; border-radius:8px; overflow:hidden; border:1px solid #10b981; background:rgba(0,0,0,0.3); cursor:pointer;" onclick="openImageLightbox('${c.resolution_photo}', 'Completed Work Proof (#${c.id})')">
+                  <img src="${c.resolution_photo}" alt="Completed Work Proof" style="width:100%; height:100%; object-fit:cover;">
+                  <span style="position:absolute; bottom:0; left:0; right:0; background:rgba(16,185,129,0.9); font-size:0.65rem; color:#fff; text-align:center; padding:2px; font-weight:700;">✅ Fixed Work Proof</span>
+                </div>
+              ` : ''}
+            </div>
+          ` : ''}
 
           <!-- 1-Click Status Toggles -->
-          <div style="display:flex; gap:10px; flex-wrap:wrap;">
+          <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
+            <button id="btn-city-desc-${c.id}" class="btn btn-secondary btn-sm" onclick="toggleReportDescription('city-desc-${c.id}')" style="background:rgba(255,255,255,0.06); border:1px solid var(--border-color); font-weight:600;">
+              <span>📄 ${window.getTranslation('btn_read_description', 'Read Description')}</span>
+              <span style="margin-left:4px; font-size:0.75rem;">▼</span>
+            </button>
             ${!isProg ? `
               <button class="btn btn-secondary btn-sm" onclick="changeCityComplaintStatus('${c.id}', 'In Progress')">
-                <span>${window.AppIcons.wrench}</span>
-                <span>Send Repair Team</span>
+                <span>${wrenchIcon}</span>
+                <span>${window.getTranslation('btn_send_repair_team', 'Send Repair Team')}</span>
               </button>
             ` : ''}
             ${!isRes ? `
-              <button class="btn btn-success btn-sm" onclick="changeCityComplaintStatus('${c.id}', 'Resolved')">
-                <span>${window.AppIcons.check}</span>
-                <span>Mark as Fixed</span>
+              <button class="btn btn-success btn-sm" onclick="openMarkFixedModal('${c.id}')" style="background:#059669; border-color:#059669;">
+                <span>${checkIcon}</span>
+                <span>${window.getTranslation('btn_mark_fixed', 'Mark as Fixed')}</span>
               </button>
             ` : ''}
             ${isRes ? `
               <button class="btn btn-secondary btn-sm" onclick="changeCityComplaintStatus('${c.id}', 'Pending')">
-                <span>${window.AppIcons.refresh}</span>
-                <span>Re-open Incident</span>
+                <span>${refreshIcon}</span>
+                <span>${window.getTranslation('btn_reopen_incident', 'Re-open Incident')}</span>
               </button>
             ` : ''}
             <a href="https://www.google.com/maps/search/?api=1&query=${lat},${lon}" target="_blank" class="btn btn-secondary btn-sm">
-              <span>${window.AppIcons.navigation}</span>
-              <span>Open Maps</span>
+              <span>${navIcon}</span>
+              <span>${window.getTranslation('btn_open_maps', 'Open Maps')}</span>
             </a>
+          </div>
+
+          <div id="city-desc-${c.id}" style="display:none; margin-top:12px; padding:14px 16px; background:rgba(0,0,0,0.25); border-radius:8px; border:1px solid rgba(255,255,255,0.08); font-size:0.9rem; color:var(--text-secondary); line-height:1.55;">
+            ${descHTML}
           </div>
         </div>
       `;
     }).join('');
   } catch (err) {
     console.error('Error loading city complaints:', err);
+    if (container) {
+      container.innerHTML = `
+        <div style="background:rgba(239,68,68,0.1); border:1px solid rgba(239,68,68,0.3); border-radius:var(--radius-lg); padding:24px; text-align:center; color:#ef4444;">
+          <div style="font-weight:700; margin-bottom:8px;">⚠️ Error loading city complaints</div>
+          <div style="font-size:0.85rem; color:var(--text-muted); margin-bottom:12px;">${err.message || String(err)}</div>
+          <button class="btn btn-secondary btn-sm" onclick="window.loadCityComplaints && window.loadCityComplaints()">🔄 Retry Loading</button>
+        </div>
+      `;
+    }
   }
-}
+};
+
 
 function updateMunicipalHealthHUD(complaints) {
   let red = 0, yellow = 0, green = 0;
@@ -314,16 +390,154 @@ function updateMunicipalHealthHUD(complaints) {
   }
 }
 
-window.changeCityComplaintStatus = async function(id, newStatus) {
+window.openMarkFixedModal = function(id) {
+  const modal = document.getElementById('modal-mark-fixed');
+  if (!modal) return;
+
+  const complaint = (window.cachedCityComplaints || []).find(c => String(c.id) === String(id));
+  document.getElementById('fixed-complaint-id').value = id;
+
+  const infoEl = document.getElementById('modal-fixed-complaint-info');
+  if (infoEl) {
+    const loc = complaint?.location || {};
+    const addr = loc.address || loc.city || 'Municipal Sector';
+    infoEl.innerHTML = `
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <span style="font-family:var(--font-mono); font-weight:700; color:var(--accent-primary);">#${id}</span>
+        <span class="badge" style="background:rgba(245,158,11,0.15); color:#f59e0b; padding:2px 8px; border-radius:4px; font-weight:600;">${complaint?.category || 'General Municipal'}</span>
+      </div>
+      <div style="color:var(--text-muted); font-size:0.8rem; margin-top:4px;">
+        📍 Location: <b>${addr}</b>
+      </div>
+    `;
+  }
+
+  // Reset form inputs & preview
+  const fileInput = document.getElementById('fixed-photo-input');
+  if (fileInput) fileInput.value = '';
+  const previewWrap = document.getElementById('fixed-photo-preview-wrap');
+  if (previewWrap) previewWrap.style.display = 'none';
+  const promptWrap = document.getElementById('fixed-photo-prompt');
+  if (promptWrap) promptWrap.style.display = 'block';
+  const errorEl = document.getElementById('fixed-photo-error');
+  if (errorEl) errorEl.style.display = 'none';
+  const notesEl = document.getElementById('fixed-notes');
+  if (notesEl) notesEl.value = '';
+
+  modal.style.display = 'flex';
+};
+
+window.closeMarkFixedModal = function() {
+  const modal = document.getElementById('modal-mark-fixed');
+  if (modal) modal.style.display = 'none';
+};
+
+window.previewFixedPhoto = function(e) {
+  const file = e.target.files && e.target.files[0];
+  if (!file) return;
+
+  const errorEl = document.getElementById('fixed-photo-error');
+  if (errorEl) errorEl.style.display = 'none';
+
+  const reader = new FileReader();
+  reader.onload = function(evt) {
+    const previewImg = document.getElementById('fixed-photo-preview');
+    const previewWrap = document.getElementById('fixed-photo-preview-wrap');
+    const promptWrap = document.getElementById('fixed-photo-prompt');
+    if (previewImg) previewImg.src = evt.target.result;
+    if (previewWrap) previewWrap.style.display = 'block';
+    if (promptWrap) promptWrap.style.display = 'none';
+  };
+  reader.readAsDataURL(file);
+};
+
+window.handleFixedSubmit = async function(e) {
+  e.preventDefault();
+  const id = document.getElementById('fixed-complaint-id').value;
+  const fileInput = document.getElementById('fixed-photo-input');
+  const file = fileInput && fileInput.files && fileInput.files[0];
+  const notes = (document.getElementById('fixed-notes')?.value || '').trim();
+
+  if (!file) {
+    const errorEl = document.getElementById('fixed-photo-error');
+    if (errorEl) errorEl.style.display = 'block';
+    showToast('A photo of completed work is strictly required!', 'error');
+    return;
+  }
+
+  const btnSubmit = document.getElementById('btn-confirm-fixed');
+  if (btnSubmit) {
+    btnSubmit.disabled = true;
+    btnSubmit.innerHTML = `<span>⏳ Uploading Proof...</span>`;
+  }
+
   try {
+    const dept = cityOfficerInfo ? cityOfficerInfo.role : 'Municipal Public Works Dept';
+    const eng = cityOfficerInfo ? cityOfficerInfo.name : 'Er. Vikram Sharma';
+
+    const formData = new FormData();
+    formData.append('status', 'Resolved');
+    formData.append('department', dept);
+    formData.append('engineer', eng);
+    formData.append('resolution_notes', notes);
+    formData.append('resolution_photo', file);
+
     const res = await fetch(`/api/complaints/${id}/status`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ status: newStatus })
+      body: formData
     });
     const data = await res.json();
     if (data.status === 'ok') {
-      showToast(`Problem #${id} marked as ${newStatus}!`, 'success');
+      showToast(`Problem #${id} marked as Fixed with verified photo proof! 📱 Citizen SMS dispatched.`, 'success');
+      closeMarkFixedModal();
+      await loadCityComplaints();
+    } else {
+      showToast('Error updating status: ' + (data.error || 'Server error'), 'error');
+    }
+  } catch (err) {
+    console.error('Error submitting fixed proof:', err);
+    showToast('Failed to upload proof: ' + err.message, 'error');
+  } finally {
+    if (btnSubmit) {
+      btnSubmit.disabled = false;
+      btnSubmit.innerHTML = `<span>✓ Mark as Fixed with Proof</span>`;
+    }
+  }
+};
+
+window.openImageLightbox = function(src, title = 'Photo Evidence') {
+  const modal = document.getElementById('image-lightbox-modal');
+  const img = document.getElementById('lightbox-image');
+  const titleEl = document.getElementById('lightbox-title');
+  if (!modal || !img) return;
+
+  img.src = src;
+  if (titleEl) titleEl.textContent = title;
+  modal.style.display = 'flex';
+};
+
+window.closeImageLightbox = function() {
+  const modal = document.getElementById('image-lightbox-modal');
+  if (modal) modal.style.display = 'none';
+};
+
+window.changeCityComplaintStatus = async function(id, newStatus) {
+  if (newStatus === 'Resolved') {
+    openMarkFixedModal(id);
+    return;
+  }
+  try {
+    const dept = cityOfficerInfo ? cityOfficerInfo.role : 'Municipal Public Works Dept';
+    const eng = cityOfficerInfo ? cityOfficerInfo.name : 'Er. Vikram Sharma';
+    const res = await fetch(`/api/complaints/${id}/status`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ status: newStatus, department: dept, engineer: eng })
+    });
+    const data = await res.json();
+    if (data.status === 'ok') {
+      const milestoneLabel = newStatus.includes('Resolved') ? 'SOLVED' : (newStatus.includes('Progress') ? 'TEAM ASSIGNED' : 'REGISTERED');
+      showToast(`Problem #${id} marked as ${newStatus}! 📱 Citizen SMS Alert (${milestoneLabel}) Dispatched.`, 'success');
       await loadCityComplaints();
     }
   } catch (err) {
@@ -334,7 +548,7 @@ window.changeCityComplaintStatus = async function(id, newStatus) {
 // ==============================================================================
 // 3. LOCAL AREA AI STRATEGIC SUGGESTIONS (GEMINI 2.5)
 // ==============================================================================
-async function loadCityAiSuggestions() {
+window.loadCityAiSuggestions = async function loadCityAiSuggestions() {
   const grid = document.getElementById('city-ai-suggestions-grid');
   if (!grid) return;
 
@@ -373,14 +587,14 @@ async function loadCityAiSuggestions() {
             </p>
 
             <div style="background:rgba(255,255,255,0.03); border:1px solid var(--border-subtle); border-radius:var(--radius-md); padding:12px; margin-bottom:16px; font-size:0.8rem; line-height:1.5;">
-              <div>⏱️ <b>Timeline:</b> ${p.timeline || '24 Months'}</div>
-              <div>👥 <b>Impact:</b> ${p.demographic_impact}</div>
-              <div style="margin-top:6px; color:#60a5fa;">💡 <b>AI Directive:</b> ${p.policy_recommendation || 'Escalate to Central Command.'}</div>
+              <div>⏱️ <b>${window.getTranslation('label_timeline', 'Timeline')}:</b> ${p.timeline || '24 Months'}</div>
+              <div>👥 <b>${window.getTranslation('label_impact', 'Impact')}:</b> ${p.demographic_impact}</div>
+              <div style="margin-top:6px; color:#60a5fa;">💡 <b>${window.getTranslation('label_ai_directive', 'AI Directive')}:</b> ${p.policy_recommendation || 'Escalate to Central Command.'}</div>
             </div>
           </div>
 
           <button class="btn btn-primary" style="background:#059669; border-color:#059669; width:100%;" onclick="prefillAndOpenProposalModal(${idx})">
-            <span>File This Proposal to Centre</span>
+            <span>${window.getTranslation('btn_file_this_proposal', 'File This Proposal to Centre')}</span>
             <svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
           </button>
         </div>
@@ -419,7 +633,7 @@ window.prefillAndOpenProposalModal = function(idx) {
 // ==============================================================================
 // 4. INTER-CITY PROPOSALS & PEER UPVOTING REGISTRY
 // ==============================================================================
-async function loadCityProposalsFeed() {
+window.loadCityProposalsFeed = async function loadCityProposalsFeed() {
   const feed = document.getElementById('city-proposals-feed');
   if (!feed) return;
 
@@ -457,14 +671,14 @@ async function loadCityProposalsFeed() {
                 📍 ${p.city}
               </span>
               <span class="nav-badge">${p.category}</span>
-              ${isMine ? `<span class="nav-badge" style="background:rgba(16,185,129,0.15); color:#10b981;">Your City's Proposal</span>` : ''}
+              ${isMine ? `<span class="nav-badge" style="background:rgba(16,185,129,0.15); color:#10b981;">${window.getTranslation('badge_your_city_proposal', "Your City's Proposal")}</span>` : ''}
             </div>
             <div style="display:flex; align-items:center; gap:10px;">
               ${statusPill}
               <button class="btn-upvote ${hasUpvoted ? 'upvoted' : ''}" onclick="upvoteProposal('${p.id}')" title="Upvote peer city proposal">
                 <span>▲</span>
                 <span id="upvote-count-${p.id}">${p.upvotes || 0}</span>
-                <span style="font-size:0.75rem;">Upvotes</span>
+                <span style="font-size:0.75rem;">${window.getTranslation('label_upvotes', 'Upvotes')}</span>
               </button>
             </div>
           </div>
@@ -473,15 +687,15 @@ async function loadCityProposalsFeed() {
           <p style="font-size:0.9rem; color:var(--text-secondary); line-height:1.55; margin-bottom:12px;">${p.justification}</p>
 
           <div class="proposal-meta-grid">
-            <div>👤 <b>Submitted by:</b> ${p.officer_name} (${p.city})</div>
-            <div>💰 <b>Estimated CapEx:</b> <b style="color:var(--brics-gold);">${p.estimated_capex}</b></div>
-            <div>⏱️ <b>Timeline:</b> ${p.timeline || '24 Months'}</div>
-            <div>👥 <b>Beneficiaries:</b> ${p.demographic_impact || 'Regional population'}</div>
+            <div>👤 <b>${window.getTranslation('label_submitted_by', 'Submitted by')}:</b> ${p.officer_name} (${p.city})</div>
+            <div>💰 <b>${window.getTranslation('label_estimated_capex', 'Estimated CapEx')}:</b> <b style="color:var(--brics-gold);">${p.estimated_capex}</b></div>
+            <div>⏱️ <b>${window.getTranslation('label_timeline', 'Timeline')}:</b> ${p.timeline || '24 Months'}</div>
+            <div>👥 <b>${window.getTranslation('label_beneficiaries', 'Beneficiaries')}:</b> ${p.demographic_impact || 'Regional population'}</div>
           </div>
 
           ${p.central_notes ? `
             <div style="background:rgba(37,99,235,0.08); border-left:3px solid #2563eb; padding:10px 14px; border-radius:0 8px 8px 0; font-size:0.84rem; color:var(--text-primary); margin-top:10px;">
-              <b style="color:#60a5fa;">Central Planning Commission Note:</b> ${p.central_notes}
+              <b style="color:#60a5fa;">${window.getTranslation('label_central_commission_note', 'Central Planning Commission Note:')}</b> ${p.central_notes}
             </div>
           ` : ''}
         </div>
@@ -552,3 +766,11 @@ async function handleProposalSubmit() {
     if (btn) btn.disabled = false;
   }
 }
+
+// Re-render when language changes
+window.addEventListener('civicpulse:languageChanged', () => {
+  if (typeof loadCityComplaints === 'function') loadCityComplaints();
+  if (typeof loadCityAiPlans === 'function') loadCityAiPlans();
+  if (typeof loadCityProposalsFeed === 'function') loadCityProposalsFeed();
+});
+

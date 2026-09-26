@@ -12,7 +12,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
   
   <!-- Custom Enterprise Design System -->
-  <link rel="stylesheet" href="static/css/styles.css">
+  <link rel="stylesheet" href="static/css/styles.css?v=google_gnmt_v2">
 </head>
 <body>
 
@@ -24,22 +24,48 @@
         <option value="IN">🇮🇳 India (Delhi NCR)</option>
         <option value="BR">🇧🇷 Brazil (São Paulo)</option>
         <option value="ZA">🇿🇦 South Africa (Gauteng)</option>
+        <option value="CN">🇨🇳 China (Shanghai)</option>
+        <option value="RU">🇷🇺 Russia (Moscow)</option>
+        <option value="EG">🇪🇬 Egypt (Cairo)</option>
+        <option value="ET">🇪🇹 Ethiopia (Addis Ababa)</option>
+        <option value="ID">🇮🇩 Indonesia (Jakarta)</option>
+        <option value="IR">🇮🇷 Iran (Tehran)</option>
+        <option value="SA">🇸🇦 Saudi Arabia (Riyadh)</option>
+        <option value="AE">🇦🇪 United Arab Emirates (Dubai)</option>
       </select>
     </div>
 
     <!-- Sovereign Language Selector -->
     <div class="lang-select-wrap">
       <select class="lang-select" id="lang-selector" title="Select Platform Language">
-        <option value="en">🇬🇧 English</option>
-        <option value="hi">🇮🇳 हिन्दी</option>
-        <option value="pt">🇧🇷 Português</option>
-        <option value="zu">🇿🇦 isiZulu</option>
-        <option value="af">🇿🇦 Afrikaans</option>
-        <option value="ta">🇮🇳 தமிழ்</option>
-        <option value="te">🇮🇳 తెలుగు</option>
-        <option value="ru">🇷🇺 Русский</option>
-        <option value="zh">🇨🇳 中文</option>
-      </select>
+            <optgroup label="BRICS Official Languages">
+              <option value="en">🇬🇧 English</option>
+              <option value="hi">🇮🇳 हिन्दी</option>
+              <option value="pt">🇧🇷 Português</option>
+              <option value="ru">🇷🇺 Русский</option>
+              <option value="zh">🇨🇳 中文</option>
+              <option value="ar">🇸🇦/🇦🇪/🇪🇬 العربية</option>
+              <option value="id">🇮🇩 Bahasa Indonesia</option>
+              <option value="fa">🇮🇷 فارسی</option>
+              <option value="am">🇪🇹 አማርኛ</option>
+              <option value="zu">🇿🇦 isiZulu</option>
+              <option value="af">🇿🇦 Afrikaans</option>
+              <option value="xh">🇿🇦 isiXhosa</option>
+            </optgroup>
+            <optgroup label="Indian Regional Languages">
+              <option value="bn">🇮🇳 বাংলা (Bengali)</option>
+              <option value="mr">🇮🇳 मराठी (Marathi)</option>
+              <option value="ta">🇮🇳 தமிழ் (Tamil)</option>
+              <option value="te">🇮🇳 తెలుగు (Telugu)</option>
+              <option value="gu">🇮🇳 ગુજરાતી (Gujarati)</option>
+              <option value="kn">🇮🇳 ಕನ್ನಡ (Kannada)</option>
+              <option value="ml">🇮🇳 മലയാളം (Malayalam)</option>
+              <option value="pa">🇮🇳 ਪੰਜਾਬੀ (Punjabi)</option>
+              <option value="or">🇮🇳 ଓଡ଼ିଆ (Odia)</option>
+              <option value="as">🇮🇳 অসমীয়া (Assamese)</option>
+              <option value="ur">🇮🇳 اردو (Urdu)</option>
+            </optgroup>
+          </select>
     </div>
 
     <!-- Theme Toggle -->
@@ -63,7 +89,7 @@
             <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
           </svg>
         </div>
-        <h1 class="login-title">CivicPulse-BRICS</h1>
+        <h1 class="login-title" data-i18n="app_title">CivicPulse-BRICS</h1>
         <p class="login-subtitle" data-i18n="login_hero_sub">
           Connecting citizens and city planners to build better neighborhoods together across BRICS communities.
         </p>
@@ -125,10 +151,10 @@
               <span data-i18n="lbl_or">OR</span>
             </div>
 
-            <a href="static/citizen.html" class="btn-demo-quick" id="btn-demo-citizen" style="text-decoration:none; display:flex; align-items:center; justify-content:center; gap:8px;">
+            <button type="button" class="btn-demo-quick" id="btn-demo-citizen">
               <svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
               <span data-i18n="btn_demo_citizen">Enter Citizen Portal (1-Click Demo)</span>
-            </a>
+            </button>
           </form>
         </div>
 
@@ -141,27 +167,27 @@
               </svg>
             </div>
             <div>
-              <div class="portal-title">City Official Portal</div>
-              <span class="portal-tag" style="color:#10b981;">Municipal Operations & AI</span>
+              <div class="portal-title" data-i18n="login_card_city_title">City Official Portal</div>
+              <span class="portal-tag" style="color:#10b981;" data-i18n="portal_city_tag">Municipal Operations & AI</span>
             </div>
           </div>
 
-          <p class="portal-desc">
+          <p class="portal-desc" data-i18n="portal_city_desc">
             Review and resolve complaints for your city, synthesize AI structural plans, file reports to Centre, and upvote peer cities.
           </p>
 
           <form id="city-login-form" class="portal-login-form">
             <div class="form-group">
-              <label class="form-label" for="city-email">Municipal Official Email *</label>
-              <input type="email" class="form-control" id="city-email" value="vikram.sharma@delhi.gov.in" placeholder="e.g. vikram.sharma@delhi.gov.in" required>
+              <label class="form-label" for="city-email" data-i18n="lbl_city_email">Municipal Official Email *</label>
+              <input type="email" class="form-control" id="city-email" value="vikram.sharma@delhi.gov.in" placeholder="e.g. vikram.sharma@delhi.gov.in" required data-i18n-placeholder="ph_city_email">
             </div>
             <div class="form-group">
-              <label class="form-label" for="city-password">Password *</label>
+              <label class="form-label" for="city-password" data-i18n="lbl_password">Password *</label>
               <input type="password" class="form-control" id="city-password" value="CivicPulse2026!" required>
             </div>
 
             <button type="submit" class="btn-portal-action" id="btn-submit-city" style="background:#059669; color:#ffffff; margin-top:4px;">
-              <span>Sign In to City Official Portal</span>
+              <span data-i18n="btn_sign_in_city">Sign In to City Official Portal</span>
               <svg class="svg-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
             </button>
 
@@ -169,10 +195,10 @@
               <span data-i18n="lbl_or">OR</span>
             </div>
 
-            <a href="static/city_official.html" class="btn-demo-quick" id="btn-demo-city" style="border-color:rgba(16,185,129,0.3); color:#10b981; text-decoration:none; display:flex; align-items:center; justify-content:center; gap:8px;">
+            <button type="button" class="btn-demo-quick" id="btn-demo-city" style="border-color:rgba(16,185,129,0.3); color:#10b981;">
               <svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-              <span>Enter City Official Portal (1-Click Demo)</span>
-            </a>
+              <span data-i18n="btn_demo_city">Enter City Official Portal (1-Click Demo)</span>
+            </button>
           </form>
         </div>
 
@@ -219,10 +245,10 @@
               <span data-i18n="lbl_or">OR</span>
             </div>
 
-            <a href="static/central_official.html" class="btn-demo-quick" id="btn-demo-gov" style="border-color:rgba(37,99,235,0.3); color:#60a5fa; text-decoration:none; display:flex; align-items:center; justify-content:center; gap:8px;">
+            <button type="button" class="btn-demo-quick" id="btn-demo-gov" style="border-color:rgba(37,99,235,0.3); color:#60a5fa;">
               <svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
               <span data-i18n="btn_demo_gov">Enter Central Official Portal (1-Click Demo)</span>
-            </a>
+            </button>
           </form>
         </div>
 
@@ -231,8 +257,11 @@
     </div>
   </div>
 
-  <!-- Internationalization (i18n) Engine -->
-  <script src="static/js/i18n.js"></script>
+  <!-- Internationalization (i18n) Engine -->  <!-- Google Translate Engine Container (Hidden) -->
+  <div id="google_translate_element" style="display:none;"></div>
+  <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" async></script>
+
+  <script src="static/js/i18n.js?v=google_gnmt_v2"></script>
   <!-- Shared Vector Icon Registry -->
   <script src="static/js/app.js"></script>
   <!-- Login Controller -->

@@ -107,18 +107,25 @@ def normalize_city_name(val):
         return "Johannesburg"
     return "Delhi"
 
-def get_city_officers_overview():
+def get_city_officers_overview(country_code=None):
     """
-    Returns all assigned city officers along with their live complaint statistics:
+    Returns assigned city officers along with their live complaint statistics:
     - Red (Critical / High / Pending)
     - Yellow (In Progress / Dispatched)
     - Green (Resolved / Closed)
     - Total Complaints & Health Index
+
+    If country_code is provided, only officers belonging to that BRICS nation are returned.
     """
     all_complaints = get_all_complaints()
     officers = []
 
-    for off in OFFICERS_REGISTRY:
+    # Filter the registry to only include officers for the specified country
+    registry = OFFICERS_REGISTRY
+    if country_code:
+        registry = [o for o in OFFICERS_REGISTRY if o.get("country_code", "").upper() == country_code.upper()]
+
+    for off in registry:
         city = off["city"]
         city_complaints = []
         for c in all_complaints:

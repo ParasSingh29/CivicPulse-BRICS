@@ -87,6 +87,16 @@ def init_database():
             except Exception:
                 pass
 
+    # Dynamic Column Migration for complaints (photo evidence & completion proof)
+    cursor.execute("PRAGMA table_info(complaints)")
+    existing_comp_cols = {col[1] for col in cursor.fetchall()}
+    for col_name in ["photo_url", "resolution_photo", "resolution_notes"]:
+        if col_name not in existing_comp_cols:
+            try:
+                cursor.execute(f"ALTER TABLE complaints ADD COLUMN {col_name} TEXT")
+            except Exception:
+                pass
+
     conn.commit()
 
     # Seed Default Citizens if empty
@@ -175,6 +185,7 @@ def get_all_complaints(city=None):
             except Exception:
                 loc = {}
 
+        keys = r.keys() if hasattr(r, 'keys') else []
         complaint = {
             "id": r["id"],
             "user_id": r["user_id"],
@@ -182,19 +193,24 @@ def get_all_complaints(city=None):
             "description": r["description"],
             "location": loc,
             "status": r["status"],
-            "timestamp": r["timestamp"]
+            "timestamp": r["timestamp"],
+            "photo_url": r["photo_url"] if "photo_url" in keys else None,
+            "resolution_photo": r["resolution_photo"] if "resolution_photo" in keys else None,
+            "resolution_notes": r["resolution_notes"] if "resolution_notes" in keys else None
         }
 
         if city and city != "All Cities":
             addr = str(loc.get("address", "")) + " " + str(loc.get("city", "")) + " " + str(r["description"])
             from brics_proposals_engine import normalize_city_name
-            if normalize_city_name(addr).lower() != city.strip().lower():
+            target_city = normalize_city_name(city).lower()
+            comp_city = normalize_city_name(addr).lower()
+            if comp_city != target_city:
                 continue
 
         complaints.append(complaint)
     return complaints
 
-def save_complaint(user_id, category, description, location):
+def save_complaint(user_id, category, description, location, photo_url=None):
     """Saves a new complaint into SQLite with ACID guarantees & syncs to Firebase / Firestore."""
     complaint_id = f"CP-{datetime.now().strftime('%Y%m%d%H%M%S%f')}"
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -204,10 +220,25 @@ def save_complaint(user_id, category, description, location):
     conn = get_db_connection()
     cursor = conn.cursor()
     cursor.execute("""
-    INSERT INTO complaints (id, user_id, category, description, location_json, status, timestamp)
-    VALUES (?, ?, ?, ?, ?, ?, ?)
-    """, (complaint_id, user_id, category, description, loc_json, status, timestamp))
+    INSERT INTO complaints (id, user_id, category, description, location_json, status, timestamp, photo_url)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    """, (complaint_id, user_id, category, description, loc_json, status, timestamp, photo_url))
     conn.commit()
+
+    # Look up citizen phone if available in users table
+    phone = "+91 98101 23456"
+    try:
+        if "@" in str(user_id):
+            cursor.execute("SELECT phone FROM users WHERE email = ?", (str(user_id).strip().lower(),))
+            r = cursor.fetchone()
+            if r and r["phone"]:
+                phone = r["phone"]
+        elif str(user_id).startswith("+") or any(c.isdigit() for c in str(user_id)):
+            digits = "".join(c for c in str(user_id) if c.isdigit() or c == "+")
+            if len(digits) >= 8:
+                phone = digits
+    except Exception:
+        pass
     conn.close()
 
     # Replicate complaint to Firebase Cloud Firestore
@@ -221,19 +252,72 @@ def save_complaint(user_id, category, description, location):
         "timestamp": timestamp
     })
 
+    # Dispatch Real-Time SMS Alert: Problem Registered
+    try:
+        from sms_gateway import send_sms_notification
+        send_sms_notification(
+            recipient_phone=phone,
+            complaint_id=complaint_id,
+            event_type="REGISTERED",
+            category=category
+        )
+    except Exception as e:
+        print(f"[SMS Trigger Error] {e}")
+
     return complaint_id
 
-def update_complaint_status(complaint_id, new_status):
-    """Updates complaint status in SQLite and replicates to Cloud Firestore."""
+def update_complaint_status(complaint_id, new_status, department=None, engineer=None, resolution_photo=None, resolution_notes=None):
+    """Updates complaint status in SQLite, dispatches real-time SMS alert to citizen, and replicates to Cloud Firestore."""
     conn = get_db_connection()
     cursor = conn.cursor()
-    cursor.execute("UPDATE complaints SET status = ? WHERE id = ?", (new_status, complaint_id))
+
+    # Fetch existing complaint info before updating
+    cursor.execute("SELECT user_id, category FROM complaints WHERE id = ?", (complaint_id,))
+    comp_row = cursor.fetchone()
+
+    if resolution_photo:
+        cursor.execute("UPDATE complaints SET status = ?, resolution_photo = ?, resolution_notes = ? WHERE id = ?", 
+                       (new_status, resolution_photo, resolution_notes or "", complaint_id))
+    else:
+        cursor.execute("UPDATE complaints SET status = ? WHERE id = ?", (new_status, complaint_id))
     conn.commit()
     rows_affected = cursor.rowcount
+
+    user_id = comp_row["user_id"] if comp_row else ""
+    category = comp_row["category"] if comp_row else ""
+
+    phone = "+91 98101 23456"
+    if comp_row:
+        try:
+            if "@" in str(user_id):
+                cursor.execute("SELECT phone FROM users WHERE email = ?", (str(user_id).strip().lower(),))
+                r = cursor.fetchone()
+                if r and r["phone"]:
+                    phone = r["phone"]
+            elif str(user_id).startswith("+") or any(c.isdigit() for c in str(user_id)):
+                digits = "".join(c for c in str(user_id) if c.isdigit() or c == "+")
+                if len(digits) >= 8:
+                    phone = digits
+        except Exception:
+            pass
     conn.close()
 
     if rows_affected > 0:
         sync_to_cloud_firestore({"id": complaint_id, "status": new_status})
+
+        # Dispatch Real-Time SMS Alert based on updated status milestone
+        try:
+            from sms_gateway import send_sms_notification
+            send_sms_notification(
+                recipient_phone=phone,
+                complaint_id=complaint_id,
+                event_type=new_status,
+                category=category,
+                details={"department": department, "engineer": engineer}
+            )
+        except Exception as e:
+            print(f"[SMS Status Trigger Error] {e}")
+
         return True
     return False
 

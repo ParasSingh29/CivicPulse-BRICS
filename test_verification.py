@@ -48,16 +48,16 @@ def test_pages_and_apis():
     assert 'data-open-tab="cit-tab-report"' in cit_html
     assert 'data-open-tab="cit-tab-demands"' in cit_html
     assert 'data-open-tab="cit-tab-track"' in cit_html
-    assert 'data-open-tab="cit-tab-whatsapp"' in cit_html
+    assert 'data-open-tab="cit-tab-whatsapp"' not in cit_html, "Chatbot tab must be removed"
     assert 'id="cit-tab-report" style="display:none;"' in cit_html, "Report tab must be hidden on home landing"
     assert 'id="cit-tab-demands" style="display:none;"' in cit_html, "Demands tab must be hidden on home landing"
     assert ('Back to Home' in cit_html or 'Back to Citizen Home' in cit_html)
     assert ("Report an Issue" in cit_html or "Report Infrastructure Issue" in cit_html)
     assert ("Community Requests & Voting" in cit_html or "Community Demands & Upvoting Wall" in cit_html)
-    assert ("WhatsApp Assistant" in cit_html or "WhatsApp & Messaging Bot" in cit_html)
+    assert "WhatsApp Assistant" not in cit_html, "Chatbot must be removed from Citizen page"
     assert "btn-logout" in cit_html
     assert "CLEARANCE: DIRECTORATE LEVEL-4" not in cit_html, "Government clearance must not be on Citizen page"
-    assert 'id="node-detected-badge"' in cit_html, "Auto-detected jurisdiction badge must be present on Citizen Portal"
+    assert 'id="node-detected-badge"' not in cit_html, "Node badge must be removed post-login from Citizen Portal"
     assert 'id="node-selector"' not in cit_html, "Manual node switcher dropdown must be removed post-login from Citizen Portal"
     assert 'id="nav-btn-back"' in cit_html, "Navbar Back button must be present in Citizen Portal"
     assert 'id="nav-btn-home"' in cit_html, "Navbar Home button must be present in Citizen Portal"
@@ -89,7 +89,7 @@ def test_pages_and_apis():
     assert ("Live City Map" in gov_html or "Geospatial Incident Command" in gov_html)
     assert "btn-logout" in gov_html
     assert "complaint-form" not in gov_html, "Citizen complaint form must not be on Government command hub"
-    assert 'id="node-detected-badge"' in gov_html, "Auto-detected jurisdiction badge must be present on Government Hub"
+    assert 'id="node-detected-badge"' not in gov_html, "Node badge must be removed post-login from Government Hub"
     assert 'id="node-selector"' not in gov_html, "Manual node switcher dropdown must be removed post-login from Government Hub"
     assert 'id="nav-btn-back"' in gov_html, "Navbar Back button must be present in Government Hub"
     assert 'id="nav-btn-home"' in gov_html, "Navbar Home button must be present in Government Hub"
@@ -103,6 +103,7 @@ def test_pages_and_apis():
     assert "City Official Portal" in city_html
     assert 'id="city-selector"' in city_html
     assert 'id="lang-selector"' in city_html
+    assert '/central-official' not in city_html, "No portal switch allowed from city to central"
     assert '/static/js/i18n.js' in city_html
     print("[PASS] Dedicated City Official Portal (/city-official) verified")
 
@@ -112,6 +113,7 @@ def test_pages_and_apis():
     assert res.status_code == 200
     assert "Central Official Sovereign Command" in central_html
     assert 'id="lang-selector"' in central_html
+    assert '/city-official' not in central_html, "No portal switch allowed from central to city"
     assert '/static/js/i18n.js' in central_html
     print("[PASS] Dedicated Central Official Portal (/central-official) verified")
 
@@ -144,11 +146,27 @@ def test_pages_and_apis():
     assert len(sectors) >= 10, "Must have 10+ infrastructure sectors"
     print(f"[PASS] {len(sectors)} infrastructure sectors verified")
 
-    # 9. BRICS nodes API
+    # 9. BRICS nodes API (11 Sovereign Nations)
     res = client.get("/api/brics/nodes")
     nodes_data = res.json()
-    assert len(nodes_data['nodes']) == 3
-    print(f"[PASS] BRICS nodes verified: {[n['country'] for n in nodes_data['nodes']]}")
+    assert len(nodes_data['nodes']) == 11, f"Expected 11 BRICS nodes, got {len(nodes_data['nodes'])}"
+    countries = [n['country'] for n in nodes_data['nodes']]
+    expected_11 = [
+        "Brazil", "China", "Egypt", "Ethiopia", "India",
+        "Indonesia", "Iran", "Russia", "Saudi Arabia", "South Africa", "United Arab Emirates"
+    ]
+    for c in expected_11:
+        assert c in countries, f"Country {c} not found in BRICS nodes"
+    print(f"[PASS] All 11 BRICS sovereign nodes verified: {countries}")
+
+    # 9b. Switch to each of the 11 nodes
+    for code in ["BR", "CN", "EG", "ET", "IN", "ID", "IR", "RU", "SA", "ZA", "AE"]:
+        s_res = client.post("/api/brics/switch", json={"code": code})
+        assert s_res.status_code == 200
+        s_data = s_res.json()
+        assert s_data.get("status") == "ok"
+        assert s_data.get("code") == code
+    print("[PASS] Dynamic node switching across all 11 sovereign nodes verified")
 
     # 10. AI Mega-plans API
     res = client.get("/api/ai/mega-plans?country_code=IN")
@@ -162,17 +180,22 @@ def test_pages_and_apis():
     assert bq_res.get('status') in ('buffered', 'success')
     print(f"[PASS] BigQuery stream telemetry verified: {bq_res.get('streamed')} records")
 
-    # 12. Sovereign i18n Engine & 9 Languages Check
+    # 12. Sovereign i18n Engine & 23 Languages Check (All 11 BRICS Nations + Indian Regional Languages)
     res = client.get("/static/js/i18n.js")
     i18n_code = res.text
     assert res.status_code == 200
-    for lang in ['"en":', '"hi":', '"pt":', '"zu":', '"af":', '"ta":', '"te":', '"ru":', '"zh":']:
+    all_expected_langs = [
+        '"en":', '"hi":', '"pt":', '"ru":', '"zh":', 
+        '"ar":', '"id":', '"fa":', '"am":', '"zu":', '"af":', '"xh":',
+        '"bn":', '"mr":', '"ta":', '"te":', '"gu":', '"kn":', '"ml":', '"pa":', '"or":', '"as":', '"ur":'
+    ]
+    for lang in all_expected_langs:
         assert lang in i18n_code, f"Missing {lang} translations in i18n.js"
     assert "nav_back" in i18n_code and "nav_home" in i18n_code, "Navbar Back and Home translation keys must be in i18n.js"
     assert "btn_use_current_location" in i18n_code, "Use current location key must be in i18n.js"
     assert "btn_voice_input" in i18n_code, "Voice input key must be in i18n.js"
     assert "window.setLanguage" in i18n_code
-    print("[PASS] Sovereign i18n engine verified with 9 BRICS & regional languages and form keys")
+    print(f"[PASS] Sovereign i18n engine verified with all {len(all_expected_langs)} BRICS & Indian sovereign languages")
 
     # 13. GPS Location Detection & Reverse Geocoding API & Modal UI Elements
     assert 'id="btn-use-current-location"' in cit_html, "Use current location button must be present in citizen modal"

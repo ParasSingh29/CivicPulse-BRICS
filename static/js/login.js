@@ -7,7 +7,82 @@ document.addEventListener('DOMContentLoaded', async () => {
   initLoginTheme();
   await loadLoginBRICSContext();
   setupLoginEvents();
+  initRoleSelectionFromURL();
 });
+
+// ==============================================================================
+// 0. ROLE SELECTION & DESIGNATED PORTAL CONTROLLER
+// ==============================================================================
+window.selectLoginRole = function(role) {
+  let normalizedRole = role || 'citizen';
+  if (normalizedRole.includes('city')) normalizedRole = 'city';
+  else if (normalizedRole.includes('gov') || normalizedRole.includes('central')) normalizedRole = 'gov';
+
+  const roleStep = document.getElementById('role-selection-step');
+  const designatedStep = document.getElementById('designated-login-step');
+
+  if (roleStep && designatedStep) {
+    roleStep.style.display = 'none';
+    designatedStep.style.display = 'block';
+
+    // Hide all portal cards
+    const citCard = document.getElementById('citizen-login-card');
+    const cityCard = document.getElementById('city-login-card');
+    const govCard = document.getElementById('gov-login-card');
+
+    if (citCard) citCard.style.display = 'none';
+    if (cityCard) cityCard.style.display = 'none';
+    if (govCard) govCard.style.display = 'none';
+
+    // Show target card
+    if (normalizedRole === 'citizen' && citCard) citCard.style.display = 'block';
+    else if (normalizedRole === 'city' && cityCard) cityCard.style.display = 'block';
+    else if (normalizedRole === 'gov' && govCard) govCard.style.display = 'block';
+
+    // Update active tab buttons
+    ['citizen', 'city', 'gov'].forEach(r => {
+      const btn = document.getElementById(`tab-role-${r}`);
+      if (btn) {
+        if (r === normalizedRole) btn.classList.add('active');
+        else btn.classList.remove('active');
+      }
+    });
+
+    // Update URL query parameter
+    try {
+      const url = new URL(window.location);
+      url.searchParams.set('role', normalizedRole);
+      window.history.replaceState({}, '', url);
+    } catch (e) {}
+  }
+};
+
+window.showRoleSelectionScreen = function() {
+  const roleStep = document.getElementById('role-selection-step');
+  const designatedStep = document.getElementById('designated-login-step');
+
+  if (roleStep && designatedStep) {
+    designatedStep.style.display = 'none';
+    roleStep.style.display = 'block';
+
+    try {
+      const url = new URL(window.location);
+      url.searchParams.delete('role');
+      window.history.replaceState({}, '', url);
+    } catch (e) {}
+  }
+};
+
+function initRoleSelectionFromURL() {
+  const params = new URLSearchParams(window.location.search);
+  const roleParam = params.get('role');
+  if (roleParam) {
+    window.selectLoginRole(roleParam);
+  } else {
+    window.showRoleSelectionScreen();
+  }
+}
+
 
 // ==============================================================================
 // 1. THEME ENGINE FOR LOGIN
@@ -117,7 +192,8 @@ function setupLoginEvents() {
   // Citizen 1-Click Fast Demo
   const btnDemoCitizen = document.getElementById('btn-demo-citizen');
   if (btnDemoCitizen) {
-    btnDemoCitizen.addEventListener('click', () => {
+    btnDemoCitizen.addEventListener('click', (e) => {
+      e.preventDefault();
       performLogin({
         role: 'citizen',
         name: 'Priya Sharma (Verified Resident)',
@@ -147,7 +223,8 @@ function setupLoginEvents() {
   // City Official 1-Click Fast Demo
   const btnDemoCity = document.getElementById('btn-demo-city');
   if (btnDemoCity) {
-    btnDemoCity.addEventListener('click', () => {
+    btnDemoCity.addEventListener('click', (e) => {
+      e.preventDefault();
       performLogin({
         role: 'city_official',
         name: 'Er. Vikram Sharma (Chief Municipal Engineer)',
@@ -177,7 +254,8 @@ function setupLoginEvents() {
   // Central Official 1-Click Fast Demo
   const btnDemoGov = document.getElementById('btn-demo-gov');
   if (btnDemoGov) {
-    btnDemoGov.addEventListener('click', () => {
+    btnDemoGov.addEventListener('click', (e) => {
+      e.preventDefault();
       performLogin({
         role: 'central_official',
         name: 'Dr. Rajesh Verma (Director General, Infrastructure & CapEx)',

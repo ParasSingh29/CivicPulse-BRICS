@@ -20,43 +20,43 @@ EN = {
 
     "sector_roads_transit_name": "Roads, Bridges & Arterial Corridors",
     "sector_roads_transit_badge": "Transit Backbone",
-    "sector_roads_transit_desc": "Expressways, flyovers, arterial road resurfacing, structural bridges & pedestrian skywalks",
+    "sector_roads_transit_desc": "Potholes, damaged flyovers, road resurfacing & pedestrian skywalk safety",
 
     "sector_water_supply_name": "Water Supply & Pipeline Leakage",
     "sector_water_supply_badge": "Potable Water",
-    "sector_water_supply_desc": "Clean drinking water distribution, high-pressure trunk mains, smart leak telemetry & pumping stations",
+    "sector_water_supply_desc": "Dirty drinking water, leaking water pipes, pressure issues & pump failures",
 
     "sector_electricity_grid_name": "Electricity, Streetlights & Grid",
     "sector_electricity_grid_badge": "Energy Infrastructure",
-    "sector_electricity_grid_desc": "High-voltage transmission substations, underground cabling, smart LED lighting & grid blackout prevention",
+    "sector_electricity_grid_desc": "Power outages, non-working streetlights, loose wiring & faulty transformers",
 
     "sector_waste_sanitation_name": "Waste Management & Sanitation",
     "sector_waste_sanitation_badge": "Circular Cleanliness",
-    "sector_waste_sanitation_desc": "Automated material recovery, bio-methanation plants, toxic landfill remediation & daily door-to-door collection",
+    "sector_waste_sanitation_desc": "Overflowing trash, uncollected house waste, bad odors & illegal dumping",
 
     "sector_public_transport_name": "Public Transport & Transit Hubs",
     "sector_public_transport_badge": "Mobility Corridors",
-    "sector_public_transport_desc": "Metro rail feeder routes, electric bus fleets, multi-modal passenger terminals & commuter shelters",
+    "sector_public_transport_desc": "Bus/Metro delays, damaged bus stops, broken ticket counters & overcrowding",
 
     "sector_stormwater_flood_name": "Stormwater Drainage & Monsoon Floods",
     "sector_stormwater_flood_badge": "Hydrological Defense",
-    "sector_stormwater_flood_desc": "Deep gravity drainage canals, river embankments, retention reservoirs & floodgate automated telemetry",
+    "sector_stormwater_flood_desc": "Waterlogged roads, clogged drains, open gutters & canal flooding",
 
     "sector_health_clinics_name": "Public Health, Clinics & Vector Control",
     "sector_health_clinics_badge": "Community Health",
-    "sector_health_clinics_desc": "Secondary trauma hospitals, maternal healthcare centers, medicine stock telemetry & anti-dengue fogging",
+    "sector_health_clinics_desc": "Mosquito breeding, clinic medicine shortages, dengue fogging & hospital hygiene",
 
     "sector_schools_facilities_name": "Government Schools & Public Facilities",
     "sector_schools_facilities_badge": "Social Infrastructure",
-    "sector_schools_facilities_desc": "Public school building safety, polytechnic skill centers, civic libraries & digital learning labs",
+    "sector_schools_facilities_desc": "Damaged school rooms, broken toilets, missing desks & library maintenance",
 
     "sector_parks_environment_name": "Public Parks, Green Belts & Air Quality",
     "sector_parks_environment_badge": "Eco Restoration",
-    "sector_parks_environment_desc": "Urban afforestation, anti-smog water misting towers, public park solar lighting & biodiversity corridors",
+    "sector_parks_environment_desc": "Unlit parks, broken park benches, overgrown trees & heavy dust pollution",
 
     "sector_public_safety_name": "Public Safety & Emergency Infrastructure",
     "sector_public_safety_badge": "Emergency Defense",
-    "sector_public_safety_desc": "Pressurized fire hydrants, municipal disaster evacuation routes, CCTV optical feeds & emergency sirens",
+    "sector_public_safety_desc": "Broken CCTV cameras, unlit streets, damaged fire hydrants & emergency sirens",
 
     "sec_choose_category": "Choose a Category",
     "sec_choose_category_sub": "Pick the category matching your issue across our 10 city sectors:",

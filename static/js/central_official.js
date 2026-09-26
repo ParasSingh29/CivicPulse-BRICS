@@ -4,10 +4,17 @@
  * Municipal Proposals Sanctioning, Gemini AI BRICS Joint Ventures, and Inbound Partner Requests
  */
 
-document.addEventListener('DOMContentLoaded', async () => {
+window.initCentralOfficialPortal = async function() {
   setupCentralEvents();
   await refreshCentralDashboard();
-});
+};
+
+if (document.readyState === 'interactive' || document.readyState === 'complete') {
+  window.initCentralOfficialPortal();
+} else {
+  document.addEventListener('DOMContentLoaded', window.initCentralOfficialPortal);
+}
+
 
 function setupCentralEvents() {
   // Proposals filter
@@ -52,12 +59,27 @@ async function refreshCentralDashboard() {
 // ==============================================================================
 // 1. PANEL 1: ASSIGNED CITY OFFICERS & RED / YELLOW / GREEN STATUS METERS
 // ==============================================================================
-async function loadCityOfficersOverview() {
+window.loadCityOfficersOverview = async function loadCityOfficersOverview() {
   const grid = document.getElementById('central-officers-grid');
   if (!grid) return;
 
   try {
-    const res = await fetch('/api/city-officers');
+    // Determine the active BRICS node (country) for this portal session.
+    // We read from the stored session or fall back to /api/brics/nodes.
+    let countryCode = window._centralPortalCountryCode;
+    if (!countryCode) {
+      try {
+        const nodeRes = await fetch('/api/brics/nodes');
+        const nodeData = await nodeRes.json();
+        countryCode = nodeData.active_code || 'IN';
+        window._centralPortalCountryCode = countryCode; // cache for this session
+      } catch (_) {
+        countryCode = 'IN'; // safe default
+      }
+    }
+
+    // Fetch officers filtered to this country only
+    const res = await fetch(`/api/city-officers?country_code=${encodeURIComponent(countryCode)}`);
     const officers = await res.json();
 
     // Calculate aggregated nationwide totals
@@ -76,6 +98,17 @@ async function loadCityOfficersOverview() {
     if (kpiRed) kpiRed.textContent = natRed;
     if (kpiYellow) kpiYellow.textContent = natYellow;
     if (kpiGreen) kpiGreen.textContent = natGreen;
+
+    if (!officers.length) {
+      grid.innerHTML = `
+        <div style="grid-column:1/-1; background:var(--bg-card); border:1px solid var(--border-color); border-radius:var(--radius-lg); padding:40px; text-align:center; color:var(--text-muted);">
+          <div style="font-size:2rem; margin-bottom:12px;">🏛️</div>
+          <div style="font-size:1.05rem; font-weight:700; margin-bottom:6px;">No City Officers Assigned</div>
+          <div style="font-size:0.85rem;">No municipal officers are registered for your country node (${countryCode}).</div>
+        </div>
+      `;
+      return;
+    }
 
     grid.innerHTML = officers.map(o => {
       const initials = o.name.split(' ').map(w => w[0]).filter(Boolean).slice(-2).join('');
@@ -109,18 +142,18 @@ async function loadCityOfficersOverview() {
                 </div>
               </div>
               <span class="nav-badge" style="background:${healthColor}15; color:${healthColor}; border:1px solid ${healthColor}35;">
-                Health: ${health}%
+                ${window.getTranslation('label_health', 'Health')}: ${health}%
               </span>
             </div>
 
             <div style="font-size:0.8rem; color:var(--text-secondary); margin-bottom:12px;">
-              <b>Department:</b> ${o.department} • <b>Contact:</b> ${o.phone}
+              <b>${window.getTranslation('label_department', 'Department')}:</b> ${o.department} • <b>${window.getTranslation('label_contact', 'Contact')}:</b> ${o.phone}
             </div>
 
             <!-- Problem Statistics Breakdown -->
             <div style="background:rgba(255,255,255,0.02); border:1px solid var(--border-subtle); border-radius:var(--radius-md); padding:12px; margin-bottom:8px;">
               <div style="display:flex; justify-content:space-between; font-size:0.82rem; margin-bottom:6px;">
-                <span style="font-weight:700;">Total City Problems:</span>
+                <span style="font-weight:700;">${window.getTranslation('label_total_city_problems', 'Total City Problems')}:</span>
                 <b style="color:var(--text-primary);">${total}</b>
               </div>
 
@@ -132,18 +165,18 @@ async function loadCityOfficersOverview() {
               </div>
 
               <div class="ryg-legend" style="justify-content:space-between; margin-top:6px;">
-                <span class="ryg-legend-item"><span class="ryg-dot ryg-dot-red"></span> Red: <b>${red}</b></span>
-                <span class="ryg-legend-item"><span class="ryg-dot ryg-dot-yellow"></span> Yellow: <b>${yellow}</b></span>
-                <span class="ryg-legend-item"><span class="ryg-dot ryg-dot-green"></span> Green: <b>${green}</b></span>
+                <span class="ryg-legend-item"><span class="ryg-dot ryg-dot-red"></span> ${window.getTranslation('legend_red_critical', 'Red: Critical')}: <b>${red}</b></span>
+                <span class="ryg-legend-item"><span class="ryg-dot ryg-dot-yellow"></span> ${window.getTranslation('legend_yellow_in_progress', 'Yellow: In Progress')}: <b>${yellow}</b></span>
+                <span class="ryg-legend-item"><span class="ryg-dot ryg-dot-green"></span> ${window.getTranslation('legend_green_resolved', 'Green: Resolved')}: <b>${green}</b></span>
               </div>
             </div>
           </div>
 
           <div style="display:flex; justify-content:space-between; align-items:center; margin-top:10px; padding-top:10px; border-top:1px solid var(--border-subtle);">
             <span style="font-size:0.75rem; color:var(--text-muted); font-family:var(--font-mono);">${o.id}</span>
-            <a href="/city-official" onclick="localStorage.setItem('civicpulse_city', '${o.city}')" class="btn btn-secondary btn-sm" style="font-size:0.75rem; padding:4px 10px;">
-              <span>Inspect ${o.city} Portal →</span>
-            </a>
+            <span class="badge" style="font-size:0.75rem; padding:4px 8px; background:rgba(37,99,235,0.12); color:#60a5fa; border:1px solid rgba(37,99,235,0.3); border-radius:4px;">
+              <span>${o.city} Municipal Operations</span>
+            </span>
           </div>
         </div>
       `;
@@ -156,7 +189,7 @@ async function loadCityOfficersOverview() {
 // ==============================================================================
 // 2. PANEL 2: STRATEGIC PROPOSALS SUBMITTED BY CITY OFFICERS
 // ==============================================================================
-async function loadCentralProposals() {
+window.loadCentralProposals = async function loadCentralProposals() {
   const feed = document.getElementById('central-proposals-feed');
   if (!feed) return;
 
@@ -176,11 +209,12 @@ async function loadCentralProposals() {
     }
 
     feed.innerHTML = proposals.map(p => {
-      let statusPill = `<span class="status-badge-review">● ${p.status || 'Submitted to Centre'}</span>`;
+      const translatedStatus = window.getTranslation(p.status) || p.status || 'Submitted to Centre';
+      let statusPill = `<span class="status-badge-review">● ${translatedStatus}</span>`;
       if ((p.status || '').includes('Approved') || (p.status || '').includes('Sanctioned')) {
-        statusPill = `<span class="status-badge-sanctioned">● ${p.status}</span>`;
+        statusPill = `<span class="status-badge-sanctioned">● ${translatedStatus}</span>`;
       } else if ((p.status || '').includes('BRICS')) {
-        statusPill = `<span class="status-badge-escalated">● ${p.status}</span>`;
+        statusPill = `<span class="status-badge-escalated">● ${translatedStatus}</span>`;
       }
 
       return `
@@ -188,11 +222,11 @@ async function loadCentralProposals() {
           <div class="proposal-top">
             <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
               <span class="nav-badge" style="background:rgba(245,158,11,0.12); color:#fbbf24; border:1px solid rgba(245,158,11,0.3);">
-                📍 City: ${p.city}
+                📍 ${(window.getTranslation && window.getTranslation('label_city')) || 'City'}: ${p.city}
               </span>
               <span class="nav-badge">${p.category}</span>
               <span class="nav-badge" style="background:rgba(16,185,129,0.12); color:#10b981;">
-                ▲ ${p.upvotes || 0} Peer Upvotes
+                ▲ ${p.upvotes || 0} ${window.getTranslation('label_peer_upvotes', 'Peer Upvotes')}
               </span>
             </div>
             ${statusPill}
@@ -202,15 +236,15 @@ async function loadCentralProposals() {
           <p style="font-size:0.9rem; color:var(--text-secondary); line-height:1.55; margin-bottom:12px;">${p.justification}</p>
 
           <div class="proposal-meta-grid">
-            <div>👤 <b>Submitting Officer:</b> ${p.officer_name} (${p.city})</div>
-            <div>💰 <b>Requested CapEx:</b> <b style="color:var(--brics-gold);">${p.estimated_capex}</b></div>
-            <div>⏱️ <b>Target Timeline:</b> ${p.timeline || '24 Months'}</div>
-            <div>👥 <b>Demographic Impact:</b> ${p.demographic_impact}</div>
+            <div>👤 <b>${window.getTranslation('label_submitting_officer', 'Submitting Officer')}:</b> ${p.officer_name} (${p.city})</div>
+            <div>💰 <b>${window.getTranslation('label_requested_capex', 'Requested CapEx')}:</b> <b style="color:var(--brics-gold);">${p.estimated_capex}</b></div>
+            <div>⏱️ <b>${window.getTranslation('label_target_timeline', 'Target Timeline')}:</b> ${p.timeline || '24 Months'}</div>
+            <div>👥 <b>${window.getTranslation('label_demographic_impact', 'Demographic Impact')}:</b> ${p.demographic_impact}</div>
           </div>
 
           ${p.central_notes ? `
             <div style="background:rgba(37,99,235,0.08); border-left:3px solid #2563eb; padding:8px 12px; border-radius:0 6px 6px 0; font-size:0.82rem; color:var(--text-primary); margin-bottom:12px;">
-              <b style="color:#60a5fa;">Current Planning Directive:</b> ${p.central_notes}
+              <b style="color:#60a5fa;">${window.getTranslation('label_current_directive', 'Current Planning Directive:')}</b> ${p.central_notes}
             </div>
           ` : ''}
 
@@ -218,15 +252,15 @@ async function loadCentralProposals() {
           <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:10px;">
             <button class="btn btn-success btn-sm" onclick="handleUpdateProposalStatus('${p.id}', 'Approved for National Budget', 'Sanctioned under National Infrastructure Pipeline.')">
               <span>${window.AppIcons.check}</span>
-              <span>Sanction / Approve Budget</span>
+              <span>${window.getTranslation('btn_sanction_approve_budget', 'Sanction / Approve Budget')}</span>
             </button>
             <button class="btn btn-primary btn-sm" onclick="handleUpdateProposalStatus('${p.id}', 'Escalated to BRICS JV', 'Referred to BRICS Bilateral Joint Venture Committee.')">
               <span>${window.AppIcons.zap}</span>
-              <span>Escalate to BRICS Joint Venture</span>
+              <span>${window.getTranslation('btn_escalate_brics_jv', 'Escalate to BRICS Joint Venture')}</span>
             </button>
             <button class="btn btn-secondary btn-sm" onclick="handleUpdateProposalStatus('${p.id}', 'Under Technical Revision', 'Clarifications requested from municipal engineering team.')">
               <span>${window.AppIcons.refresh}</span>
-              <span>Request Revision</span>
+              <span>${window.getTranslation('btn_request_revision', 'Request Revision')}</span>
             </button>
           </div>
         </div>
@@ -257,7 +291,7 @@ window.handleUpdateProposalStatus = async function(id, newStatus, notes) {
 // ==============================================================================
 // 3. PANEL 3: NATIONAL INTEREST AI BRICS JOINT VENTURES
 // ==============================================================================
-async function loadCentralBricsJVs() {
+window.loadCentralBricsJVs = async function loadCentralBricsJVs() {
   const container = document.getElementById('central-brics-jv-container');
   if (!container) return;
 
@@ -294,7 +328,7 @@ async function loadCentralBricsJVs() {
           <h3 class="jv-title">${jv.title}</h3>
 
           <div style="font-size:0.84rem; color:var(--text-muted); margin-bottom:10px;">
-            <b>Sector:</b> ${jv.sector} • <b>Domestic Body:</b> ${jv.domestic_counterpart} • <b>Foreign Entity:</b> ${jv.partner_entity}
+            <b>${window.getTranslation('label_sector', 'Sector')}:</b> ${jv.sector} • <b>${window.getTranslation('label_domestic_body', 'Domestic Body')}:</b> ${jv.domestic_counterpart} • <b>${window.getTranslation('label_foreign_entity', 'Foreign Entity')}:</b> ${jv.partner_entity}
           </div>
 
           <p style="font-size:0.88rem; color:var(--text-secondary); line-height:1.55; margin-bottom:12px;">
@@ -302,14 +336,14 @@ async function loadCentralBricsJVs() {
           </p>
 
           <div style="background:rgba(255,255,255,0.02); border:1px solid var(--border-subtle); border-radius:var(--radius-md); padding:12px; margin-bottom:16px;">
-            <div style="font-size:0.8rem; font-weight:700; color:#60a5fa; margin-bottom:6px;">🚀 Technology Transfer & National Synergy:</div>
+            <div style="font-size:0.8rem; font-weight:700; color:#60a5fa; margin-bottom:6px;">🚀 ${window.getTranslation('label_tech_transfer_synergy', 'Technology Transfer & National Synergy:')}</div>
             <ul style="padding-left:18px; font-size:0.8rem; color:var(--text-secondary); line-height:1.5;">
               ${(jv.synergy_benefits || []).map(s => `<li>${s}</li>`).join('')}
             </ul>
           </div>
 
           <button class="btn btn-primary" style="width:100%; background:#2563eb; border-color:#2563eb;" onclick="openDraftJvModal(${idx})">
-            <span>Draft & Propose Joint Venture to ${jv.partner_country}</span>
+            <span>${window.getTranslation('btn_draft_propose_jv', 'Draft & Propose Joint Venture')} (${jv.partner_country})</span>
             <svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
           </button>
         </div>
@@ -381,7 +415,7 @@ async function handleTransmitBilateralJv() {
 // ==============================================================================
 // 4. PANEL 4: INBOUND REQUESTS FROM OTHER BRICS COUNTRIES
 // ==============================================================================
-async function loadInboundPartnerRequests() {
+window.loadInboundPartnerRequests = async function loadInboundPartnerRequests() {
   const container = document.getElementById('central-inbound-requests-container');
   if (!container) return;
 
@@ -415,18 +449,18 @@ async function loadInboundPartnerRequests() {
           <p style="font-size:0.83rem; color:var(--text-secondary); line-height:1.45; margin-bottom:10px;">${req.summary}</p>
 
           <div style="font-size:0.78rem; color:var(--text-muted); margin-bottom:10px; line-height:1.4;">
-            <div>🏢 <b>Origin:</b> ${req.origin_ministry}</div>
-            <div>💰 <b>Proposed Budget:</b> <b style="color:var(--brics-gold);">${req.proposed_capex}</b></div>
-            <div>📍 <b>Target Location:</b> ${req.target_location}</div>
+            <div>🏢 <b>${window.getTranslation('label_origin', 'Origin')}:</b> ${req.origin_ministry}</div>
+            <div>💰 <b>${window.getTranslation('label_proposed_budget', 'Proposed Budget')}:</b> <b style="color:var(--brics-gold);">${req.proposed_capex}</b></div>
+            <div>📍 <b>${window.getTranslation('label_target_location', 'Target Location')}:</b> ${req.target_location}</div>
           </div>
 
           <!-- Quick Action Buttons -->
           <div style="display:flex; gap:8px; flex-wrap:wrap;">
             <button class="btn btn-success btn-sm" style="font-size:0.76rem; padding:4px 10px;" onclick="handleRespondToInbound('${req.id}', 'accept')">
-              <span>Accept & Sanction</span>
+              <span>${window.getTranslation('btn_accept_sanction', 'Accept & Sanction')}</span>
             </button>
             <button class="btn btn-secondary btn-sm" style="font-size:0.76rem; padding:4px 10px;" onclick="handleRespondToInbound('${req.id}', 'negotiate')">
-              <span>Bilateral Dialogue</span>
+              <span>${window.getTranslation('btn_bilateral_dialogue', 'Bilateral Dialogue')}</span>
             </button>
           </div>
         </div>
@@ -453,3 +487,12 @@ window.handleRespondToInbound = async function(id, action) {
     showToast('Failed to respond to request', 'error');
   }
 };
+
+// Re-render when language changes
+window.addEventListener('civicpulse:languageChanged', () => {
+  if (typeof loadCityOfficersOverview === 'function') loadCityOfficersOverview();
+  if (typeof loadCentralProposalsFeed === 'function') loadCentralProposalsFeed();
+  if (typeof loadCentralMegaPlans === 'function') loadCentralMegaPlans();
+  if (typeof loadInboundPartnerRequests === 'function') loadInboundPartnerRequests();
+});
+

@@ -8,6 +8,15 @@ from starlette.responses import JSONResponse, FileResponse, Response, PlainTextR
 from starlette.staticfiles import StaticFiles
 from starlette.middleware import Middleware
 from starlette.middleware.cors import CORSMiddleware
+from starlette.middleware.base import BaseHTTPMiddleware
+
+class NoCacheMiddleware(BaseHTTPMiddleware):
+    async def dispatch(self, request, call_next):
+        response = await call_next(request)
+        response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate, max-age=0"
+        response.headers["Pragma"] = "no-cache"
+        response.headers["Expires"] = "0"
+        return response
 
 # Project modules
 from brics_context import BRICS_NODES, get_brics_node, INFRASTRUCTURE_SECTORS
@@ -22,7 +31,11 @@ from budget_engine import calculate_budget_alignment
 from public_data_helper import fetch_live_delhi_weather
 from gemini_helper import run_vision_agent, transcribe_and_translate_multilingual_audio, triage_complaint
 from tts_helper import generate_speech_audio
-from messaging_gateway import process_messaging_complaint
+from messaging_gateway import (
+    process_messaging_complaint,
+    process_telegram_webhook_payload,
+    process_whatsapp_webhook_payload
+)
 from dpg_spec import DPG_COMPLIANCE_STANDARDS, get_openapi_spec
 from brics_proposals_engine import (
     get_city_officers_overview, get_city_proposals, save_city_proposal,
@@ -78,6 +91,24 @@ async def government_page(request):
     if os.path.exists("static/index.html"):
         return FileResponse("static/index.html")
     return Response("CivicPulse-BRICS Government Command is initializing.", media_type="text/plain")
+
+async def presentation_page(request):
+    """Serves the official 12-slide Pitch Deck Presentation."""
+    if os.path.exists("static/presentation.html"):
+        return FileResponse("static/presentation.html")
+    return Response("CivicPulse-BRICS Presentation Deck is initializing.", media_type="text/plain")
+
+async def download_pitch_deck_pptx(request):
+    """Serves the generated PowerPoint pitch deck presentation."""
+    for fn in ["CivicPulse-BRICS_Pitch_Deck_Final.pptx", "CivicPulse-BRICS_Pitch_Deck_Updated.pptx", "CivicPulse-BRICS_Pitch_Deck.pptx"]:
+        if os.path.exists(fn):
+            return FileResponse(
+                fn,
+                filename="CivicPulse-BRICS_Pitch_Deck.pptx",
+                media_type="application/vnd.openxmlformats-officedocument.presentationml.presentation"
+            )
+    return PlainTextResponse("Presentation file not found. Please run create_presentation_pptx.py first.", status_code=404)
+
 
 async def auth_login_api(request):
     """Authenticates user (credentials or demo) and returns redirect target."""
@@ -146,12 +177,11 @@ async def get_brics_nodes_api(request):
 async def switch_brics_node_api(request):
     """Switches the active BRICS nation node."""
     data = await request.json()
-    code = data.get("code", "IN").upper().strip()
-    node_id = "india" if code in ["IN", "INDIA"] else ("brazil" if code in ["BR", "BRAZIL"] else "south_africa")
-    active_node_state["code"] = code
-    active_node_state["id"] = node_id
-    node = get_brics_node(node_id)
-    return JSONResponse({"status": "ok", "active_node": node, "code": code})
+    code = data.get("code", "IN").strip()
+    node = get_brics_node(code)
+    active_node_state["code"] = node.get("code", "IN")
+    active_node_state["id"] = node.get("id", "india")
+    return JSONResponse({"status": "ok", "active_node": node, "code": active_node_state["code"]})
 
 async def get_sectors_api(request):
     """Returns the 10+ infrastructure sectors."""
@@ -181,18 +211,45 @@ async def submit_complaint_api(request):
     ward = form.get("ward", "Central Ward")
     address = form.get("address", "") or ward
     user_id = form.get("user_id", "Citizen")
+    phone = str(form.get("phone", "")).strip()
+    if phone:
+        user_id = phone
     lat = float(form.get("latitude", 28.6139))
     lon = float(form.get("longitude", 77.2090))
 
     ai_notes = ""
+    photo_url = None
 
-    # Check if photo was uploaded
+    # Check if photo was uploaded (file or base64)
     photo_file = form.get("photo")
     if photo_file and hasattr(photo_file, "read"):
         photo_bytes = await photo_file.read()
-        if photo_bytes and len(photo_bytes) > 500:
-            v_res = run_vision_agent(photo_bytes)
-            ai_notes += f"\n\n[Sentinel Vision]: {v_res['defect']} (Severity: {v_res['severity']}/10, Risk: {v_res['hazard']}). {v_res['diagnostic']}"
+        if photo_bytes and len(photo_bytes) > 50:
+            os.makedirs("static/uploads", exist_ok=True)
+            fname = f"problem_{int(datetime.now().timestamp() * 1000)}.jpg"
+            fpath = os.path.join("static", "uploads", fname)
+            with open(fpath, "wb") as f:
+                f.write(photo_bytes)
+            photo_url = f"/static/uploads/{fname}"
+
+            if len(photo_bytes) > 500:
+                v_res = run_vision_agent(photo_bytes)
+                ai_notes += f"\n\n[Sentinel Vision]: {v_res['defect']} (Severity: {v_res['severity']}/10, Risk: {v_res['hazard']}). {v_res['diagnostic']}"
+
+    photo_base64 = form.get("photo_base64")
+    if not photo_url and photo_base64 and len(str(photo_base64)) > 50:
+        raw_b64 = str(photo_base64)
+        if "," in raw_b64:
+            raw_b64 = raw_b64.split(",", 1)[1]
+        try:
+            os.makedirs("static/uploads", exist_ok=True)
+            fname = f"problem_{int(datetime.now().timestamp() * 1000)}.jpg"
+            fpath = os.path.join("static", "uploads", fname)
+            with open(fpath, "wb") as f:
+                f.write(base64.b64decode(raw_b64))
+            photo_url = f"/static/uploads/{fname}"
+        except Exception as e:
+            print(f"Error saving base64 photo: {e}")
 
     # Check if audio was uploaded
     audio_file = form.get("audio")
@@ -219,7 +276,8 @@ async def submit_complaint_api(request):
         user_id=user_id,
         category=category,
         description=final_desc,
-        location=loc_data
+        location=loc_data,
+        photo_url=photo_url
     )
 
     return JSONResponse({
@@ -227,16 +285,83 @@ async def submit_complaint_api(request):
         "id": cid,
         "category": category,
         "urgency": urgency,
-        "description": final_desc
+        "description": final_desc,
+        "photo_url": photo_url
     })
 
 async def update_complaint_status_api(request):
-    """Updates complaint status."""
+    """Updates complaint status, saves completed work photo proof, and triggers real-time citizen SMS notification."""
     cid = request.path_params.get("id")
+    content_type = request.headers.get("content-type", "")
+    resolution_photo = None
+    resolution_notes = ""
+    new_status = "In Progress"
+    department = "Municipal Public Works Dept"
+    engineer = "Er. Vikram Sharma (Chief Engineer)"
+
+    if "application/json" in content_type:
+        data = await request.json()
+        new_status = data.get("status", "In Progress")
+        department = data.get("department", "Municipal Public Works Dept")
+        engineer = data.get("engineer", "Er. Vikram Sharma (Chief Engineer)")
+        resolution_notes = data.get("resolution_notes", "")
+        raw_photo = data.get("resolution_photo")
+        if raw_photo:
+            if str(raw_photo).startswith("data:image"):
+                os.makedirs("static/uploads", exist_ok=True)
+                fname = f"resolution_{cid}_{int(datetime.now().timestamp())}.jpg"
+                fpath = os.path.join("static", "uploads", fname)
+                b64_data = str(raw_photo).split(",", 1)[1]
+                with open(fpath, "wb") as f:
+                    f.write(base64.b64decode(b64_data))
+                resolution_photo = f"/static/uploads/{fname}"
+            else:
+                resolution_photo = raw_photo
+    else:
+        form = await request.form()
+        new_status = form.get("status", "In Progress")
+        department = form.get("department", "Municipal Public Works Dept")
+        engineer = form.get("engineer", "Er. Vikram Sharma (Chief Engineer)")
+        resolution_notes = form.get("resolution_notes", "")
+        photo_file = form.get("resolution_photo")
+        if photo_file and hasattr(photo_file, "read"):
+            photo_bytes = await photo_file.read()
+            if photo_bytes and len(photo_bytes) > 50:
+                os.makedirs("static/uploads", exist_ok=True)
+                fname = f"resolution_{cid}_{int(datetime.now().timestamp())}.jpg"
+                fpath = os.path.join("static", "uploads", fname)
+                with open(fpath, "wb") as f:
+                    f.write(photo_bytes)
+                resolution_photo = f"/static/uploads/{fname}"
+
+    ok = update_complaint_status(cid, new_status, department=department, engineer=engineer,
+                                 resolution_photo=resolution_photo, resolution_notes=resolution_notes)
+    return JSONResponse({
+        "status": "ok" if ok else "error",
+        "id": cid,
+        "new_status": new_status,
+        "resolution_photo": resolution_photo
+    })
+
+async def get_sms_logs_api(request):
+    """Returns SMS dispatch audit logs for citizen real-time tracking."""
+    cid = request.query_params.get("complaint_id")
+    from sms_gateway import get_sms_logs
+    logs = get_sms_logs(complaint_id=cid)
+    return JSONResponse(logs)
+
+async def test_send_sms_api(request):
+    """On-demand API endpoint to test real-time SMS status dispatches."""
     data = await request.json()
-    new_status = data.get("status", "In Progress")
-    ok = update_complaint_status(cid, new_status)
-    return JSONResponse({"status": "ok" if ok else "error", "id": cid, "new_status": new_status})
+    phone = data.get("phone", "+91 98101 23456")
+    cid = data.get("complaint_id", "CP-TEST-001")
+    event_type = data.get("event_type", "REGISTERED")
+    category = data.get("category", "Water Supply & Pipeline Leakage")
+    dept = data.get("department")
+    eng = data.get("engineer")
+    from sms_gateway import send_sms_notification
+    res = send_sms_notification(phone, cid, event_type, category, {"department": dept, "engineer": eng})
+    return JSONResponse(res)
 
 async def get_demands_api(request):
     """Returns community demands filtered by active country code."""
@@ -299,12 +424,83 @@ async def tts_api(request):
     return JSONResponse({"status": "error", "message": "TTS generation failed"}, status_code=500)
 
 async def whatsapp_simulate_api(request):
-    """Simulates WhatsApp DPI bot ingestion."""
-    data = await request.json()
-    sender = data.get("sender", "+91 98101 23456")
-    message = data.get("message", "")
+    """Simulates WhatsApp DPI bot ingestion with problem category, exact address, and optional photo."""
+    content_type = request.headers.get("content-type", "")
+    photo_bytes = None
+    category = None
+    address = None
+    sender = "+91 98101 23456"
+    message = ""
+
+    if "multipart/form-data" in content_type:
+        form = await request.form()
+        sender = form.get("sender", sender)
+        message = form.get("message", "")
+        category = form.get("category", "")
+        address = form.get("address", "")
+        photo_file = form.get("photo")
+        if photo_file and hasattr(photo_file, "read"):
+            photo_bytes = await photo_file.read()
+    else:
+        try:
+            data = await request.json()
+            sender = data.get("sender", sender)
+            message = data.get("message", "")
+            category = data.get("category", "")
+            address = data.get("address", "")
+        except Exception:
+            pass
+
     curr_node = get_brics_node(active_node_state["id"])
-    res = process_messaging_complaint(sender, message, curr_node)
+    res = process_messaging_complaint(
+        sender_id=sender,
+        message_text=message or f"Problem reported for {category} at {address}",
+        brics_node=curr_node,
+        channel="WhatsApp DPI Gateway",
+        category=category,
+        address=address,
+        photo_bytes=photo_bytes
+    )
+    return JSONResponse(res)
+
+async def whatsapp_webhook_api(request):
+    """
+    Handles Meta WhatsApp Cloud API verification (GET) and incoming message webhooks (POST).
+    """
+    if request.method == "GET":
+        mode = request.query_params.get("hub.mode")
+        token = request.query_params.get("hub.verify_token")
+        challenge = request.query_params.get("hub.challenge", "")
+        verify_token = os.environ.get("WHATSAPP_VERIFY_TOKEN", "civicpulse_token")
+        if mode == "subscribe" and token == verify_token:
+            return PlainTextResponse(challenge)
+        return PlainTextResponse("Verification failed", status_code=403)
+
+    try:
+        content_type = request.headers.get("content-type", "")
+        if "application/json" in content_type:
+            payload = await request.json()
+        else:
+            form = await request.form()
+            payload = dict(form)
+    except Exception:
+        payload = {}
+
+    curr_node = get_brics_node(active_node_state["id"])
+    res = process_whatsapp_webhook_payload(payload, curr_node)
+    return JSONResponse(res)
+
+async def telegram_webhook_api(request):
+    """
+    Handles Telegram Bot API incoming update webhooks (POST).
+    """
+    try:
+        payload = await request.json()
+    except Exception:
+        payload = {}
+
+    curr_node = get_brics_node(active_node_state["id"])
+    res = process_telegram_webhook_payload(payload, curr_node)
     return JSONResponse(res)
 
 async def get_dpg_standards_api(request):
@@ -516,8 +712,12 @@ async def reverse_geocode_api(request):
 # ==============================================================================
 
 async def get_city_officers_api(request):
-    """Returns all assigned city officers and dynamic Red/Yellow/Green problem stats."""
-    officers = get_city_officers_overview()
+    """Returns assigned city officers filtered by the active BRICS nation (country_code).
+    Accepts an optional ?country_code= query param to override the active node.
+    This ensures each Central Official portal only sees officers from their own country."""
+    # Allow explicit override via query param, otherwise use the active node
+    country_code = request.query_params.get("country_code") or active_node_state.get("code")
+    officers = get_city_officers_overview(country_code=country_code)
     return JSONResponse(officers)
 
 async def get_city_proposals_api(request):
@@ -610,6 +810,10 @@ routes = [
     Route("/city-official", endpoint=city_official_page, methods=["GET"]),
     Route("/central-official", endpoint=central_official_page, methods=["GET"]),
     Route("/government", endpoint=government_page, methods=["GET"]),
+    Route("/presentation", endpoint=presentation_page, methods=["GET"]),
+    Route("/pitch-deck", endpoint=presentation_page, methods=["GET"]),
+    Route("/CivicPulse-BRICS_Pitch_Deck.pptx", endpoint=download_pitch_deck_pptx, methods=["GET"]),
+    Route("/api/v1/download-pitch-deck", endpoint=download_pitch_deck_pptx, methods=["GET"]),
     Route("/api/auth/login", endpoint=auth_login_api, methods=["POST"]),
     Route("/api/auth/logout", endpoint=auth_logout_api, methods=["POST"]),
     Route("/api/auth/me", endpoint=auth_me_api, methods=["GET"]),
@@ -627,6 +831,8 @@ routes = [
     Route("/api/weather", endpoint=get_weather_api, methods=["GET"]),
     Route("/api/tts", endpoint=tts_api, methods=["POST"]),
     Route("/api/whatsapp/simulate", endpoint=whatsapp_simulate_api, methods=["POST"]),
+    Route("/api/v1/whatsapp-webhook", endpoint=whatsapp_webhook_api, methods=["GET", "POST"]),
+    Route("/api/v1/telegram-webhook", endpoint=telegram_webhook_api, methods=["POST"]),
     Route("/api/voice/transcribe", endpoint=transcribe_audio_api, methods=["POST"]),
     Route("/api/location/reverse", endpoint=reverse_geocode_api, methods=["GET"]),
     Route("/api/dpg/standards", endpoint=get_dpg_standards_api, methods=["GET"]),
@@ -637,6 +843,9 @@ routes = [
     Route("/api/bigquery/records", endpoint=get_bigquery_records_api, methods=["GET"]),
     Route("/api/bigquery/stream", endpoint=stream_bigquery_api, methods=["POST"]),
     Route("/api/export/csv", endpoint=export_csv_api, methods=["GET"]),
+    # Real-Time Citizen SMS Notification Audit APIs
+    Route("/api/sms/logs", endpoint=get_sms_logs_api, methods=["GET"]),
+    Route("/api/sms/send", endpoint=test_send_sms_api, methods=["POST"]),
     # City Official & Central Official Dedicated APIs
     Route("/api/city-officers", endpoint=get_city_officers_api, methods=["GET"]),
     Route("/api/city-proposals", endpoint=get_city_proposals_api, methods=["GET"]),
@@ -652,7 +861,8 @@ routes = [
 ]
 
 middleware = [
-    Middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
+    Middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"]),
+    Middleware(NoCacheMiddleware)
 ]
 
 app = Starlette(debug=True, routes=routes, middleware=middleware)

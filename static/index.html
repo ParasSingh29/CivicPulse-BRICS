@@ -2,7 +2,7 @@
 <html lang="en" data-theme="dark" data-node="IN">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>CivicPulse-BRICS — Sovereign Digital Public Infrastructure</title>
   <meta name="description" content="AI-Powered Digital Public Good for National Infrastructure Planning, Multichannel Citizen Petitions, and CapEx Budget Alignment across BRICS Nations.">
   
@@ -15,90 +15,99 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
   
   <!-- Custom Enterprise Design System -->
-  <link rel="stylesheet" href="/static/css/styles.css">
+  <link rel="stylesheet" href="/static/css/styles.css?v=google_gnmt_v2">
 </head>
 <body>
 
-  <!-- ========================================================================
-       TOP EXECUTIVE NAVBAR (WITH ILLUMINATED BRICS SPECTRUM)
-       ======================================================================== -->
-  <header class="navbar">
-    <div class="nav-brand">
-      <div class="nav-logo-box" title="CivicPulse-BRICS Sovereign Core">
-        <svg class="svg-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-          <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
-        </svg>
-      </div>
-      <div>
-        <div style="display:flex; align-items:center; gap:8px;">
-          <span class="nav-title">CivicPulse-BRICS</span>
-          <span class="beacon-pulse" title="System Operational & Connected"></span>
+  <!-- Fixed Sovereign Header Bar Stack -->
+  <div class="header-fixed-wrap">
+    <!-- ========================================================================
+         TOP EXECUTIVE NAVBAR (WITH ILLUMINATED BRICS SPECTRUM)
+         ======================================================================== -->
+    <header class="navbar">
+      <div class="nav-brand">
+        <div class="nav-logo-box" title="CivicPulse-BRICS Sovereign Core">
+          <img src="/static/brics_logo.png" alt="CivicPulse-BRICS Logo">
         </div>
-        <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
-          <span class="nav-badge" id="active-node-badge">
-            <span id="active-flag-container"></span>
-            <span id="active-node-text">INDIA DPI NODE</span>
-          </span>
-          <span class="nav-badge" style="background:rgba(245,158,11,0.12); color:#fbbf24; border:1px solid rgba(245,158,11,0.3);">
-            <svg class="svg-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/>
+        <div>
+          <div style="display:flex; align-items:center; gap:8px;">
+            <span class="nav-title">CivicPulse-BRICS</span>
+            <span class="beacon-pulse" title="System Operational & Connected"></span>
+          </div>
+          <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+            <span class="nav-badge" id="active-node-badge">
+              <span id="active-flag-container"></span>
+              <span id="active-node-text">INDIA DPI NODE</span>
+            </span>
+            <span class="nav-badge" style="background:rgba(245,158,11,0.12); color:#fbbf24; border:1px solid rgba(245,158,11,0.3);">
+              <svg class="svg-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/>
+              </svg>
+              FIREBASE & BIGQUERY
+            </span>
+            <span style="font-size:0.68rem; color:var(--text-muted); font-family:var(--font-mono);">DPG SPEC v2.5</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="nav-controls">
+        <!-- Sovereign Quick Navigation (Back & Home) -->
+        <div class="nav-nav-group" id="nav-quick-actions" role="navigation" aria-label="Page Navigation">
+          <button class="nav-nav-btn" id="nav-btn-back" title="Go Back (Alt + Left)" data-i18n-title="nav_back" aria-label="Go Back" onclick="window.navGoBack()">
+            <svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
             </svg>
-            FIREBASE & BIGQUERY
-          </span>
-          <span style="font-size:0.68rem; color:var(--text-muted); font-family:var(--font-mono);">DPG SPEC v2.5</span>
+            <span data-i18n="nav_back">Back</span>
+          </button>
+          <button class="nav-nav-btn" id="nav-btn-home" title="Go to Home" data-i18n-title="nav_home" aria-label="Go to Home" onclick="window.navGoHome()">
+            <svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+              <polyline points="9 22 9 12 15 12 15 22"></polyline>
+            </svg>
+            <span data-i18n="nav_home">Home</span>
+          </button>
         </div>
-      </div>
-    </div>
 
-    <div class="nav-controls">
-      <!-- Sovereign Quick Navigation (Back & Home) -->
-      <div class="nav-nav-group" id="nav-quick-actions" role="navigation" aria-label="Page Navigation">
-        <button class="nav-nav-btn" id="nav-btn-back" title="Go Back (Alt + Left)" data-i18n-title="nav_back" aria-label="Go Back" onclick="window.navGoBack()">
-          <svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
-            <polyline points="15 18 9 12 15 6"></polyline>
-          </svg>
-          <span data-i18n="nav_back">Back</span>
+        <div class="nav-divider"></div>
+
+        <!-- BRICS Node Switcher -->
+        <div class="node-select-wrap">
+          <select class="node-select" id="node-selector">
+            <option value="IN">🇮🇳 India (Delhi NCR)</option>
+            <option value="BR">🇧🇷 Brazil (São Paulo)</option>
+            <option value="ZA">🇿🇦 South Africa (Gauteng)</option>
+            <option value="CN">🇨🇳 China (Shanghai)</option>
+            <option value="RU">🇷🇺 Russia (Moscow)</option>
+            <option value="EG">🇪🇬 Egypt (Cairo)</option>
+            <option value="ET">🇪🇹 Ethiopia (Addis Ababa)</option>
+            <option value="ID">🇮🇩 Indonesia (Jakarta)</option>
+            <option value="IR">🇮🇷 Iran (Tehran)</option>
+            <option value="SA">🇸🇦 Saudi Arabia (Riyadh)</option>
+            <option value="AE">🇦🇪 United Arab Emirates (Dubai)</option>
+          </select>
+        </div>
+
+        <!-- Quick Portal Links -->
+        <div style="display:flex; gap:6px;">
+          <a href="/city-official" class="btn btn-secondary btn-sm" title="City Official Command Portal" style="font-size:0.76rem; padding:4px 10px;">
+            <span>🏙️ City Hub</span>
+          </a>
+          <a href="/central-official" class="btn btn-secondary btn-sm" title="Central Official Sovereign Command" style="font-size:0.76rem; padding:4px 10px;">
+            <span>🏛️ Central Hub</span>
+          </a>
+        </div>
+
+        <!-- Theme Mode Toggle -->
+        <button class="theme-toggle-btn" id="theme-toggle" title="Toggle Light/Dark Theme">
+          <span id="theme-icon">
+            <svg class="svg-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+            </svg>
+          </span>
         </button>
-        <button class="nav-nav-btn" id="nav-btn-home" title="Go to Home" data-i18n-title="nav_home" aria-label="Go to Home" onclick="window.navGoHome()">
-          <svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-            <polyline points="9 22 9 12 15 12 15 22"></polyline>
-          </svg>
-          <span data-i18n="nav_home">Home</span>
-        </button>
       </div>
-
-      <div class="nav-divider"></div>
-
-      <!-- BRICS Node Switcher -->
-      <div class="node-select-wrap">
-        <select class="node-select" id="node-selector">
-          <option value="IN">India (Delhi NCR)</option>
-          <option value="BR">Brazil (São Paulo)</option>
-          <option value="ZA">South Africa (Gauteng)</option>
-        </select>
-      </div>
-
-      <!-- Quick Portal Links -->
-      <div style="display:flex; gap:6px;">
-        <a href="/city-official" class="btn btn-secondary btn-sm" title="City Official Command Portal" style="font-size:0.76rem; padding:4px 10px;">
-          <span>🏙️ City Hub</span>
-        </a>
-        <a href="/central-official" class="btn btn-secondary btn-sm" title="Central Official Sovereign Command" style="font-size:0.76rem; padding:4px 10px;">
-          <span>🏛️ Central Hub</span>
-        </a>
-      </div>
-
-      <!-- Theme Mode Toggle -->
-      <button class="theme-toggle-btn" id="theme-toggle" title="Toggle Light/Dark Theme">
-        <span id="theme-icon">
-          <svg class="svg-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
-          </svg>
-        </span>
-      </button>
-    </div>
-  </header>
+    </header>
+  </div>
 
   <!-- ========================================================================
        MAIN APPLICATION CONTAINER
@@ -196,12 +205,7 @@
           </svg>
           <span>Track My Submissions</span>
         </button>
-        <button class="tab-link" data-target="cit-tab-whatsapp">
-          <svg class="svg-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
-          </svg>
-          <span>WhatsApp & Messaging Bot (DPI)</span>
-        </button>
+
       </nav>
 
       <!-- TAB 1: REPORT INFRASTRUCTURE ISSUE (10+ CATEGORIES) -->
@@ -271,15 +275,10 @@
             </div>
 
             <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
-              <div class="form-group">
-                <label class="form-label" data-i18n="lbl_neighborhood_ward">Neighborhood / Ward *</label>
-                <select class="form-control" id="complaint-ward-select">
-                  <!-- Dynamically populated from active BRICS node -->
-                </select>
-              </div>
+              <!-- Column 1: Auto-Detected GPS Location -->
               <div class="form-group">
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
-                  <label class="form-label" style="margin-bottom:0;" data-i18n="lbl_street_address">Street Address or Landmark</label>
+                  <label class="form-label" style="margin-bottom:0;" data-i18n="lbl_auto_gps_location">Auto-Detected GPS Location</label>
                   <button type="button" class="btn-location-detect" id="btn-use-current-location" title="Detect GPS coordinates and fill address">
                     <svg class="svg-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                       <polygon points="3 11 22 2 13 21 11 13 3 11"/>
@@ -287,14 +286,23 @@
                     <span id="loc-btn-label" data-i18n="btn_use_current_location">Use Current Location</span>
                   </button>
                 </div>
-                <input type="text" class="form-control" id="complaint-address-input" placeholder="e.g. Outer Ring Road, Near Metro Gate 2">
+                <input type="text" class="form-control" id="complaint-gps-address" placeholder="Click 'Use Current Location' for GPS auto-detect..." readonly style="background:rgba(255,255,255,0.03); color:var(--text-secondary);">
                 <!-- GPS Location Feedback Chip -->
                 <div id="location-detected-chip" style="display:none; margin-top:6px; font-size:0.75rem; color:#059669; background:rgba(5,150,105,0.08); border:1px solid rgba(5,150,105,0.25); border-radius:6px; padding:4px 8px; align-items:center; justify-content:space-between;">
                   <span id="location-chip-text">📍 GPS Coordinates Acquired</span>
                   <button type="button" id="btn-clear-gps" style="background:transparent; border:none; color:#059669; font-weight:700; cursor:pointer; font-size:0.8rem;" title="Clear GPS">×</button>
                 </div>
               </div>
+
+              <!-- Column 2: Detailed Address & Landmark (User Fills) -->
+              <div class="form-group">
+                <label class="form-label" style="margin-bottom:6px;" data-i18n="lbl_detailed_address">Detailed Address & Landmark *</label>
+                <input type="text" class="form-control" id="complaint-address-input" placeholder="e.g. House/Flat No. 42, Block B, Street 5, Near Metro Gate 2" data-i18n-placeholder="ph_detailed_address" required style="min-height:44px;">
+              </div>
             </div>
+
+            <!-- Hidden Ward selector for form compatibility -->
+            <input type="hidden" id="complaint-ward-select" value="Central Ward">
 
             <!-- Multimodal Evidence: Photo & Voice Note -->
             <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:8px;">
@@ -400,53 +408,7 @@
         </div>
       </div>
 
-      <!-- TAB 4: WHATSAPP DPI SIMULATOR -->
-      <div class="tab-content" id="cit-tab-whatsapp" style="display:none;">
-        <div style="text-align:center; max-width:650px; margin:0 auto 24px auto;">
-          <h2 style="font-size:1.5rem; margin-bottom:6px; display:flex; align-items:center; justify-content:center; gap:8px;">
-            <svg class="svg-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#25d366" stroke-width="2">
-              <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
-            </svg>
-            <span>GovCitizen Official WhatsApp DPI Gateway</span>
-          </h2>
-          <p style="color:var(--text-secondary); font-size:0.9rem;">
-            Simulating live ingestion of citizen audio notes and text messages via WhatsApp and messaging apps into the Digital Public Good (DPG) stream.
-          </p>
-        </div>
 
-        <div class="whatsapp-chat-container">
-          <div class="wa-header">
-            <div style="display:flex; align-items:center; gap:12px;">
-              <svg class="svg-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#25d366" stroke-width="2">
-                <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
-              </svg>
-              <div>
-                <b style="font-size:0.95rem;">GovCitizen Assistant (Official DPI Node)</b><br>
-                <span style="font-size:0.72rem; color:#dcf8c6;">● Online • Verified Digital Public Good</span>
-              </div>
-            </div>
-            <span class="nav-badge" style="background:#128c7e; color:#ffffff;">WEBHOOK ACTIVE</span>
-          </div>
-
-          <div class="wa-body" id="wa-chat-body">
-            <div class="wa-bubble-bot">
-              <b>Namaste / Olá / Sawubona!</b> I am the automated GovCitizen Assistant. Send a voice note or message describing an infrastructure problem in your area, and I will geotag it and factor it into the <b>National CapEx Priority Index</b>.
-            </div>
-          </div>
-
-          <div style="background:#202c33; padding:14px 18px; border-top:1px solid rgba(255,255,255,0.08);">
-            <div style="display:flex; gap:8px; margin-bottom:10px; flex-wrap:wrap;">
-              <button class="btn btn-secondary btn-sm" id="wa-sample-hi">🇮🇳 Hindi Voice Note</button>
-              <button class="btn btn-secondary btn-sm" id="wa-sample-pt">🇧🇷 Portuguese Note</button>
-              <button class="btn btn-secondary btn-sm" id="wa-sample-en">🇿🇦 English Petition</button>
-            </div>
-            <div style="display:flex; gap:10px;">
-              <input type="text" class="form-control" id="wa-message-input" placeholder="Type WhatsApp message or click a sample..." style="border-radius:24px;">
-              <button class="btn btn-primary" id="btn-wa-send" style="border-radius:50%; width:44px; height:44px; padding:0;">➔</button>
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
 
     <!-- ======================================================================
@@ -758,8 +720,11 @@
   <!-- Leaflet JS for Geospatial Maps -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
   
-  <!-- Internationalization (i18n) Engine -->
-  <script src="/static/js/i18n.js"></script>
+  <!-- Internationalization (i18n) Engine -->  <!-- Google Translate Engine Container (Hidden) -->
+  <div id="google_translate_element" style="display:none;"></div>
+  <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" async></script>
+
+  <script src="/static/js/i18n.js?v=google_gnmt_v2"></script>
   <!-- Core Modular JS Application -->
   <script src="/static/js/app.js"></script>
   <script src="/static/js/citizen.js"></script>

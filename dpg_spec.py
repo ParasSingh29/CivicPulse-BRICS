@@ -102,6 +102,28 @@ OPENAPI_SPEC = {
                 }
             }
         },
+        "/api/v1/whatsapp-webhook": {
+            "get": {
+                "summary": "Meta WhatsApp Cloud API Webhook verification challenge.",
+                "responses": {
+                    "200": {"description": "Returns hub.challenge string on valid token match."}
+                }
+            },
+            "post": {
+                "summary": "Meta / Twilio WhatsApp incoming message webhook parser with Gemini AI triage.",
+                "responses": {
+                    "200": {"description": "Grievance triaged, geotagged, and registered successfully."}
+                }
+            }
+        },
+        "/api/v1/telegram-webhook": {
+            "post": {
+                "summary": "Telegram Bot API update webhook parser with Gemini AI triage.",
+                "responses": {
+                    "200": {"description": "Grievance triaged, geotagged, and registered with bot response."}
+                }
+            }
+        },
         "/api/dpg/standards": {
             "get": {
                 "summary": "Retrieve Digital Public Good Alliance (DPGA) standard compliance indicators.",

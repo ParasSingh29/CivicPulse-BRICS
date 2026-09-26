@@ -2,7 +2,7 @@
 <html lang="en" data-theme="dark" data-node="IN">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>CivicPulse-BRICS — Central Official Sovereign Command</title>
   <meta name="description" content="National Infrastructure Command Hub for Central Officials: Supervise assigned city officers and Red/Yellow/Green problem meters, evaluate municipal proposals, synthesize AI-driven BRICS joint ventures, and handle inbound partner nation requests.">
   
@@ -12,111 +12,139 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
   
   <!-- Custom Enterprise Design System -->
-  <link rel="stylesheet" href="/static/css/styles.css">
+  <link rel="stylesheet" href="/static/css/styles.css?v=google_gnmt_v2">
 </head>
-<body>
-
-  <!-- ========================================================================
-       TOP EXECUTIVE NAVBAR (CENTRAL GOVERNMENT HUB)
-       ======================================================================== -->
-  <header class="navbar">
-    <div class="nav-brand">
-      <div class="nav-logo-box" title="Central Command Core" style="background:linear-gradient(135deg, #2563eb, #1d4ed8);">
-        <svg class="svg-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-          <line x1="3" y1="21" x2="21" y2="21"/>
-          <line x1="4" y1="10" x2="20" y2="10"/>
-          <polyline points="12 2 20 10 4 10 12 2"/>
-          <line x1="6" y1="10" x2="6" y2="21"/>
-          <line x1="10" y1="10" x2="10" y2="21"/>
-          <line x1="14" y1="10" x2="14" y2="21"/>
-          <line x1="18" y1="10" x2="18" y2="21"/>
-        </svg>
+<body>  <!-- Fixed Sovereign Header Bar Stack -->
+  <div class="header-fixed-wrap">
+    <!-- Top Official Sovereign Government Header -->
+    <div class="gov-top-disclaimer-bar">
+      <div class="gov-emblem-badge">
+        <span>🏛️</span>
+        <span data-i18n="lbl_official_portal_nat">Official Portal of the Sovereign Republic • National CapEx Planning Commission & BRICS Directorate</span>
       </div>
-      <div>
-        <div style="display:flex; align-items:center; gap:8px;">
-          <span class="nav-title">CivicPulse-BRICS</span>
-          <span class="beacon-pulse" style="background:#3b82f6;" title="Central Command Operational"></span>
-        </div>
-        <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
-          <span class="nav-badge" style="background:rgba(37,99,235,0.14); color:#60a5fa; border:1px solid rgba(37,99,235,0.3);">
-            <span>🇮🇳</span>
-            <span>National Central Command</span>
-          </span>
-          <span class="nav-badge" style="background:rgba(234,88,12,0.12); color:#fbbf24; border:1px solid rgba(234,88,12,0.3);">
-            Directorate Level-4 Clearance
-          </span>
-          <span style="font-size:0.68rem; color:var(--text-muted); font-family:var(--font-mono);">BRICS STRATEGIC v2.5</span>
-        </div>
+      <div class="gov-accessibility-controls">
+        <span data-i18n="lbl_text_size">Text Size:</span>
+        <button class="gov-access-btn" onclick="window.setFontSize('small')">A-</button>
+        <button class="gov-access-btn" onclick="window.setFontSize('normal')">A</button>
+        <button class="gov-access-btn" onclick="window.setFontSize('large')">A+</button>
+        <span style="margin: 0 4px; color: var(--border-subtle);">|</span>
+        <span style="font-weight:700; color:#60a5fa;" data-i18n="lbl_national_sovereign_dir">National Sovereign Directorate v2.5</span>
       </div>
     </div>
 
-    <div class="nav-controls">
-      <!-- Sovereign Quick Navigation (Back & Home) -->
-      <div class="nav-nav-group" id="nav-quick-actions" role="navigation" aria-label="Page Navigation">
-        <button class="nav-nav-btn" id="nav-btn-back" title="Go Back" data-i18n-title="nav_back" onclick="window.navGoBack()">
-          <svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
-            <polyline points="15 18 9 12 15 6"></polyline>
-          </svg>
-          <span data-i18n="nav_back">Back</span>
-        </button>
-        <button class="nav-nav-btn" id="nav-btn-home" title="Go to Central Overview" data-i18n-title="nav_home" onclick="window.navGoHome()">
-          <svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-            <polyline points="9 22 9 12 15 12 15 22"></polyline>
-          </svg>
-          <span data-i18n="nav_home">Overview</span>
-        </button>
-      </div>
+    <!-- Official Cabinet Announcement Ticker -->
+    <div class="gov-ticker-bar">
+      <span class="gov-ticker-badge" style="background:#2563eb;" data-i18n="badge_nat_directive">NATIONAL DIRECTIVE</span>
+      <span class="gov-ticker-text" data-i18n="txt_nat_directive">📢 Cabinet Secretariat: National Infrastructure CapEx Sanctions & BRICS Bilateral Joint Ventures Stream Active</span>
+    </div>
 
-      <div class="nav-divider"></div>
-
-      <!-- Sovereign Language Selector -->
-      <div class="lang-select-wrap">
-        <select class="lang-select" id="lang-selector" title="Select Platform Language">
-          <option value="en">🇬🇧 English</option>
-          <option value="hi">🇮🇳 हिन्दी</option>
-          <option value="pt">🇧🇷 Português</option>
-          <option value="zu">🇿🇦 isiZulu</option>
-          <option value="ru">🇷🇺 Русский</option>
-          <option value="zh">🇨🇳 中文</option>
-        </select>
-      </div>
-
-      <!-- User Profile Badge -->
-      <div class="user-profile-pill" id="user-profile-pill">
-        <div class="user-profile-avatar" style="background:#2563eb;">RV</div>
-        <div style="line-height:1.2;">
-          <div style="font-weight:700;">Dr. Rajesh Verma</div>
-          <div style="font-size:0.7rem; color:var(--text-muted);">Director General • National CapEx & BRICS Accord</div>
+    <!-- ========================================================================
+         TOP EXECUTIVE NAVBAR (CENTRAL GOVERNMENT HUB)
+         ======================================================================== -->
+    <header class="navbar">
+      <div class="nav-brand">
+        <div class="nav-logo-box" title="Central Command Core">
+          <img src="/static/brics_logo.png" alt="CivicPulse-BRICS Logo">
+        </div>
+        <div>
+          <div style="display:flex; align-items:center; gap:8px;">
+            <span class="nav-title" data-i18n="app_title">CivicPulse-BRICS</span>
+            <span class="beacon-pulse" style="background:#3b82f6;" title="Central Command Operational"></span>
+          </div>
+          <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+            <span class="nav-badge" style="background:rgba(37,99,235,0.14); color:#60a5fa; border:1px solid rgba(37,99,235,0.3);">
+              <span>🇮🇳</span>
+              <span data-i18n="central_command_title">National Central Command</span>
+            </span>
+            <span class="nav-badge" style="background:rgba(37,99,235,0.14); color:#60a5fa; border:1px solid rgba(37,99,235,0.3);" data-i18n="central_sovereign_dir">
+              Sovereign Directorate
+            </span>
+            <span style="font-size:0.68rem; color:var(--text-muted); font-family:var(--font-mono);" data-i18n="central_sovereign_version">SOVEREIGN CENTRAL v2.5</span>
+          </div>
         </div>
       </div>
 
-      <!-- Theme Mode Toggle -->
-      <button class="theme-toggle-btn" id="theme-toggle" title="Toggle Light/Dark Theme">
-        <span id="theme-icon">
-          <svg class="svg-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+      <div class="nav-controls">
+        <!-- Sovereign Quick Navigation (Back & Home) -->
+        <div class="nav-nav-group" id="nav-quick-actions" role="navigation" aria-label="Page Navigation">
+          <button class="nav-nav-btn" id="nav-btn-back" title="Go Back (Alt + Left)" data-i18n-title="nav_back" aria-label="Go Back" onclick="window.navGoBack()">
+            <svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+            <span data-i18n="nav_back">Back</span>
+          </button>
+          <button class="nav-nav-btn" id="nav-btn-home" title="Go to Home" data-i18n-title="nav_home" aria-label="Go to Home" onclick="window.navGoHome()">
+            <svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+              <polyline points="9 22 9 12 15 12 15 22"></polyline>
+            </svg>
+            <span data-i18n="nav_home">Home</span>
+          </button>
+        </div>
+
+        <div class="nav-divider"></div>
+
+        <!-- Language Selector -->
+        <div class="lang-select-wrap">
+          <select class="lang-select" id="lang-selector" title="Select Platform Language">
+            <optgroup label="BRICS Official Languages">
+              <option value="en">🇬🇧 English</option>
+              <option value="hi">🇮🇳 हिन्दी</option>
+              <option value="pt">🇧🇷 Português</option>
+              <option value="ru">🇷🇺 Русский</option>
+              <option value="zh">🇨🇳 中文</option>
+              <option value="ar">🇸🇦/🇦🇪/🇪🇬 العربية</option>
+              <option value="id">🇮🇩 Bahasa Indonesia</option>
+              <option value="fa">🇮🇷 فارسی</option>
+              <option value="am">🇪🇹 አማርኛ</option>
+              <option value="zu">🇿🇦 isiZulu</option>
+              <option value="af">🇿🇦 Afrikaans</option>
+              <option value="xh">🇿🇦 isiXhosa</option>
+            </optgroup>
+            <optgroup label="Indian Regional Languages">
+              <option value="bn">🇮🇳 বাংলা (Bengali)</option>
+              <option value="mr">🇮🇳 मराठी (Marathi)</option>
+              <option value="ta">🇮🇳 தமிழ் (Tamil)</option>
+              <option value="te">🇮🇳 తెలుగు (Telugu)</option>
+              <option value="gu">🇮🇳 ગુજરાતી (Gujarati)</option>
+              <option value="kn">🇮🇳 ಕನ್ನಡ (Kannada)</option>
+              <option value="ml">🇮🇳 മലയാളം (Malayalam)</option>
+              <option value="pa">🇮🇳 ਪੰਜਾਬੀ (Punjabi)</option>
+              <option value="or">🇮🇳 ଓଡ଼ିଆ (Odia)</option>
+              <option value="as">🇮🇳 অসমীয়া (Assamese)</option>
+              <option value="ur">🇮🇳 اردو (Urdu)</option>
+            </optgroup>
+          </select>
+        </div>
+
+        <!-- User Profile Pill -->
+        <div class="user-profile-pill">
+          <div class="user-profile-avatar" style="background:#2563eb;">AK</div>
+          <div style="line-height:1.2;">
+            <div style="font-weight:700;">Amitabh Kant</div>
+            <div style="font-size:0.7rem; color:var(--text-muted);" data-i18n="role_infra_secretary">Secretary • Infra Planning Commission</div>
+          </div>
+        </div>
+
+        <!-- Theme Mode Toggle -->
+        <button class="theme-toggle-btn" id="theme-toggle" title="Toggle Light/Dark Theme">
+          <span id="theme-icon">
+            <svg class="svg-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+            </svg>
+          </span>
+        </button>
+
+        <!-- Logout Button -->
+        <button class="btn-logout" id="btn-logout" title="Exit portal">
+          <svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
           </svg>
-        </span>
-      </button>
-
-      <!-- Switch to City Official Portal Link -->
-      <a href="/city-official" class="btn btn-secondary btn-sm" title="Open City Official Command Portal" style="display:flex; align-items:center; gap:6px;">
-        <svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M3 21h18M3 7v14M21 7v14M6 11h4M6 15h4M14 11h4M14 15h4M9 3l3-2 3 2v4H9V3z"/>
-        </svg>
-        <span>← City Portal</span>
-      </a>
-
-      <!-- Logout Button -->
-      <button class="btn-logout" id="btn-logout" title="Exit portal">
-        <svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
-        </svg>
-        <span>Exit</span>
-      </button>
-    </div>
-  </header>
+          <span data-i18n="lbl_exit">Exit</span>
+        </button>
+      </div>
+    </header>
+  </div>
 
   <!-- ========================================================================
        MAIN CENTRAL OFFICIAL CONTAINER
@@ -135,57 +163,29 @@
         <div class="hero-content">
           <div class="hero-tag">
             <span class="beacon-pulse" style="background:#2563eb;"></span>
-            <span>NATIONAL SOVEREIGN CAPEX & BRICS INTERNATIONAL STRATEGY</span>
+            <span data-i18n="central_hero_tag">NATIONAL SOVEREIGN CAPEX & BRICS INTERNATIONAL STRATEGY</span>
           </div>
-          <h1 class="hero-title">
+          <h1 class="hero-title" data-i18n="central_hero_title">
             Central Official Command & BRICS Directorate
           </h1>
-          <p class="hero-subtitle">
+          <p class="hero-subtitle" data-i18n="central_hero_subtitle">
             Supervise assigned city officers across the nation, evaluate real-time Red/Yellow/Green problem resolution health meters, sanction municipal proposals, synthesize high-impact BRICS Joint Ventures, and respond to inbound collaboration requests.
           </p>
         </div>
       </section>
 
-      <!-- National Executive KPI Cards -->
-      <section class="kpi-grid" style="margin-bottom:32px;">
-        <div class="kpi-card">
-          <div class="kpi-label">Supervised Municipalities</div>
-          <div class="kpi-value" id="central-kpi-cities" style="color:var(--text-primary);">5 Cities</div>
-          <div class="kpi-delta">Delhi, Mumbai, Bengaluru, SP, Joburg</div>
-        </div>
 
-        <div class="kpi-card" style="border-left: 4px solid #ef4444;">
-          <div class="kpi-label" style="color:#ef4444;">● Nationwide Critical (Red)</div>
-          <div class="kpi-value" id="central-kpi-red" style="color:#ef4444;">--</div>
-          <div class="kpi-delta alert">Requiring Immediate Intervention</div>
-        </div>
-
-        <div class="kpi-card" style="border-left: 4px solid #f59e0b;">
-          <div class="kpi-label" style="color:#f59e0b;">● Work In Progress (Yellow)</div>
-          <div class="kpi-value" id="central-kpi-yellow" style="color:#f59e0b;">--</div>
-          <div class="kpi-delta" style="color:#f59e0b;">Field Crews Actively Deployed</div>
-        </div>
-
-        <div class="kpi-card" style="border-left: 4px solid #10b981;">
-          <div class="kpi-label" style="color:#10b981;">● Resolved Infrastructure (Green)</div>
-          <div class="kpi-value" id="central-kpi-green" style="color:#10b981;">--</div>
-          <div class="kpi-delta" style="color:#10b981;">Audited & Verified Closed</div>
-        </div>
-      </section>
 
       <!-- Launchpad Section Title -->
       <div style="margin-bottom:18px;">
-        <h3 style="font-size:1.25rem; font-weight:700; margin:0 0 4px 0;">Sovereign Command Directory</h3>
-        <p style="color:var(--text-secondary); font-size:0.88rem; margin:0;">
-          Select a directorate module below to manage national infrastructure operations:
-        </p>
+        <h3 style="font-size:1.25rem; font-weight:700; margin:0 0 4px 0;" data-i18n="sec_central_launchpad">Sovereign Command Directory</h3>
       </div>
 
       <!-- 4 Interactive Central Official Launch Cards -->
       <div class="home-launch-grid" style="grid-template-columns:repeat(auto-fit, minmax(250px, 1fr));">
         
         <!-- CARD 1: CITY OFFICERS DIRECTORY -->
-        <div class="home-launch-card" style="--card-accent: #2563eb;" data-open-tab="central-tab-officers">
+        <div class="home-launch-card" style="--card-accent: #2563eb;" data-open-tab="central-tab-officers" onclick="window.switchTab('central-tab-officers')">
           <div>
             <div class="launch-card-header">
               <div class="launch-card-icon" style="color:#60a5fa; background:rgba(37,99,235,0.1); border-color:rgba(37,99,235,0.25);">
@@ -193,28 +193,23 @@
                   <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
                 </svg>
               </div>
-              <span class="launch-card-badge" style="color:#60a5fa; background:rgba(37,99,235,0.12); border:1px solid rgba(37,99,235,0.3);">
+              <span class="launch-card-badge" style="color:#60a5fa; background:rgba(37,99,235,0.12); border:1px solid rgba(37,99,235,0.3);" data-i18n="badge_oversight_dir">
                 Oversight Directory
               </span>
             </div>
-            <h4 class="launch-card-title">Assigned City Officers Directory</h4>
-            <p class="launch-card-desc">
+            <h4 class="launch-card-title" data-i18n="card_central_officers_title">Assigned City Officers Directory</h4>
+            <p class="launch-card-desc" data-i18n="card_central_officers_desc">
               Supervise assigned municipal engineers across Delhi, Mumbai, Bengaluru, São Paulo, and Johannesburg with real-time Red/Yellow/Green problem meters.
             </p>
-            <div class="launch-card-tags">
-              <span class="launch-card-tag">5 Supervised Cities</span>
-              <span class="launch-card-tag">RYG Health Meters</span>
-              <span class="launch-card-tag">Officer Contact</span>
-            </div>
           </div>
           <div class="launch-card-action" style="color:#60a5fa;">
-            <span>View Officers Grid</span>
+            <span data-i18n="card_central_officers_btn">View Officers Grid</span>
             <span>→</span>
           </div>
         </div>
 
         <!-- CARD 2: CITY PROPOSALS REVIEW -->
-        <div class="home-launch-card" style="--card-accent: #f59e0b;" data-open-tab="central-tab-proposals-review">
+        <div class="home-launch-card" style="--card-accent: #f59e0b;" data-open-tab="central-tab-proposals-review" onclick="window.switchTab('central-tab-proposals-review')">
           <div>
             <div class="launch-card-header">
               <div class="launch-card-icon" style="color:#fbbf24; background:rgba(245,158,11,0.1); border-color:rgba(245,158,11,0.25);">
@@ -222,28 +217,23 @@
                   <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/>
                 </svg>
               </div>
-              <span class="launch-card-badge" style="color:#fbbf24; background:rgba(245,158,11,0.12); border:1px solid rgba(245,158,11,0.3);">
+              <span class="launch-card-badge" style="color:#fbbf24; background:rgba(245,158,11,0.12); border:1px solid rgba(245,158,11,0.3);" data-i18n="badge_capex_pipeline">
                 CapEx Pipeline
               </span>
             </div>
-            <h4 class="launch-card-title">City Proposals & CapEx Review</h4>
-            <p class="launch-card-desc">
+            <h4 class="launch-card-title" data-i18n="title_city_proposals_review">City Proposals & CapEx Review</h4>
+            <p class="launch-card-desc" data-i18n="desc_city_proposals_review">
               Evaluate municipal infrastructure proposals submitted by city engineers, review peer upvotes, and approve national CapEx funding.
             </p>
-            <div class="launch-card-tags">
-              <span class="launch-card-tag">National Budgeting</span>
-              <span class="launch-card-tag">Sanction Funds</span>
-              <span class="launch-card-tag">Peer Upvote Evidence</span>
-            </div>
           </div>
           <div class="launch-card-action" style="color:#fbbf24;">
-            <span>Review Proposals</span>
+            <span data-i18n="card_central_proposals_btn">Review Proposals</span>
             <span>→</span>
           </div>
         </div>
 
         <!-- CARD 3: BRICS JOINT VENTURES -->
-        <div class="home-launch-card" style="--card-accent: #3b82f6;" data-open-tab="central-tab-brics-jv">
+        <div class="home-launch-card" style="--card-accent: #3b82f6;" data-open-tab="central-tab-brics-jv" onclick="window.switchTab('central-tab-brics-jv')">
           <div>
             <div class="launch-card-header">
               <div class="launch-card-icon" style="color:#60a5fa; background:rgba(59,130,246,0.1); border-color:rgba(59,130,246,0.25);">
@@ -251,28 +241,23 @@
                   <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
                 </svg>
               </div>
-              <span class="launch-card-badge" style="color:#60a5fa; background:rgba(59,130,246,0.12); border:1px solid rgba(59,130,246,0.3);">
+              <span class="launch-card-badge" style="color:#60a5fa; background:rgba(59,130,246,0.12); border:1px solid rgba(59,130,246,0.3);" data-i18n="badge_gemini_ai">
                 Gemini AI
               </span>
             </div>
-            <h4 class="launch-card-title">BRICS Bilateral Joint Ventures</h4>
-            <p class="launch-card-desc">
+            <h4 class="launch-card-title" data-i18n="title_brics_bilateral_jv">BRICS Bilateral Joint Ventures</h4>
+            <p class="launch-card-desc" data-i18n="desc_brics_bilateral_jv">
               Synthesize high-impact bilateral Joint Venture proposals with BRICS nations (e.g. Bullet Train JV with China, SMR Nuclear Power with Russia).
             </p>
-            <div class="launch-card-tags">
-              <span class="launch-card-tag">China Bullet Train JV</span>
-              <span class="launch-card-tag">Russia SMR Nuclear</span>
-              <span class="launch-card-tag">Diplomatic Transmission</span>
-            </div>
           </div>
           <div class="launch-card-action" style="color:#60a5fa;">
-            <span>Explore BRICS JVs</span>
+            <span data-i18n="btn_explore_brics_jvs">Explore BRICS JVs</span>
             <span>→</span>
           </div>
         </div>
 
         <!-- CARD 4: INCOMING PARTNER REQUESTS -->
-        <div class="home-launch-card" style="--card-accent: #10b981;" data-open-tab="central-tab-inbound-requests">
+        <div class="home-launch-card" style="--card-accent: #10b981;" data-open-tab="central-tab-inbound-requests" onclick="window.switchTab('central-tab-inbound-requests')">
           <div>
             <div class="launch-card-header">
               <div class="launch-card-icon" style="color:#10b981; background:rgba(16,185,129,0.1); border-color:rgba(16,185,129,0.25);">
@@ -280,22 +265,17 @@
                   <polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/>
                 </svg>
               </div>
-              <span class="launch-card-badge" style="color:#10b981; background:rgba(16,185,129,0.12); border:1px solid rgba(16,185,129,0.3);">
+              <span class="launch-card-badge" style="color:#10b981; background:rgba(16,185,129,0.12); border:1px solid rgba(16,185,129,0.3);" data-i18n="badge_diplomatic_stream">
                 Diplomatic Stream
               </span>
             </div>
-            <h4 class="launch-card-title">Incoming BRICS Partner Requests</h4>
-            <p class="launch-card-desc">
+            <h4 class="launch-card-title" data-i18n="title_incoming_brics_req">Incoming BRICS Partner Requests</h4>
+            <p class="launch-card-desc" data-i18n="desc_incoming_brics_req">
               Review inbound bilateral collaboration proposals from partner BRICS nations and sanction joint working groups in New Delhi.
             </p>
-            <div class="launch-card-tags">
-              <span class="launch-card-tag">Inbound Stream</span>
-              <span class="launch-card-tag">Sanction Working Groups</span>
-              <span class="launch-card-tag">Bilateral Accords</span>
-            </div>
           </div>
           <div class="launch-card-action" style="color:#10b981;">
-            <span>Review Inbound Stream</span>
+            <span data-i18n="btn_review_inbound_stream">Review Inbound Stream</span>
             <span>→</span>
           </div>
         </div>
@@ -310,9 +290,9 @@
       <!-- Sub-Nav Back Bar -->
       <div style="margin-bottom:20px; display:flex; align-items:center; justify-content:space-between;">
         <button class="btn btn-secondary btn-sm" onclick="window.navGoHome()">
-          <span>← Return to Home Overview</span>
+          <span data-i18n="btn_return_overview">← Return to Home Overview</span>
         </button>
-        <span class="nav-badge" style="background:rgba(37,99,235,0.12); color:#60a5fa;">Municipal Officers Oversight</span>
+        <span class="nav-badge" style="background:rgba(37,99,235,0.12); color:#60a5fa;" data-i18n="badge_mun_officers_oversight">Municipal Officers Oversight</span>
       </div>
 
       <section id="panel-officers" style="margin-bottom:44px;">
@@ -320,13 +300,13 @@
           <div>
             <div style="display:inline-flex; align-items:center; gap:6px; background:rgba(37,99,235,0.12); color:#60a5fa; border:1px solid rgba(37,99,235,0.3); border-radius:var(--radius-full); padding:3px 12px; font-size:0.75rem; font-weight:700; margin-bottom:8px;">
               <svg class="svg-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
-              <span>MUNICIPAL OVERSIGHT DIRECTORY</span>
+              <span data-i18n="synth_mun_oversight_dir">MUNICIPAL OVERSIGHT DIRECTORY</span>
             </div>
-            <h2 style="font-size:1.45rem; color:var(--text-primary); margin-bottom:4px;">
+            <h2 style="font-size:1.45rem; color:var(--text-primary); margin-bottom:4px;" data-i18n="sec_officers_grid_title">
               Assigned City Officers & Real-Time Problem Breakdown
             </h2>
             <p style="color:var(--text-secondary); font-size:0.88rem;">
-              Real-time status of assigned municipal engineers across all supervised jurisdictions. Track problem distribution (<b style="color:#ef4444;">Red: Critical</b>, <b style="color:#f59e0b;">Yellow: In Progress</b>, <b style="color:#10b981;">Green: Resolved</b>) and municipal health performance:
+              <span data-i18n="co_oversight_desc_pre">Real-time status of assigned municipal engineers across all supervised jurisdictions. Track problem distribution</span> (<b style="color:#ef4444;" data-i18n="legend_red_critical">Red: Critical</b>, <b style="color:#f59e0b;" data-i18n="legend_yellow_in_progress">Yellow: In Progress</b>, <b style="color:#10b981;" data-i18n="legend_green_resolved">Green: Resolved</b>) <span data-i18n="co_oversight_desc_post">and municipal health performance:</span>
             </p>
           </div>
         </div>
@@ -345,9 +325,9 @@
       <!-- Sub-Nav Back Bar -->
       <div style="margin-bottom:20px; display:flex; align-items:center; justify-content:space-between;">
         <button class="btn btn-secondary btn-sm" onclick="window.navGoHome()">
-          <span>← Return to Home Overview</span>
+          <span data-i18n="btn_return_overview">← Return to Home Overview</span>
         </button>
-        <span class="nav-badge" style="background:rgba(245,158,11,0.12); color:#fbbf24;">CapEx Proposals Review</span>
+        <span class="nav-badge" style="background:rgba(245,158,11,0.12); color:#fbbf24;" data-i18n="badge_capex_proposals_review">CapEx Proposals Review</span>
       </div>
 
       <section id="panel-proposals" style="margin-bottom:48px;">
@@ -355,12 +335,12 @@
           <div>
             <div style="display:inline-flex; align-items:center; gap:6px; background:rgba(245,158,11,0.12); color:#fbbf24; border:1px solid rgba(245,158,11,0.3); border-radius:var(--radius-full); padding:3px 12px; font-size:0.75rem; font-weight:700; margin-bottom:8px;">
               <svg class="svg-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="18 15 12 9 6 15"/></svg>
-              <span>CAPEX STRATEGIC PIPELINE</span>
+              <span data-i18n="synth_capex_strategic_pipeline">CAPEX STRATEGIC PIPELINE</span>
             </div>
-            <h2 style="font-size:1.45rem; color:var(--text-primary); margin-bottom:4px;">
+            <h2 style="font-size:1.45rem; color:var(--text-primary); margin-bottom:4px;" data-i18n="title_officer_proposals_sanction">
               City Officer Infrastructure Proposals & Sanction Review
             </h2>
-            <p style="color:var(--text-secondary); font-size:0.88rem;">
+            <p style="color:var(--text-secondary); font-size:0.88rem;" data-i18n="desc_officer_proposals_sanction">
               Proposals escalated by municipal engineers backed by citizen problem telemetry and peer upvotes. Central Official can sanction national funds or escalate to BRICS Joint Ventures:
             </p>
           </div>
@@ -389,9 +369,9 @@
       <!-- Sub-Nav Back Bar -->
       <div style="margin-bottom:20px; display:flex; align-items:center; justify-content:space-between;">
         <button class="btn btn-secondary btn-sm" onclick="window.navGoHome()">
-          <span>← Return to Home Overview</span>
+          <span data-i18n="btn_return_overview">← Return to Home Overview</span>
         </button>
-        <span class="nav-badge" style="background:rgba(59,130,246,0.12); color:#60a5fa;">BRICS Bilateral Joint Ventures</span>
+        <span class="nav-badge" style="background:rgba(59,130,246,0.12); color:#60a5fa;" data-i18n="title_brics_bilateral_jv">BRICS Bilateral Joint Ventures</span>
       </div>
 
       <section id="panel-brics-jv" style="margin-bottom:48px;">
@@ -399,13 +379,13 @@
           <div>
             <div style="display:inline-flex; align-items:center; gap:6px; background:rgba(59,130,246,0.12); color:#60a5fa; border:1px solid rgba(59,130,246,0.3); border-radius:var(--radius-full); padding:3px 12px; font-size:0.75rem; font-weight:700; margin-bottom:8px;">
               <svg class="svg-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-              <span>GEMINI 2.5 NATIONAL INTEREST SYNTHESIZER</span>
+              <span data-i18n="synth_gemini_national">GEMINI 2.5 NATIONAL INTEREST SYNTHESIZER</span>
             </div>
-            <h2 style="font-size:1.45rem; color:var(--text-primary); margin-bottom:4px;">
+            <h2 style="font-size:1.45rem; color:var(--text-primary); margin-bottom:4px;" data-i18n="title_brics_mega_plans">
               BRICS Sovereign Joint Venture Mega-Plans
             </h2>
             <p style="color:var(--text-secondary); font-size:0.88rem; line-height:1.5;">
-              AI analyzes nationwide cross-city problem patterns to formulate bilateral plans with BRICS member nations (e.g. chronic slow trains trigger a <b>High-Speed Bullet Train JV with China</b>):
+              <span data-i18n="co_ai_jv_desc_pre">AI analyzes nationwide cross-city problem patterns to formulate bilateral plans with BRICS member nations (e.g. chronic slow trains trigger a</span> <b data-i18n="co_bullet_train_jv">High-Speed Bullet Train JV with China</b>):
             </p>
           </div>
         </div>
@@ -424,21 +404,21 @@
       <!-- Sub-Nav Back Bar -->
       <div style="margin-bottom:20px; display:flex; align-items:center; justify-content:space-between;">
         <button class="btn btn-secondary btn-sm" onclick="window.navGoHome()">
-          <span>← Return to Home Overview</span>
+          <span data-i18n="btn_return_overview">← Return to Home Overview</span>
         </button>
-        <span class="nav-badge" style="background:rgba(16,185,129,0.12); color:#10b981;">Diplomatic Inbound Stream</span>
+        <span class="nav-badge" style="background:rgba(16,185,129,0.12); color:#10b981;" data-i18n="badge_diplomatic_inbound">Diplomatic Inbound Stream</span>
       </div>
 
       <section id="panel-incoming" style="background:rgba(255,255,255,0.015); border:1px solid var(--border-color); border-radius:var(--radius-xl); padding:24px; margin-bottom:48px;">
         <div style="margin-bottom:18px;">
           <div style="display:inline-flex; align-items:center; gap:6px; background:rgba(16,185,129,0.12); color:#10b981; border:1px solid rgba(16,185,129,0.3); border-radius:var(--radius-full); padding:3px 12px; font-size:0.75rem; font-weight:700; margin-bottom:8px;">
             <svg class="svg-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg>
-            <span>DIPLOMATIC INBOUND STREAM</span>
+            <span data-i18n="synth_diplomatic_inbound">DIPLOMATIC INBOUND STREAM</span>
           </div>
-          <h2 style="font-size:1.45rem; color:var(--text-primary); margin-bottom:4px;">
+          <h2 style="font-size:1.45rem; color:var(--text-primary); margin-bottom:4px;" data-i18n="title_incoming_brics_nations">
             Incoming Requests from Partner BRICS Nations
           </h2>
-          <p style="color:var(--text-secondary); font-size:0.88rem; line-height:1.5;">
+          <p style="color:var(--text-secondary); font-size:0.88rem; line-height:1.5;" data-i18n="desc_incoming_brics_nations">
             Bilateral infrastructure collaboration proposals submitted to India by partner BRICS nations:
           </p>
         </div>
@@ -464,8 +444,8 @@
             <svg class="svg-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
           </div>
           <div>
-            <h3 style="font-size:1.2rem; font-weight:800; margin:0;" id="modal-jv-title">Draft Bilateral Sovereign Joint Venture</h3>
-            <span style="font-size:0.75rem; color:var(--text-muted);">BRICS Strategic Framework • Diplomatic Channel Transmission</span>
+            <h3 style="font-size:1.2rem; font-weight:800; margin:0;" id="modal-jv-title" data-i18n="modal_draft_bilateral_jv">Draft Bilateral Sovereign Joint Venture</h3>
+            <span style="font-size:0.75rem; color:var(--text-muted);" data-i18n="modal_brics_strat_framework">BRICS Strategic Framework • Diplomatic Channel Transmission</span>
           </div>
         </div>
         <button type="button" id="btn-close-jv-modal" style="background:none; border:none; color:var(--text-muted); font-size:1.5rem; cursor:pointer;">&times;</button>
@@ -474,45 +454,45 @@
       <form id="form-draft-jv">
         <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:14px;">
           <div class="form-group">
-            <label class="form-label">Partner BRICS Nation</label>
+            <label class="form-label" data-i18n="form_partner_brics_nation">Partner BRICS Nation</label>
             <input type="text" class="form-control" id="jv-input-partner" required readonly>
           </div>
           <div class="form-group">
-            <label class="form-label">Partner Foreign Entity</label>
+            <label class="form-label" data-i18n="form_partner_foreign_entity">Partner Foreign Entity</label>
             <input type="text" class="form-control" id="jv-input-entity" required readonly>
           </div>
         </div>
 
         <div class="form-group" style="margin-bottom:14px;">
-          <label class="form-label">Joint Venture Project Title</label>
+          <label class="form-label" data-i18n="form_jv_project_title">Joint Venture Project Title</label>
           <input type="text" class="form-control" id="jv-input-title" required readonly>
         </div>
 
         <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:14px;">
           <div class="form-group">
-            <label class="form-label">Domestic Coordinating Body</label>
+            <label class="form-label" data-i18n="form_domestic_coord_body">Domestic Coordinating Body</label>
             <input type="text" class="form-control" id="jv-input-domestic" required readonly>
           </div>
           <div class="form-group">
-            <label class="form-label">Estimated Bilateral CapEx</label>
+            <label class="form-label" data-i18n="form_estimated_bilat_capex">Estimated Bilateral CapEx</label>
             <input type="text" class="form-control" id="jv-input-capex" required readonly>
           </div>
         </div>
 
         <div class="form-group" style="margin-bottom:14px;">
-          <label class="form-label">Diplomatic Financing & Equity Structure</label>
+          <label class="form-label" data-i18n="form_diplo_financing">Diplomatic Financing & Equity Structure</label>
           <input type="text" class="form-control" id="jv-input-financing" required readonly>
         </div>
 
         <div class="form-group" style="margin-bottom:18px;">
-          <label class="form-label">Official Ministerial Transmission Note</label>
+          <label class="form-label" data-i18n="form_ministerial_note">Official Ministerial Transmission Note</label>
           <textarea class="form-control" id="jv-input-notes" rows="3" placeholder="Cabinet directive approving the transmission of this bilateral memorandum of understanding..."></textarea>
         </div>
 
         <div style="display:flex; justify-content:flex-end; gap:10px;">
-          <button type="button" class="btn btn-secondary" id="btn-cancel-jv">Cancel</button>
+          <button type="button" class="btn btn-secondary" id="btn-cancel-jv" data-i18n="btn_cancel">Cancel</button>
           <button type="submit" class="btn btn-primary" id="btn-transmit-jv" style="background:#2563eb; border-color:#2563eb;">
-            <span>Transmit Joint Venture Proposal to Partner Nation</span>
+            <span data-i18n="btn_transmit_jv_proposal">Transmit Joint Venture Proposal to Partner Nation</span>
             <svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
           </button>
         </div>
@@ -520,10 +500,13 @@
     </div>
   </div>
 
-  <!-- Shared Sovereign i18n & App Core -->
-  <script src="/static/js/i18n.js"></script>
-  <script src="/static/js/app.js"></script>
+  <!-- Shared Sovereign i18n & App Core -->  <!-- Google Translate Engine Container (Hidden) -->
+  <div id="google_translate_element" style="display:none;"></div>
+  <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" async></script>
+
+  <script src="/static/js/i18n.js?v=20260926_all10"></script>
+  <script src="/static/js/app.js?v=20260926_all10"></script>
   <!-- Dedicated Central Official Subsystem -->
-  <script src="/static/js/central_official.js"></script>
+  <script src="/static/js/central_official.js?v=20260926_all10"></script>
 </body>
 </html>

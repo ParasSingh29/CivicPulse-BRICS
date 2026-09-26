@@ -168,23 +168,23 @@ async function loadMegaPlans() {
 
           <div class="megaplan-detail">
             <span>${window.AppIcons.map_pin}</span>
-            <span>Target Jurisdiction: <b>${p.ward}</b></span>
+            <span>${window.getTranslation('label_jurisdiction', 'Target Jurisdiction')}: <b>${p.ward}</b></span>
           </div>
           <div class="megaplan-detail">
             <span>${window.AppIcons.coins}</span>
-            <span>Funding Framework: <b>${p.funding_framework || 'National Infrastructure Pipeline'}</b></span>
+            <span>${window.getTranslation('label_funding_framework', 'Funding Framework')}: <b>${p.funding_framework || 'National Infrastructure Pipeline'}</b></span>
           </div>
           <div class="megaplan-detail">
             <span>${window.AppIcons.refresh}</span>
-            <span>Target Timeline: <b>${p.timeline || '24 Months'}</b></span>
+            <span>${window.getTranslation('label_target_timeline', 'Target Timeline')}: <b>${p.timeline || '24 Months'}</b></span>
           </div>
           <div class="megaplan-detail">
             <span>${window.AppIcons.chevron_up}</span>
-            <span>Citizen Support: <b style="color:#059669;">${p.citizen_backing}</b></span>
+            <span>${window.getTranslation('label_citizen_support', 'Citizen Support')}: <b style="color:#059669;">${p.citizen_backing}</b></span>
           </div>
           <div class="megaplan-detail">
             <span>${window.AppIcons.users}</span>
-            <span>Demographic Impact: <b>${p.demographic_impact}</b></span>
+            <span>${window.getTranslation('label_demographic_impact', 'Demographic Impact')}: <b>${p.demographic_impact}</b></span>
           </div>
 
           <p style="font-size:0.84rem; color:var(--text-secondary); margin-top:10px; line-height:1.5;">
@@ -194,7 +194,7 @@ async function loadMegaPlans() {
           <div class="megaplan-directive" style="border-left: 3px solid ${planColor};">
             <div style="display:flex; align-items:center; gap:6px; margin-bottom:4px; color:${planColor}; font-weight:800;">
               <span>${window.AppIcons.zap}</span>
-              <span>Cabinet Directives & Capital Sanction</span>
+              <span>${window.getTranslation('label_ai_directive', 'Cabinet Directives & Capital Sanction')}</span>
             </div>
             ${p.policy_directive}
           </div>
@@ -204,6 +204,20 @@ async function loadMegaPlans() {
   } catch (err) {
     console.error('Error loading mega plans:', err);
   }
+}
+
+function getCleanGovDescription(desc) {
+  if (!desc) return '';
+  let cleaned = String(desc);
+  cleaned = cleaned.replace(/\[Priority\]:\s*[^.\n\r]+(\([^\)]*\))?/gi, '');
+  cleaned = cleaned.replace(/Priority:\s*(High|Medium|Low|Critical|Urgent)/gi, '');
+  cleaned = cleaned.replace(/\[Location\]:\s*[^.\n\r]+/gi, '');
+  cleaned = cleaned.replace(/near Ward \d+ - [^,.]+(,\s*[^,.]+)?\.?/gi, '');
+  cleaned = cleaned.replace(/Testing E2E reporting for sector \[[^\]]+\]:\s*/gi, '');
+  cleaned = cleaned.replace(/for sector \[[^\]]+\]:\s*/gi, '');
+  cleaned = cleaned.replace(/\[Status\]:\s*[^.\n\r]+/gi, '');
+  cleaned = cleaned.split('\n').map(l => l.trim()).filter(Boolean).join('\n\n');
+  return cleaned || desc;
 }
 
 // ==============================================================================
@@ -216,6 +230,7 @@ async function loadGovComplaints() {
   try {
     const res = await fetch('/api/complaints');
     const complaints = await res.json();
+    window.cachedGovComplaints = complaints;
 
     if (!complaints.length) {
       container.innerHTML = `
@@ -245,24 +260,62 @@ async function loadGovComplaints() {
       else if (isProg && window.i18n) statusDisplay = window.i18n('status_progress', 'In Progress');
       else if (window.i18n) statusDisplay = window.i18n('status_pending', 'Pending');
 
+      const prioMatch = (c.description || '').match(/\[Priority\]:\s*([^.\n\r]+)/i);
+      let prioVal = prioMatch ? prioMatch[1].trim().split('-')[0].trim() : 'Medium';
+      if (!prioVal) prioVal = 'Medium';
+      let prioColor = '#f59e0b';
+      let prioBg = 'rgba(245,158,11,0.14)';
+      let prioBorder = 'rgba(245,158,11,0.35)';
+      if (/high|critical|urgent/i.test(prioVal) || /critical/i.test(c.description)) {
+        prioColor = '#ef4444'; prioBg = 'rgba(239,68,68,0.14)'; prioBorder = 'rgba(239,68,68,0.35)';
+        if (!prioMatch) prioVal = 'High';
+      } else if (/low/i.test(prioVal)) {
+        prioColor = '#10b981'; prioBg = 'rgba(16,185,129,0.14)'; prioBorder = 'rgba(16,185,129,0.35)';
+      }
+
+      const descHTML = formatDescriptionHTML(c.description);
+
       return `
-        <div style="background:var(--bg-card); border:1px solid var(--border-color); border-radius:var(--radius-lg); padding:20px; margin-bottom:14px; box-shadow:var(--shadow-sm);">
-          <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px; flex-wrap:wrap; gap:8px;">
-            <div>
-              <span style="font-family:var(--font-mono); font-size:0.85rem; font-weight:700; color:var(--accent-primary);">#${c.id}</span>
-              <b style="margin-left:8px; font-size:1.05rem;">${c.category}</b>
+        <div style="background:var(--bg-card); border:1px solid var(--border-color); border-radius:var(--radius-lg); padding:16px 20px; margin-bottom:12px; box-shadow:var(--shadow-sm);">
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:10px; padding-bottom:10px; border-bottom:1px solid rgba(255,255,255,0.06);">
+            <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+              <span style="font-family:var(--font-mono); font-size:0.85rem; font-weight:700; color:var(--accent-primary); background:rgba(245,158,11,0.1); padding:3px 8px; border-radius:4px; border:1px solid rgba(245,158,11,0.25);">#${c.id}</span>
+              <b style="font-size:1.05rem; color:var(--text-primary);">${c.category}</b>
             </div>
-            <span class="pill ${isRes ? 'pill-resolved' : (isProg ? 'pill-progress' : 'pill-pending')}">● ${statusDisplay}</span>
+            <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+              <span class="pill ${isRes ? 'pill-resolved' : (isProg ? 'pill-progress' : 'pill-pending')}">● ${statusDisplay}</span>
+              <span class="pill" style="color:${prioColor}; background:${prioBg}; border:1px solid ${prioBorder}; font-weight:600;">⚡ ${(window.getTranslation && window.getTranslation('prio_label')) || 'Priority:'} ${(window.getTranslation && window.getTranslation('prio_' + (prioVal || 'medium').toLowerCase())) || (window.getTranslation && window.getTranslation(prioVal)) || prioVal}</span>
+            </div>
           </div>
 
-          <p style="font-size:0.9rem; color:var(--text-secondary); margin-bottom:12px; line-height:1.5;">${c.description}</p>
-          <div style="font-size:0.8rem; color:var(--text-muted); margin-bottom:14px; display:flex; align-items:center; gap:6px;">
+          <div style="font-size:0.82rem; color:var(--text-muted); margin-bottom:12px; display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
             <span>${window.AppIcons.map_pin}</span>
-            <span>Location: <b>${address}</b> (Lat: ${lat.toFixed(4)}°, Lon: ${lon.toFixed(4)}°) • Date: ${c.timestamp}</span>
+            <span>${(window.getTranslation && window.getTranslation('label_location')) || 'Location'}: <b>${address}</b> (Lat: ${lat.toFixed(4)}°, Lon: ${lon.toFixed(4)}°) • ${(window.getTranslation && window.getTranslation('lbl_date')) || 'Date'}: ${c.timestamp}</span>
           </div>
+
+          ${(c.photo_url || c.resolution_photo) ? `
+            <div style="display:flex; gap:12px; margin-bottom:12px; flex-wrap:wrap; align-items:center;">
+              ${c.photo_url ? `
+                <div style="position:relative; width:130px; height:85px; border-radius:8px; overflow:hidden; border:1px solid var(--border-color); background:rgba(0,0,0,0.3); cursor:pointer;" onclick="openImageLightbox('${c.photo_url}', 'Reported Issue (#${c.id})')">
+                  <img src="${c.photo_url}" alt="Reported Problem" style="width:100%; height:100%; object-fit:cover;">
+                  <span style="position:absolute; bottom:0; left:0; right:0; background:rgba(0,0,0,0.7); font-size:0.65rem; color:#fff; text-align:center; padding:2px;">📸 Issue Photo</span>
+                </div>
+              ` : ''}
+              ${c.resolution_photo ? `
+                <div style="position:relative; width:130px; height:85px; border-radius:8px; overflow:hidden; border:1px solid #10b981; background:rgba(0,0,0,0.3); cursor:pointer;" onclick="openImageLightbox('${c.resolution_photo}', 'Completed Work Proof (#${c.id})')">
+                  <img src="${c.resolution_photo}" alt="Completed Work Proof" style="width:100%; height:100%; object-fit:cover;">
+                  <span style="position:absolute; bottom:0; left:0; right:0; background:rgba(16,185,129,0.9); font-size:0.65rem; color:#fff; text-align:center; padding:2px; font-weight:700;">✅ Fixed Work Proof</span>
+                </div>
+              ` : ''}
+            </div>
+          ` : ''}
 
           <!-- 1-Click Status Updaters with Clean SVG Icons -->
-          <div style="display:flex; gap:10px; flex-wrap:wrap;">
+          <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
+            <button id="btn-gov-desc-${c.id}" class="btn btn-secondary btn-sm" onclick="toggleReportDescription('gov-desc-${c.id}')" style="background:rgba(255,255,255,0.06); border:1px solid var(--border-color); font-weight:600;">
+              <span>📄 ${(window.getTranslation && window.getTranslation('btn_read_description')) || 'Read Description'}</span>
+              <span style="margin-left:4px; font-size:0.75rem;">▼</span>
+            </button>
             ${!isProg ? `
               <button class="btn btn-secondary btn-sm" onclick="updateGovStatus('${c.id}', 'In Progress')">
                 <span>${window.AppIcons.wrench}</span>
@@ -270,7 +323,7 @@ async function loadGovComplaints() {
               </button>
             ` : ''}
             ${!isRes ? `
-              <button class="btn btn-success btn-sm" onclick="updateGovStatus('${c.id}', 'Resolved')">
+              <button class="btn btn-success btn-sm" onclick="openMarkFixedModal('${c.id}')" style="background:#059669; border-color:#059669;">
                 <span>${window.AppIcons.check}</span>
                 <span>${markFixedText}</span>
               </button>
@@ -286,6 +339,10 @@ async function loadGovComplaints() {
               <span>${mapsText}</span>
             </a>
           </div>
+
+          <div id="gov-desc-${c.id}" style="display:none; margin-top:12px; padding:14px 16px; background:rgba(0,0,0,0.25); border-radius:8px; border:1px solid rgba(255,255,255,0.08); font-size:0.9rem; color:var(--text-secondary); line-height:1.55;">
+            ${descHTML}
+          </div>
         </div>
       `;
     }).join('');
@@ -294,7 +351,140 @@ async function loadGovComplaints() {
   }
 }
 
+window.openMarkFixedModal = function(id) {
+  const modal = document.getElementById('modal-mark-fixed');
+  if (!modal) return;
+
+  const complaint = (window.cachedGovComplaints || []).find(c => String(c.id) === String(id));
+  document.getElementById('fixed-complaint-id').value = id;
+
+  const infoEl = document.getElementById('modal-fixed-complaint-info');
+  if (infoEl) {
+    const loc = complaint?.location || {};
+    const addr = loc.address || loc.city || 'Command Jurisdiction';
+    infoEl.innerHTML = `
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <span style="font-family:var(--font-mono); font-weight:700; color:var(--accent-primary);">#${id}</span>
+        <span class="badge" style="background:rgba(245,158,11,0.15); color:#f59e0b; padding:2px 8px; border-radius:4px; font-weight:600;">${complaint?.category || 'Municipal Sector'}</span>
+      </div>
+      <div style="color:var(--text-muted); font-size:0.8rem; margin-top:4px;">
+        📍 Location: <b>${addr}</b>
+      </div>
+    `;
+  }
+
+  // Reset form
+  const fileInput = document.getElementById('fixed-photo-input');
+  if (fileInput) fileInput.value = '';
+  const previewWrap = document.getElementById('fixed-photo-preview-wrap');
+  if (previewWrap) previewWrap.style.display = 'none';
+  const promptWrap = document.getElementById('fixed-photo-prompt');
+  if (promptWrap) promptWrap.style.display = 'block';
+  const errorEl = document.getElementById('fixed-photo-error');
+  if (errorEl) errorEl.style.display = 'none';
+  const notesEl = document.getElementById('fixed-notes');
+  if (notesEl) notesEl.value = '';
+
+  modal.style.display = 'flex';
+};
+
+window.closeMarkFixedModal = function() {
+  const modal = document.getElementById('modal-mark-fixed');
+  if (modal) modal.style.display = 'none';
+};
+
+window.previewFixedPhoto = function(e) {
+  const file = e.target.files && e.target.files[0];
+  if (!file) return;
+
+  const errorEl = document.getElementById('fixed-photo-error');
+  if (errorEl) errorEl.style.display = 'none';
+
+  const reader = new FileReader();
+  reader.onload = function(evt) {
+    const previewImg = document.getElementById('fixed-photo-preview');
+    const previewWrap = document.getElementById('fixed-photo-preview-wrap');
+    const promptWrap = document.getElementById('fixed-photo-prompt');
+    if (previewImg) previewImg.src = evt.target.result;
+    if (previewWrap) previewWrap.style.display = 'block';
+    if (promptWrap) promptWrap.style.display = 'none';
+  };
+  reader.readAsDataURL(file);
+};
+
+window.handleFixedSubmit = async function(e) {
+  e.preventDefault();
+  const id = document.getElementById('fixed-complaint-id').value;
+  const fileInput = document.getElementById('fixed-photo-input');
+  const file = fileInput && fileInput.files && fileInput.files[0];
+  const notes = (document.getElementById('fixed-notes')?.value || '').trim();
+
+  if (!file) {
+    const errorEl = document.getElementById('fixed-photo-error');
+    if (errorEl) errorEl.style.display = 'block';
+    showToast('A photo of completed work is strictly required!', 'error');
+    return;
+  }
+
+  const btnSubmit = document.getElementById('btn-confirm-fixed');
+  if (btnSubmit) {
+    btnSubmit.disabled = true;
+    btnSubmit.innerHTML = `<span>⏳ Uploading Proof...</span>`;
+  }
+
+  try {
+    const formData = new FormData();
+    formData.append('status', 'Resolved');
+    formData.append('department', 'Executive Municipal Commission');
+    formData.append('engineer', 'Chief Infrastructure Controller');
+    formData.append('resolution_notes', notes);
+    formData.append('resolution_photo', file);
+
+    const res = await fetch(`/api/complaints/${id}/status`, {
+      method: 'POST',
+      body: formData
+    });
+    const data = await res.json();
+    if (data.status === 'ok') {
+      showToast(`Complaint #${id} marked as Fixed with verified photo proof! 📱 Citizen SMS dispatched.`, 'success');
+      closeMarkFixedModal();
+      await loadGovComplaints();
+      if (window.loadComplaints) await window.loadComplaints();
+    } else {
+      showToast('Error updating status: ' + (data.error || 'Server error'), 'error');
+    }
+  } catch (err) {
+    console.error('Error submitting fixed proof:', err);
+    showToast('Failed to upload proof: ' + err.message, 'error');
+  } finally {
+    if (btnSubmit) {
+      btnSubmit.disabled = false;
+      btnSubmit.innerHTML = `<span>✓ Mark as Fixed with Proof</span>`;
+    }
+  }
+};
+
+window.openImageLightbox = function(src, title = 'Photo Evidence') {
+  const modal = document.getElementById('image-lightbox-modal');
+  const img = document.getElementById('lightbox-image');
+  const titleEl = document.getElementById('lightbox-title');
+  if (!modal || !img) return;
+
+  img.src = src;
+  if (titleEl) titleEl.textContent = title;
+  modal.style.display = 'flex';
+};
+
+window.closeImageLightbox = function() {
+  const modal = document.getElementById('image-lightbox-modal');
+  if (modal) modal.style.display = 'none';
+};
+
 window.updateGovStatus = async function(complaintId, newStatus) {
+  if (newStatus === 'Resolved') {
+    openMarkFixedModal(complaintId);
+    return;
+  }
   try {
     const res = await fetch(`/api/complaints/${complaintId}/status`, {
       method: 'POST',
@@ -305,7 +495,7 @@ window.updateGovStatus = async function(complaintId, newStatus) {
     if (result.status === 'ok') {
       showToast(`Complaint #${complaintId} marked as ${newStatus}!`, 'success');
       await loadGovComplaints();
-      if (window.loadComplaints) await window.loadComplaints(); // Keep citizen view synced
+      if (window.loadComplaints) await window.loadComplaints();
     }
   } catch (err) {
     showToast('Failed to update status.', 'error');
@@ -362,8 +552,8 @@ function initOrUpdateMap() {
   if (!mapEl) return;
 
   const node = AppState.activeNode;
-  const defaultLat = node?.id === 'brazil' ? -23.5505 : (node?.id === 'south_africa' ? -26.2041 : 28.6139);
-  const defaultLon = node?.id === 'brazil' ? -46.6333 : (node?.id === 'south_africa' ? 28.0473 : 77.2090);
+  const defaultLat = node?.coordinates?.lat || (node?.id === 'brazil' ? -23.5505 : (node?.id === 'south_africa' ? -26.2041 : 28.6139));
+  const defaultLon = node?.coordinates?.lon || (node?.id === 'brazil' ? -46.6333 : (node?.id === 'south_africa' ? 28.0473 : 77.2090));
 
   if (!govMap) {
     govMap = L.map('map', {
@@ -460,5 +650,6 @@ window.addEventListener('civicpulse:languageChanged', function() {
   try { if (window.loadGovComplaints) window.loadGovComplaints(); } catch(e) {}
   try { if (window.loadMegaPlans) window.loadMegaPlans(); } catch(e) {}
   try { if (window.loadBudgetAlignment) window.loadBudgetAlignment(); } catch(e) {}
+  try { if (window.loadDPGStandards) window.loadDPGStandards(); } catch(e) {}
 });
 

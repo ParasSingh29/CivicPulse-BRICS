@@ -74,6 +74,30 @@ Open **`http://localhost:8000`** in your browser.
 
 ---
 
+## 💬 WhatsApp & Telegram Bot Webhook Integration
+
+CivicPulse-BRICS provides native support for real **WhatsApp Business (Meta / Twilio)** and **Telegram Bot API** webhooks:
+
+### 1. Telegram Bot (Instant Setup - Free)
+1. Create a bot on Telegram via `@BotFather` and retrieve your `TELEGRAM_BOT_TOKEN`.
+2. Set environment variable:
+   ```bash
+   export TELEGRAM_BOT_TOKEN="your_telegram_bot_token"
+   ```
+3. Set your webhook URL (e.g. via ngrok or public Cloud Run URL):
+   ```bash
+   curl -X POST "https://api.telegram.org/bot<YOUR_TOKEN>/setWebhook?url=https://your-domain.com/api/v1/telegram-webhook"
+   ```
+4. Citizens can now message your Telegram bot directly to file grievances in any language!
+
+### 2. WhatsApp Cloud API / Twilio Webhook
+1. In Meta for Developers or Twilio Console, set your Webhook URL to:
+   - **Webhook URL:** `https://your-domain.com/api/v1/whatsapp-webhook`
+   - **Verification Token:** `civicpulse_token` (or configure `WHATSAPP_VERIFY_TOKEN`)
+2. Incoming text or voice messages sent to your WhatsApp number will automatically trigger Gemini AI triage and save to the national DPI ledger.
+
+---
+
 ## ☁️ Google Cloud Run Deployment
 
 CivicPulse-BRICS is containerized and ready for 1-click deployment on **Google Cloud Run**:
