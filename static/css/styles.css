@@ -3803,3 +3803,99 @@ body {
 .btn-chat-chip:active {
   transform: translateY(0) scale(0.98) !important;
 }
+
+/* ========================================================================
+   RESPONSIVE DESIGN & MOBILE OPTIMIZATION
+   ======================================================================== */
+
+@media screen and (max-width: 1024px) {
+  .metrics-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .navbar {
+    flex-direction: column !important;
+    height: auto !important;
+    padding: 12px !important;
+    align-items: flex-start !important;
+  }
+  .nav-brand {
+    width: 100% !important;
+    margin-bottom: 12px !important;
+  }
+  .nav-controls {
+    width: 100% !important;
+    justify-content: flex-start !important;
+    flex-wrap: wrap !important;
+    gap: 12px !important;
+  }
+  .metrics-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .sector-grid {
+    grid-template-columns: 1fr 1fr !important;
+  }
+  .tab-nav {
+    flex-wrap: wrap !important;
+    overflow-x: auto !important;
+  }
+  .tab-link {
+    flex: 1 1 auto !important;
+    text-align: center !important;
+    padding: 10px !important;
+    font-size: 0.85rem !important;
+  }
+  .megaplan-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .hero-banner {
+    padding: 30px 15px !important;
+  }
+  .hero-title {
+    font-size: 1.8rem !important;
+  }
+  
+  /* Fix inline grid layout styles */
+  div[style*="grid-template-columns:1fr 1fr;"] {
+      grid-template-columns: 1fr !important;
+  }
+  div[style*="grid-template-columns: 1fr 1fr;"] {
+      grid-template-columns: 1fr !important;
+  }
+  
+  .node-select-wrap {
+    width: 100% !important;
+  }
+  .node-select {
+    width: 100% !important;
+  }
+  
+  /* Overrides for fixed header */
+  .header-fixed-wrap {
+      position: relative !important;
+      height: auto !important;
+  }
+  .app-container {
+      margin-top: 10px !important;
+      padding: 10px !important;
+  }
+  
+  .nav-divider {
+      display: none !important;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .sector-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .hero-title {
+    font-size: 1.5rem !important;
+  }
+  .nav-title {
+    font-size: 1.2rem !important;
+  }
+}
+
