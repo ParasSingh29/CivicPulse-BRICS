@@ -469,6 +469,13 @@ function getPriorityBadgeInfo(c) {
   let cleanLabel = priority;
   if (cleanLabel.includes('-')) cleanLabel = cleanLabel.split('-')[0].trim();
 
+  if (c.description) {
+    const sevMatch = c.description.match(/Severity:\s*([\d.]+)\/10/i);
+    if (sevMatch) {
+      cleanLabel = cleanLabel + " (" + sevMatch[1] + "/10)";
+    }
+  }
+
   return { priority: cleanLabel, color, bg, border };
 }
 
