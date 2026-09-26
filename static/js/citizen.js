@@ -1570,3 +1570,32 @@ window.addEventListener('civicpulse:languageChanged', function() {
   try { if (window.renderDemands && window.AppState && window.AppState.demands) window.renderDemands(window.AppState.demands); } catch(e) {}
   try { if (window.renderTrackedComplaints && window.AppState && window.AppState.complaints) window.renderTrackedComplaints(window.AppState.complaints); } catch(e) {}
 });
+
+// WhatsApp & Telegram Coming Soon notification handler
+window.handleNotifyMe = function() {
+  const input = document.getElementById('notify-input');
+  const msg = document.getElementById('notify-msg');
+  const val = input ? input.value.trim() : '';
+
+  if (!val) {
+    if (window.showToast) window.showToast('Please enter your WhatsApp number or email address.', 'warning');
+    if (input) input.focus();
+    return;
+  }
+
+  if (msg) msg.style.display = 'block';
+  if (input) {
+    input.value = '';
+    input.disabled = true;
+  }
+  const btn = document.getElementById('btn-notify-me');
+  if (btn) {
+    btn.disabled = true;
+    btn.textContent = 'Subscribed ✓';
+    btn.style.background = '#10b981';
+  }
+
+  if (window.showToast) {
+    window.showToast('Subscribed! We will notify you when WhatsApp & Telegram bots go live.', 'success');
+  }
+};

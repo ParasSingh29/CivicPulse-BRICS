@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CivicPulse-BRICS &mdash; Pitch Deck 2026 | Team Syntax Error</title>
+<meta name="description" content="CivicPulse-BRICS official pitch deck. AI for Digital Public Infrastructure and Governance. Build with AI: Code for Communities 2nd Edition.">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --c1:#06b6d4;--c2:#3b82f6;--c3:#8b5cf6;
+  --gold:#f59e0b;--red:#ef4444;--green:#10b981;
+  --dark:#05080f;--card:rgba(255,255,255,.04);
+  --border:rgba(255,255,255,.08);--text:#f0f4ff;--muted:#7c8db5;
+}
+html{font-size:16px;}
+body{background:var(--dark);color:var(--text);font-family:'Inter',sans-serif;overflow:hidden;height:100vh;user-select:none;}
+
+/* ── CANVAS ─────────────────────── */
+#bg-canvas{position:fixed;inset:0;z-index:0;pointer-events:none;}
+
+/* ── APP SHELL ──────────────────── */
+.app{position:relative;z-index:1;height:100vh;display:flex;flex-direction:column;}
+
+/* ── TOP NAV ────────────────────── */
+nav{
+  flex-shrink:0;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 28px;height:52px;
+  background:rgba(5,8,15,.88);
+  border-bottom:1px solid var(--border);
+  backdrop-filter:blur(18px);
+}
+.nav-brand{display:flex;align-items:center;gap:10px;font-family:'Outfit',sans-serif;font-weight:800;font-size:1rem;letter-spacing:-.3px;}
+.nav-dot{width:8px;height:8px;border-radius:50%;background:linear-gradient(135deg,var(--c1),var(--c2));box-shadow:0 0 10px var(--c1);}
+.nav-badge{font-size:.65rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;background:linear-gradient(135deg,var(--c1),var(--c2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;padding:2px 0;}
+.nav-right{display:flex;align-items:center;gap:8px;}
+.n-btn{display:inline-flex;align-items:center;gap:4px;padding:5px 13px;border-radius:7px;border:1px solid var(--border);background:transparent;color:var(--text);font-size:.76rem;font-weight:600;cursor:pointer;transition:all .15s ease;font-family:'Inter',sans-serif;}
+.n-btn:hover{background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.16);}
+.n-btn.accent{background:linear-gradient(135deg,var(--c1),var(--c2));border:none;color:#fff;box-shadow:0 3px 12px rgba(6,182,212,.3);}
+.n-btn.accent:hover{transform:translateY(-1px);box-shadow:0 5px 18px rgba(6,182,212,.45);}
+.n-counter{font-size:.76rem;color:var(--muted);font-variant-numeric:tabular-nums;min-width:40px;text-align:right;}
+
+/* ── PROGRESS LINE ──────────────── */
+.prog-line{height:2px;background:rgba(255,255,255,.05);flex-shrink:0;}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--c1),var(--c2),var(--c3));transition:width .45s cubic-bezier(.4,0,.2,1);}
+
+/* ── STAGE ──────────────────────── */
+.stage{flex:1;position:relative;overflow:hidden;}
+
+/* ── SLIDE ──────────────────────── */
+.slide{
+  position:absolute;inset:0;
+  display:flex;flex-direction:column;
+  padding:28px 44px 18px;
+  opacity:0;pointer-events:none;
+  transform:translateX(5%) scale(.975);
+  transition:opacity .42s cubic-bezier(.4,0,.2,1),transform .42s cubic-bezier(.4,0,.2,1);
+  overflow:hidden;
+}
+.slide.visible{opacity:1;pointer-events:all;transform:none;}
+.slide.out-left{opacity:0;transform:translateX(-5%) scale(.975);}
+
+/* ── SLIDE HEADER ───────────────── */
+.s-head{flex-shrink:0;margin-bottom:20px;}
+.s-eyebrow{font-size:.68rem;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--c1);margin-bottom:8px;display:flex;align-items:center;gap:8px;}
+.s-eyebrow::before{content:'';display:inline-block;width:18px;height:2px;background:var(--c1);border-radius:2px;}
+.s-title{font-family:'Outfit',sans-serif;font-size:2rem;font-weight:800;line-height:1.15;letter-spacing:-.5px;background:linear-gradient(135deg,#fff 40%,rgba(255,255,255,.6));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.s-sub{font-size:.84rem;color:var(--muted);margin-top:5px;font-weight:400;line-height:1.5;}
+
+/* ── SLIDE FOOTER ───────────────── */
+.s-foot{flex-shrink:0;display:flex;align-items:center;justify-content:space-between;margin-top:14px;padding-top:11px;border-top:1px solid var(--border);font-size:.69rem;color:var(--muted);}
+.s-slide-n{font-variant-numeric:tabular-nums;}
+
+/* ── GRID HELPERS ───────────────── */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;}
+.g4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:12px;}
+.flex{display:flex;gap:14px;}
+.col{display:flex;flex-direction:column;gap:12px;flex:1;min-width:0;}
+
+/* ── GLASS CARD ─────────────────── */
+.card{
+  background:rgba(255,255,255,.035);
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:16px 18px;
+  transition:all .2s ease;
+  position:relative;overflow:hidden;
+}
+.card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.025) 0%,transparent 60%);pointer-events:none;}
+.card:hover{background:rgba(255,255,255,.058);border-color:rgba(6,182,212,.28);transform:translateY(-2px);}
+.card h4{font-family:'Space Grotesk',sans-serif;font-size:.9rem;font-weight:600;color:#fff;display:flex;align-items:center;gap:7px;margin-bottom:7px;}
+.card p{font-size:.79rem;color:var(--muted);line-height:1.65;}
+
+/* bordered card variant */
+.card-b-cyan  {border-left:2.5px solid var(--c1);}
+.card-b-gold  {border-left:2.5px solid var(--gold);}
+.card-b-purple{border-left:2.5px solid var(--c3);}
+.card-b-green {border-left:2.5px solid var(--green);}
+.card-b-red   {border-left:2.5px solid var(--red);}
+
+/* ── PILL BADGE ─────────────────── */
+.pill{display:inline-block;padding:2px 7px;border-radius:4px;font-size:.64rem;font-weight:700;letter-spacing:.3px;flex-shrink:0;}
+.pc{background:rgba(6,182,212,.15);color:var(--c1);}
+.pg{background:rgba(245,158,11,.15);color:var(--gold);}
+.pr{background:rgba(239,68,68,.15);color:var(--red);}
+.pgr{background:rgba(16,185,129,.15);color:var(--green);}
+.pp{background:rgba(139,92,246,.15);color:var(--c3);}
+
+/* ── STAT BOX ───────────────────── */
+.stat-box{
+  background:rgba(6,182,212,.06);border:1px solid rgba(6,182,212,.15);
+  border-radius:12px;padding:16px 12px;text-align:center;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;
+}
+.stat-n{font-family:'Outfit',sans-serif;font-size:1.6rem;font-weight:800;color:var(--c1);line-height:1;}
+.stat-l{font-size:.73rem;color:var(--muted);line-height:1.4;}
+
+/* ── SCREENSHOT SLOT ────────────── */
+.ss-slot{
+  flex:1;min-height:0;
+  background:rgba(5,8,15,.65);
+  border:1.5px dashed rgba(6,182,212,.28);
+  border-radius:14px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;padding:22px;gap:9px;
+  transition:border-color .2s;position:relative;overflow:hidden;
+}
+.ss-slot::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(6,182,212,.035) 0%,transparent 70%);pointer-events:none;}
+.ss-slot:hover{border-color:rgba(6,182,212,.55);}
+.ss-emoji{font-size:1.8rem;}
+.ss-label{font-family:'Space Grotesk',sans-serif;font-size:.84rem;font-weight:700;color:var(--c1);}
+.ss-url{font-size:.68rem;background:rgba(245,158,11,.1);color:var(--gold);border:1px solid rgba(245,158,11,.2);padding:2px 9px;border-radius:4px;font-family:monospace;}
+.ss-hint{font-size:.72rem;color:var(--muted);line-height:1.6;text-align:left;background:rgba(255,255,255,.025);border:1px solid var(--border);border-radius:8px;padding:9px 12px;max-width:440px;}
+.ss-hint ul{padding-left:14px;margin-top:3px;} .ss-hint li{margin-bottom:3px;}
+
+/* ── TECH ROW ───────────────────── */
+.tech-row{display:flex;align-items:center;gap:12px;background:rgba(255,255,255,.025);border:1px solid var(--border);border-radius:10px;padding:10px 14px;transition:all .18s ease;}
+.tech-row:hover{border-color:rgba(6,182,212,.28);background:rgba(6,182,212,.04);}
+.tech-ico{font-size:1.3rem;flex-shrink:0;}
+.tech-n{font-family:'Space Grotesk',sans-serif;font-size:.84rem;font-weight:700;color:#fff;}
+.tech-d{font-size:.73rem;color:var(--muted);margin-top:1px;line-height:1.4;}
+
+/* ── NODE STRIP ─────────────────── */
+.node{background:rgba(255,255,255,.025);border:1px solid var(--border);border-radius:10px;padding:11px 15px;display:flex;align-items:flex-start;gap:12px;}
+.node-flag{font-size:1.5rem;flex-shrink:0;margin-top:1px;}
+.node-n{font-family:'Space Grotesk',sans-serif;font-size:.84rem;font-weight:700;color:#fff;margin-bottom:3px;}
+.node-d{font-size:.73rem;color:var(--muted);line-height:1.5;}
+
+/* ── COVER SLIDE ─────────────────── */
+#s1{
+  background:radial-gradient(ellipse 100% 80% at 50% -10%,rgba(6,182,212,.12) 0%,transparent 65%),
+             radial-gradient(ellipse 60% 60% at 80% 80%,rgba(59,130,246,.07) 0%,transparent 55%),
+             var(--dark);
+  justify-content:center;align-items:center;text-align:center;padding:28px 60px;
+}
+.cv-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(6,182,212,.1);border:1px solid rgba(6,182,212,.25);padding:6px 16px;border-radius:99px;font-size:.68rem;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:var(--c1);margin-bottom:22px;}
+.cv-badge-dot{width:6px;height:6px;border-radius:50%;background:var(--c1);animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.5;transform:scale(.8);}}
+.cv-title{font-family:'Outfit',sans-serif;font-size:4.2rem;font-weight:900;line-height:1.02;letter-spacing:-2px;background:linear-gradient(140deg,#fff 15%,var(--c1) 50%,var(--c2) 80%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:10px;}
+.cv-team{font-family:'Space Grotesk',sans-serif;font-size:1.1rem;font-weight:500;color:var(--muted);margin-bottom:14px;}
+.cv-team em{font-style:normal;font-weight:700;background:linear-gradient(135deg,var(--c1),var(--c2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.cv-desc{font-size:.97rem;color:var(--muted);line-height:1.7;max-width:660px;margin:0 auto 20px;}
+.cv-tags{display:flex;justify-content:center;flex-wrap:wrap;gap:9px;}
+.cv-tag{background:rgba(245,158,11,.08);color:var(--gold);border:1px solid rgba(245,158,11,.2);padding:5px 14px;border-radius:99px;font-size:.77rem;font-weight:700;}
+.cv-wm{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:500px;max-width:85%;opacity:.055;pointer-events:none;filter:drop-shadow(0 0 30px rgba(6,182,212,.4));}
+.cv-foot{position:absolute;bottom:18px;left:44px;right:44px;display:flex;justify-content:space-between;font-size:.69rem;color:var(--muted);border-top:1px solid var(--border);padding-top:10px;}
+
+/* ── THANK YOU ───────────────────── */
+#s12{
+  background:radial-gradient(ellipse 100% 80% at 50% 110%,rgba(6,182,212,.1) 0%,transparent 65%),var(--dark);
+  justify-content:space-between;
+}
+.ty-top{display:flex;flex-direction:column;align-items:center;text-align:center;gap:7px;padding-top:4px;}
+.ty-big{font-family:'Outfit',sans-serif;font-size:3.8rem;font-weight:900;letter-spacing:2px;text-transform:uppercase;background:linear-gradient(140deg,#fff 25%,var(--c1) 60%,var(--c2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1;}
+.ty-team{font-family:'Space Grotesk',sans-serif;font-size:1rem;font-weight:600;color:var(--c1);letter-spacing:2.5px;text-transform:uppercase;}
+.ty-sub{font-size:.8rem;color:var(--muted);}
+.team-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;flex:1;align-content:center;}
+.tm{background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:14px;padding:16px 13px;display:flex;flex-direction:column;align-items:center;gap:7px;text-align:center;transition:all .22s ease;}
+.tm:hover{transform:translateY(-4px);border-color:rgba(6,182,212,.4);box-shadow:0 12px 30px rgba(6,182,212,.18);}
+.tm-av{width:46px;height:46px;border-radius:50%;background:linear-gradient(135deg,var(--c1),var(--c2));display:flex;align-items:center;justify-content:center;font-size:1.25rem;}
+.tm-name{font-family:'Space Grotesk',sans-serif;font-size:.95rem;font-weight:700;color:#fff;}
+.tm-role{font-size:.64rem;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:.7px;}
+.tm-desc{font-size:.72rem;color:var(--muted);line-height:1.5;flex:1;}
+.tm-li{display:inline-flex;align-items:center;gap:4px;background:rgba(10,102,194,.15);color:#38bdf8;border:1px solid rgba(56,189,248,.25);padding:4px 10px;border-radius:99px;font-size:.68rem;font-weight:600;text-decoration:none;transition:all .18s ease;}
+.tm-li:hover{background:#0a66c2;color:#fff;border-color:#0a66c2;}
+.ty-bar{background:rgba(255,255,255,.025);border:1px solid var(--border);border-radius:10px;padding:9px 16px;display:flex;justify-content:space-between;align-items:center;font-size:.75rem;color:var(--muted);}
+.ty-link{color:var(--c1);text-decoration:none;font-weight:600;}
+.ty-link:hover{text-decoration:underline;}
+
+/* ── DOT NAV ────────────────────── */
+.dot-nav{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);display:flex;gap:5px;z-index:50;}
+.dot{width:5px;height:5px;border-radius:50%;background:var(--muted);cursor:pointer;transition:all .2s ease;}
+.dot.on{background:var(--c1);width:18px;border-radius:3px;}
+
+/* ── SDG box ────────────────────── */
+.sdg-box{border-radius:12px;padding:14px 12px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:5px;}
+.sdg-n{font-family:'Outfit',sans-serif;font-size:1.5rem;font-weight:800;line-height:1;}
+.sdg-l{font-size:.72rem;line-height:1.4;color:var(--muted);}
+
+/* ── RESPONSIVE ──────────────────── */
+@media(max-height:640px){.cv-title{font-size:3rem;}.ty-big{font-size:2.8rem;}.slide{padding:18px 30px 14px;}}
+@media(max-width:800px){.team-row{grid-template-columns:1fr 1fr;}.g3{grid-template-columns:1fr;}.flex{flex-direction:column;}}
+</style>
+</head>
+<body>
+<canvas id="bg-canvas"></canvas>
+<div class="app">
+
+<!-- NAV -->
+<nav>
+  <div class="nav-brand">
+    <div class="nav-dot"></div>
+    <span>CivicPulse-BRICS</span>
+    <span class="nav-badge">Pitch Deck &bull; Track 1</span>
+  </div>
+  <div class="nav-right">
+    <span class="n-counter" id="nc">1 / 12</span>
+    <button class="n-btn" onclick="prev()">&#8592; Prev</button>
+    <button class="n-btn accent" onclick="next()">Next &#8594;</button>
+    <button class="n-btn" onclick="goFs()" title="Fullscreen">&#9974;</button>
+    <a href="/CivicPulse-BRICS_Pitch_Deck.pptx" download class="n-btn" style="text-decoration:none;color:var(--gold);border-color:rgba(245,158,11,.35);">&#128229; PPT</a>
+    <a href="/citizen" class="n-btn" style="text-decoration:none;color:var(--c1);border-color:rgba(6,182,212,.3);">&#128640; App</a>
+  </div>
+</nav>
+<div class="prog-line"><div class="prog-fill" id="pf" style="width:8.33%"></div></div>
+
+<!-- STAGE -->
+<div class="stage" id="stage">
+
+<!-- ═══════════════════════════════════
+     SLIDE 1 &mdash; COVER
+═════════════════════════════════════ -->
+<div class="slide visible" id="s1">
+  <img src="/static/img/brics_logo_watermark.png" class="cv-wm" alt="" onerror="this.style.display='none'">
+  <div class="cv-badge"><span class="cv-badge-dot"></span>BRICS Innovation Theme &nbsp;&bull;&nbsp; Track 1</div>
+  <h1 class="cv-title">&#9889; CivicPulse-BRICS</h1>
+  <p class="cv-team">Presented by <em>Team Syntax Error</em></p>
+  <p class="cv-desc">AI for Digital Public Infrastructure &amp; Governance &mdash; A sovereign, multilingual platform aggregating citizen feedback via voice, WhatsApp &amp; Telegram to realign CapEx budgets across BRICS nations with Google Gemini 2.5.</p>
+  <div class="cv-tags">
+    <span class="cv-tag">&#127470;&#127475; India &mdash; Delhi NCR</span>
+    <span class="cv-tag">&#127463;&#127479; Brazil &mdash; S&atilde;o Paulo</span>
+    <span class="cv-tag">&#127487;&#127462; South Africa &mdash; Gauteng</span>
+  </div>
+  <div class="cv-foot">
+    <span>Build with AI: Code for Communities 2nd Edition &bull; Google AI Hackathon 2026</span>
+    <span>Digital Public Good (DPG) &bull; Apache 2.0</span>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════
+     SLIDE 2 &mdash; PROBLEM
+═════════════════════════════════════ -->
+<div class="slide" id="s2">
+  <div class="s-head">
+    <div class="s-eyebrow">The Challenge</div>
+    <h2 class="s-title">Governance &amp; CapEx Friction Across BRICS</h2>
+    <p class="s-sub">Why government infrastructure investment keeps failing citizens</p>
+  </div>
+  <div class="g2" style="flex:1;align-content:start;gap:13px;">
+    <div class="card card-b-red"><h4><span class="pill pr">SILOS</span> Fragmented Citizen Feedback</h4><p>Petitions live in disconnected departmental channels, voice messages, and paper files with no unified aggregation engine across BRICS nations.</p></div>
+    <div class="card card-b-red"><h4><span class="pill pr">MISALIGN</span> Misaligned CapEx Spending</h4><p>Crores in capital expenditure go to low-demand projects while critical infrastructure hotspots remain starved of investment and attention.</p></div>
+    <div class="card card-b-red"><h4><span class="pill pr">GAPS</span> Unaddressed Infrastructure Failures</h4><p>Stormwater pipelines, power grids, and transit culverts stay unmonitored until monsoon disasters or structural collapses force action.</p></div>
+    <div class="card card-b-red"><h4><span class="pill pr">NO DATA</span> Zero Demographic Integration</h4><p>No engine connecting citizen grievances with population density, vulnerability indices, and live IMD weather risk vectors for smart prioritization.</p></div>
+  </div>
+  <div class="s-foot"><span>CivicPulse-BRICS &middot; Team Syntax Error &middot; Track 1</span><span class="s-slide-n">02 &ndash; 12</span></div>
+</div>
+
+<!-- ═══════════════════════════════════
+     SLIDE 3 &mdash; SOLUTION
+═════════════════════════════════════ -->
+<div class="slide" id="s3">
+  <div class="s-head">
+    <div class="s-eyebrow">Our Solution</div>
+    <h2 class="s-title">CivicPulse-BRICS: Sovereign AI Platform</h2>
+    <p class="s-sub">A federated Digital Public Good that connects citizen voice to national infrastructure investment</p>
+  </div>
+  <div class="g3" style="flex:1;align-content:start;">
+    <div class="card"><h4><span class="pill pc">01</span> Multichannel DPI Gateway</h4><p>Voice, photo, WhatsApp &amp; Telegram webhooks aggregate citizen petitions across 5 languages &mdash; zero app install needed.</p></div>
+    <div class="card"><h4><span class="pill pg">02</span> AI CapEx Budget Engine</h4><p>Correlates weighted citizen demand with actual CapEx spend, surfacing severe budget deficits in real-time with demographic weighting.</p></div>
+    <div class="card"><h4><span class="pill pgr">03</span> Gemini 2.5 Policy Directives</h4><p>Generates multi-crore reallocation directives and strategic megaplans for national policymakers and ministers.</p></div>
+    <div class="card"><h4><span class="pill pc">04</span> GIS Spatial Hotspot Maps</h4><p>BigQuery GIS spatial warehouse maps demand clusters onto city coordinates, flagging highest-priority investment zones.</p></div>
+    <div class="card"><h4><span class="pill pp">05</span> Federated BRICS Nodes</h4><p>Pre-configured jurisdiction nodes for India, Brazil &amp; South Africa with cross-border DPG asset sharing.</p></div>
+    <div class="card"><h4><span class="pill pgr">06</span> Digital Public Good (DPG)</h4><p>OpenAPI 3.0 compliant &bull; Privacy-by-design &bull; UN SDG aligned &bull; Apache 2.0 open source per DPGA standards.</p></div>
+  </div>
+  <div class="s-foot"><span>CivicPulse-BRICS &middot; Team Syntax Error &middot; Track 1</span><span class="s-slide-n">03 &ndash; 12</span></div>
+</div>
+
+<!-- ═══════════════════════════════════
+     SLIDE 4 &mdash; WHO IT SERVES
+═════════════════════════════════════ -->
+<div class="slide" id="s4">
+  <div class="s-head">
+    <div class="s-eyebrow">Stakeholders</div>
+    <h2 class="s-title">Who It Serves</h2>
+    <p class="s-sub">Four core user groups across the governance value chain</p>
+  </div>
+  <div class="g2" style="flex:1;align-content:start;">
+    <div class="card card-b-cyan"><h4>&#128483;&#65039; Citizens &amp; Community Voice</h4><p>File petitions in native languages via WhatsApp, Telegram, or Web. Voice-to-text translation, AI photo defect scoring, and real-time status tracking of submitted issues.</p></div>
+    <div class="card card-b-gold"><h4>&#127961;&#65039; City Municipal &amp; Repair Crews</h4><p>AI-ranked task queue by severity (1&ndash;10) + 1-tap Google Maps turn-by-turn route dispatch for field trucks. Full crew status monitoring and case resolution tracking.</p></div>
+    <div class="card card-b-purple"><h4>&#127963;&#65039; Central Ministries &amp; Policymakers</h4><p>GIS demand heatmaps, CapEx misalignment alerts, live IMD weather risk vectors, and Gemini 2.5 budget reallocation directives for senior ministry officials.</p></div>
+    <div class="card card-b-green"><h4>&#127760; BRICS Sovereign Nations</h4><p>Federated architecture (India, Brazil, South Africa) with cross-border DPG sharing, UN SDG telemetry, and national open-data interoperability via JSON-LD schemas.</p></div>
+  </div>
+  <div class="s-foot"><span>CivicPulse-BRICS &middot; Team Syntax Error &middot; Track 1</span><span class="s-slide-n">04 &ndash; 12</span></div>
+</div>
+
+<!-- ═══════════════════════════════════
+     SLIDE 5 &mdash; AI APPROACH
+═════════════════════════════════════ -->
+<div class="slide" id="s5">
+  <div class="s-head">
+    <div class="s-eyebrow">AI Approach</div>
+    <h2 class="s-title">Multi-Agent Intelligence Architecture</h2>
+    <p class="s-sub">Powered by Google Gemini 2.5 Pro &amp; Flash running four specialized AI agents</p>
+  </div>
+  <div class="g2" style="flex:1;align-content:start;">
+    <div class="card"><h4>&#128248; Gemini Vision Defect Agent</h4><p>Analyzes citizen-uploaded infrastructure photos &mdash; classifies defect type, assigns severity score (1&ndash;10), hazard rating, priority code, and recommended action within seconds.</p></div>
+    <div class="card"><h4>&#127897;&#65039; Multilingual Speech &amp; Translation</h4><p>Converts voice notes in Hindi, Portuguese, or Zulu to text, translates to English, and synthesizes audio responses with Google TTS (gTTS) across 5 languages.</p></div>
+    <div class="card"><h4>&#128202; CapEx Budget Alignment Engine</h4><p>Fuses citizen petition density with census demographics, IMD weather risk vectors, and public investment plans to produce a quantified budget misalignment score per district.</p></div>
+    <div class="card"><h4>&#129302; Gemini Policy Directive Agent</h4><p>Synthesizes executive-grade CapEx reallocation proposals and national infrastructure megaplans for ministers &mdash; backed by GIS spatial demand evidence and demographic indices.</p></div>
+  </div>
+  <div class="s-foot"><span>CivicPulse-BRICS &middot; Team Syntax Error &middot; Track 1</span><span class="s-slide-n">05 &ndash; 12</span></div>
+</div>
+
+<!-- ═══════════════════════════════════
+     SLIDE 6 &mdash; DEMO CITIZEN
+═════════════════════════════════════ -->
+<div class="slide" id="s6">
+  <div class="s-head">
+    <div class="s-eyebrow">Live Demo &mdash; 1 of 4</div>
+    <h2 class="s-title">Citizen Voice &amp; DPI Gateway</h2>
+    <p class="s-sub">Voice recorder &middot; AI vision scanner &middot; WhatsApp/Telegram bot &middot; IMD Weather HUD</p>
+  </div>
+  <div class="flex" style="flex:1;min-height:0;">
+    <div class="col" style="flex:.75;justify-content:center;">
+      <div class="card"><h4><span class="pill pc">VISION</span> Multimodal Defect Scanner</h4><p>Pothole photo &rarr; Severity 8.7/10 CRITICAL in under 2 seconds.</p></div>
+      <div class="card"><h4><span class="pill pg">VOICE</span> Multilingual Grievance Recorder</h4><p>Hindi/English waveform recorder with auto-translation and TTS playback.</p></div>
+      <div class="card"><h4><span class="pill pgr">BOT</span> WhatsApp &amp; Telegram Integration</h4><p>File petitions through existing messaging apps &mdash; no new app download required.</p></div>
+      <div class="card"><h4><span class="pill pr">WEATHER</span> Live IMD Risk HUD</h4><p>Monsoon &amp; extreme weather alerts fused with infrastructure vulnerability data.</p></div>
+    </div>
+    <div class="col" style="flex:1.25;">
+      <div class="ss-slot">
+        <div class="ss-emoji">&#128248;</div>
+        <div class="ss-label">[ SCREENSHOT: CITIZEN SOVEREIGN PORTAL ]</div>
+        <div class="ss-url">civicpulse-brics.onrender.com/citizen</div>
+        <div class="ss-hint"><strong>Paste screenshot showing:</strong><ul><li>Voice recorder &mdash; cyan waveform, Hindi/English toggle</li><li>AI Scanner: road pothole, Severity 8.7/10 CRITICAL badge</li><li>WhatsApp/Telegram bot chat window</li><li>IMD Weather HUD: Extreme Rain Warning &mdash; Delhi NCR</li></ul></div>
+      </div>
+    </div>
+  </div>
+  <div class="s-foot"><span>CivicPulse-BRICS &middot; Team Syntax Error &middot; Track 1</span><span class="s-slide-n">06 &ndash; 12</span></div>
+</div>
+
+<!-- ═══════════════════════════════════
+     SLIDE 7 &mdash; DEMO CITY OPS
+═════════════════════════════════════ -->
+<div class="slide" id="s7">
+  <div class="s-head">
+    <div class="s-eyebrow">Live Demo &mdash; 2 of 4</div>
+    <h2 class="s-title">City Operations &amp; Field Triage</h2>
+    <p class="s-sub">AI repair queue &middot; Automated crew dispatch &middot; Google Maps turn-by-turn routing</p>
+  </div>
+  <div class="flex" style="flex:1;min-height:0;">
+    <div class="col" style="flex:.75;justify-content:center;">
+      <div class="card"><h4><span class="pill pr">QUEUE</span> AI-Ranked Repair Queue</h4><p>Incidents sorted by AI severity score &mdash; CRITICAL 9.2/10 first &mdash; for optimal crew triage.</p></div>
+      <div class="card"><h4><span class="pill pc">DISPATCH</span> Automated Crew Dispatch</h4><p>Assigns trucks by GPS proximity and crew availability. Truck-01 En Route. Truck-02 Available.</p></div>
+      <div class="card"><h4><span class="pill pgr">MAPS</span> Google Maps Field Routing</h4><p>1-tap turn-by-turn navigation from depot to repair site for all municipal vehicles.</p></div>
+    </div>
+    <div class="col" style="flex:1.25;">
+      <div class="ss-slot">
+        <div class="ss-emoji">&#128248;</div>
+        <div class="ss-label">[ SCREENSHOT: CITY OFFICIAL COMMAND HUB ]</div>
+        <div class="ss-url">civicpulse-brics.onrender.com/city-official</div>
+        <div class="ss-hint"><strong>Paste screenshot showing:</strong><ul><li>Repair queue: CRITICAL 9.2/10 &mdash; Stormwater Drain, Dwarka</li><li>Crew dispatch table: Truck-01 En Route, Truck-02 Available</li><li>Google Maps embedded route from depot to repair site</li></ul></div>
+      </div>
+    </div>
+  </div>
+  <div class="s-foot"><span>CivicPulse-BRICS &middot; Team Syntax Error &middot; Track 1</span><span class="s-slide-n">07 &ndash; 12</span></div>
+</div>
+
+<!-- ═══════════════════════════════════
+     SLIDE 8 &mdash; DEMO MINISTRY
+═════════════════════════════════════ -->
+<div class="slide" id="s8">
+  <div class="s-head">
+    <div class="s-eyebrow">Live Demo &mdash; 3 of 4</div>
+    <h2 class="s-title">National Ministry Command Hub</h2>
+    <p class="s-sub">GIS demand heatmap &middot; CapEx misalignment matrix &middot; Gemini policy directives</p>
+  </div>
+  <div class="flex" style="flex:1;min-height:0;">
+    <div class="col" style="flex:.75;justify-content:center;">
+      <div class="card"><h4><span class="pill pc">GIS</span> Spatial Demand Hotspots</h4><p>Interactive BigQuery GIS map of citizen demand clusters overlaid on Delhi NCR coordinates.</p></div>
+      <div class="card"><h4><span class="pill pr">DEFICIT</span> CapEx Misalignment Matrix</h4><p>88% citizen demand vs only 24% budget allocated &mdash; severe deficits surfaced automatically.</p></div>
+      <div class="card"><h4><span class="pill pg">DIRECTIVES</span> Gemini Policy Orders</h4><p>Multi-crore capital reallocation directives and strategic megaplans generated for senior ministers.</p></div>
+    </div>
+    <div class="col" style="flex:1.25;">
+      <div class="ss-slot">
+        <div class="ss-emoji">&#128248;</div>
+        <div class="ss-label">[ SCREENSHOT: NATIONAL MINISTRY COMMAND ]</div>
+        <div class="ss-url">civicpulse-brics.onrender.com/government</div>
+        <div class="ss-hint"><strong>Paste screenshot showing:</strong><ul><li>GIS Demand Heatmap over Delhi NCR</li><li>CapEx Misalignment Matrix: demand 88% vs budget 24%</li><li>Gemini 2.5 Executive Directives panel with budget shifts</li></ul></div>
+      </div>
+    </div>
+  </div>
+  <div class="s-foot"><span>CivicPulse-BRICS &middot; Team Syntax Error &middot; Track 1</span><span class="s-slide-n">08 &ndash; 12</span></div>
+</div>
+
+<!-- ═══════════════════════════════════
+     SLIDE 9 &mdash; DEMO BRICS HUB
+═════════════════════════════════════ -->
+<div class="slide" id="s9">
+  <div class="s-head">
+    <div class="s-eyebrow">Live Demo &mdash; 4 of 4</div>
+    <h2 class="s-title">BRICS Sovereign Minister Hub</h2>
+    <p class="s-sub">Multi-nation federation &middot; Gemini megaplans &middot; UN SDG alignment telemetry</p>
+  </div>
+  <div class="flex" style="flex:1;min-height:0;">
+    <div class="col" style="flex:.75;justify-content:center;">
+      <div class="card"><h4><span class="pill pg">NODES</span> Multi-Country Jurisdiction</h4><p>Switch between India, Brazil &amp; South Africa nodes &mdash; one unified interface for all BRICS ministers.</p></div>
+      <div class="card"><h4><span class="pill pc">MEGAPLAN</span> Strategic Megaplan Engine</h4><p>Auto-generates &#8377;45 Cr Drainage Infrastructure Overhaul proposals &mdash; backed by GIS evidence.</p></div>
+      <div class="card"><h4><span class="pill pgr">SDG</span> UN SDG Alignment Telemetry</h4><p>Tracks project impact against SDG 9 (Infrastructure), SDG 11 (Sustainable Cities), SDG 16 (Governance).</p></div>
+    </div>
+    <div class="col" style="flex:1.25;">
+      <div class="ss-slot">
+        <div class="ss-emoji">&#128248;</div>
+        <div class="ss-label">[ SCREENSHOT: BRICS SOVEREIGN MINISTER HUB ]</div>
+        <div class="ss-url">civicpulse-brics.onrender.com/central-official</div>
+        <div class="ss-hint"><strong>Paste screenshot showing:</strong><ul><li>Multi-nation node selector (India / Brazil / South Africa)</li><li>Gemini 2.5 Megaplan: &#8377;45 Cr Drainage Overhaul</li><li>UN SDG 9 / 11 / 16 alignment telemetry dashboard</li></ul></div>
+      </div>
+    </div>
+  </div>
+  <div class="s-foot"><span>CivicPulse-BRICS &middot; Team Syntax Error &middot; Track 1</span><span class="s-slide-n">09 &ndash; 12</span></div>
+</div>
+
+<!-- ═══════════════════════════════════
+     SLIDE 10 &mdash; DPG
+═════════════════════════════════════ -->
+<div class="slide" id="s10">
+  <div class="s-head">
+    <div class="s-eyebrow">Open Standards</div>
+    <h2 class="s-title">Digital Public Good (DPG) Compliance</h2>
+    <p class="s-sub">Built for open governance, interoperability, privacy &amp; UN SDG alignment from day one</p>
+  </div>
+  <div class="flex" style="flex:1;min-height:0;align-items:flex-start;">
+    <div class="col" style="flex:1.1;">
+      <div class="card"><h4>&#128220; OpenAPI 3.0 Webhook Specification</h4><p>Fully compliant <code style="font-size:.74rem;color:var(--c1);font-family:monospace;">POST /api/v1/dpg/messaging-webhook</code> &mdash; instant integration with any national messaging platform worldwide.</p></div>
+      <div class="card"><h4>&#128274; Privacy &amp; Security by Design</h4><p>Anonymized citizen telemetry + salted PBKDF2-HMAC-SHA256 password hashing. Zero persistent tracking of sensitive personal data.</p></div>
+      <div class="card"><h4>&#128275; Open Data &amp; Interoperability</h4><p>JSON-LD schemas &amp; GIS records export-compatible with data.gov.in, dados.gov.br, and all national open-government portals.</p></div>
+      <div class="card"><h4>&#9989; DPGA Standard Aligned</h4><p>Adheres to Digital Public Goods Alliance (DPGA) standard with open-source Apache 2.0 license, documented API, and transparent governance.</p></div>
+    </div>
+    <div class="col" style="flex:.75;">
+      <div style="font-size:.75rem;font-weight:700;color:var(--gold);margin-bottom:6px;">&#127919; UN SDG Strategic Alignment</div>
+      <div class="sdg-box" style="background:rgba(16,185,129,.07);border:1px solid rgba(16,185,129,.18);"><div class="sdg-n" style="color:var(--green);">SDG 9</div><div class="sdg-l">Industry, Innovation &amp; Infrastructure</div></div>
+      <div class="sdg-box" style="background:rgba(59,130,246,.07);border:1px solid rgba(59,130,246,.18);"><div class="sdg-n" style="color:var(--c2);">SDG 11</div><div class="sdg-l">Sustainable Cities &amp; Communities</div></div>
+      <div class="sdg-box" style="background:rgba(245,158,11,.07);border:1px solid rgba(245,158,11,.18);"><div class="sdg-n" style="color:var(--gold);">SDG 16</div><div class="sdg-l">Peace, Justice &amp; Strong Institutions</div></div>
+    </div>
+  </div>
+  <div class="s-foot"><span>CivicPulse-BRICS &middot; Team Syntax Error &middot; Track 1</span><span class="s-slide-n">10 &ndash; 12</span></div>
+</div>
+
+<!-- ═══════════════════════════════════
+     SLIDE 11 &mdash; SCALE
+═════════════════════════════════════ -->
+<div class="slide" id="s11">
+  <div class="s-head">
+    <div class="s-eyebrow">Deployability &amp; Scale</div>
+    <h2 class="s-title">Built to Scale Across India &amp; BRICS</h2>
+    <p class="s-sub">Containerized on Google Cloud Run &middot; Federated nation nodes &middot; Full Google Cloud AI stack</p>
+  </div>
+  <div class="flex" style="flex:1;min-height:0;align-items:flex-start;">
+    <div class="col" style="flex:1;">
+      <div style="font-size:.75rem;font-weight:700;color:var(--gold);margin-bottom:6px;">&#127760; Federated BRICS Sovereign Nodes</div>
+      <div class="node"><div class="node-flag">&#127470;&#127475;</div><div><div class="node-n">India Node &mdash; Delhi NCR</div><div class="node-d">PM Gati Shakti spatial portal &bull; data.gov.in grievance datasets &bull; Live IMD meteorological telemetry. Scaling to all 28 Indian states.</div></div></div>
+      <div class="node"><div class="node-flag">&#127463;&#127479;</div><div><div class="node-n">Brazil Node &mdash; S&atilde;o Paulo</div><div class="node-d">PAC (Programa de Acelera&ccedil;&atilde;o do Crescimento) &bull; dados.gov.br &bull; Portuguese speech triage. Covers 5570 municipalities.</div></div></div>
+      <div class="node"><div class="node-flag">&#127487;&#127462;</div><div><div class="node-n">South Africa Node &mdash; Gauteng</div><div class="node-d">Municipal Infrastructure Grants (MIG) &bull; National CapEx registries &bull; Township grid resilience tracking.</div></div></div>
+    </div>
+    <div class="col" style="flex:1;">
+      <div style="font-size:.75rem;font-weight:700;color:var(--c1);margin-bottom:6px;">&#9889; Google Cloud Technical Stack</div>
+      <div class="tech-row"><div class="tech-ico">&#129302;</div><div><div class="tech-n">Gemini 2.5 Pro &amp; Flash</div><div class="tech-d">Vision defect triage &middot; Speech translation &middot; Policy directives &middot; Megaplan generation</div></div></div>
+      <div class="tech-row"><div class="tech-ico">&#128506;&#65039;</div><div><div class="tech-n">Google Maps Platform</div><div class="tech-d">1-tap field dispatch &middot; Turn-by-turn truck routing &middot; GIS hotspot visualization</div></div></div>
+      <div class="tech-row"><div class="tech-ico">&#9729;&#65039;</div><div><div class="tech-n">Google Cloud Run</div><div class="tech-d">Serverless containerized microservices &middot; ASGI Python core &middot; Zero cold-start scaling</div></div></div>
+      <div class="tech-row"><div class="tech-ico">&#128230;</div><div><div class="tech-n">BigQuery GIS + Firebase</div><div class="tech-d">POINT spatial warehouse &middot; Real-time Firestore citizen sync &middot; BigQuery ML demand forecasting</div></div></div>
+    </div>
+  </div>
+  <div class="s-foot"><span>CivicPulse-BRICS &middot; Team Syntax Error &middot; Track 1</span><span class="s-slide-n">11 &ndash; 12</span></div>
+</div>
+
+<!-- ═══════════════════════════════════
+     SLIDE 12 &mdash; THANK YOU
+═════════════════════════════════════ -->
+<div class="slide" id="s12">
+  <div class="ty-top">
+    <div class="ty-big">Thank You</div>
+    <div class="ty-team">&#9889; Team Syntax Error</div>
+    <div class="ty-sub">AI for Digital Public Infrastructure &amp; Governance &nbsp;&bull;&nbsp; Track 1 &nbsp;&bull;&nbsp; Build with AI: Code for Communities 2nd Edition</div>
+  </div>
+  <div class="team-row">
+    <div class="tm"><div class="tm-av">&#128104;&#8205;&#128187;</div><div class="tm-name">Paras Singh</div><div class="tm-role">Team Lead &amp; Full-Stack</div><div class="tm-desc">Project concept, overall system architecture, and AI integration. Built main features and connected all portals.</div><a href="https://www.linkedin.com/in/" target="_blank" class="tm-li">&#128188; LinkedIn</a></div>
+    <div class="tm"><div class="tm-av">&#127912;</div><div class="tm-name">Aradhara Pal</div><div class="tm-role">Frontend &amp; UI/UX Designer</div><div class="tm-desc">Designed website layouts, responsive screens, and user-friendly dashboards for citizens and city officials.</div><a href="https://www.linkedin.com/in/" target="_blank" class="tm-li">&#128188; LinkedIn</a></div>
+    <div class="tm"><div class="tm-av">&#9729;&#65039;</div><div class="tm-name">Anshika Anand</div><div class="tm-role">Backend &amp; Cloud Developer</div><div class="tm-desc">Set up server, database, and cloud deployment on Render. Connected WhatsApp and Telegram messaging bots.</div><a href="https://www.linkedin.com/in/" target="_blank" class="tm-li">&#128188; LinkedIn</a></div>
+    <div class="tm"><div class="tm-av">&#128269;</div><div class="tm-name">Himanshi</div><div class="tm-role">Product Research &amp; Testing</div><div class="tm-desc">Researched city budget data and public governance guidelines. Tested user workflows, voice inputs, and documentation.</div><a href="https://www.linkedin.com/in/" target="_blank" class="tm-li">&#128188; LinkedIn</a></div>
+  </div>
+  <div class="ty-bar">
+    <div><strong>&#127760; Live:</strong> <a href="https://civicpulse-brics.onrender.com" class="ty-link" target="_blank">civicpulse-brics.onrender.com</a> &nbsp;|&nbsp; <strong>&#128187; GitHub:</strong> <a href="https://github.com/ParasSingh29/CivicPulse-BRICS" class="ty-link" target="_blank">ParasSingh29/CivicPulse-BRICS</a></div>
+    <span class="pill pgr" style="padding:4px 12px;font-size:.69rem;">Apache 2.0 &middot; Open Source DPG</span>
+  </div>
+</div>
+
+<!-- dot nav -->
+<div class="dot-nav" id="dn"></div>
+</div><!-- /stage -->
+</div><!-- /app -->
+
+<script>
+/* ── PARTICLE BG ─────────────────────────────── */
+(function(){
+  const cv=document.getElementById('bg-canvas'),ctx=cv.getContext('2d');
+  let W,H,ps=[];
+  function sz(){W=cv.width=innerWidth;H=cv.height=innerHeight;}
+  sz();window.addEventListener('resize',sz);
+  const cols=['rgba(6,182,212,','rgba(59,130,246,','rgba(139,92,246,'];
+  for(let i=0;i<60;i++)ps.push({x:Math.random()*innerWidth,y:Math.random()*innerHeight,r:Math.random()*1.6+.3,dx:(Math.random()-.5)*.28,dy:(Math.random()-.5)*.28,c:cols[~~(Math.random()*3)],a:Math.random()*.4+.12});
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    for(let i=0;i<ps.length;i++){
+      const p=ps[i];p.x+=p.dx;p.y+=p.dy;
+      if(p.x<0)p.x=W;if(p.x>W)p.x=0;if(p.y<0)p.y=H;if(p.y>H)p.y=0;
+      ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle=p.c+p.a+')';ctx.fill();
+      for(let j=i+1;j<ps.length;j++){
+        const q=ps[j],dx=p.x-q.x,dy=p.y-q.y,d=Math.sqrt(dx*dx+dy*dy);
+        if(d<90){ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(q.x,q.y);ctx.strokeStyle='rgba(6,182,212,'+(0.048*(1-d/90))+')';ctx.lineWidth=.5;ctx.stroke();}
+      }
+    }
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+/* ── SLIDE ENGINE ────────────────────────────── */
+const TOTAL=12;let cur=1;
+const slides=Array.from({length:TOTAL},(_,i)=>document.getElementById('s'+(i+1)));
+
+// build dots
+const dnEl=document.getElementById('dn');
+for(let i=1;i<=TOTAL;i++){
+  const d=document.createElement('div');
+  d.className='dot'+(i===1?' on':'');
+  d.onclick=(()=>{const n=i;return()=>go(n);})();
+  dnEl.appendChild(d);
+}
+const dots=Array.from(dnEl.children);
+
+function go(n){
+  if(n<1||n>TOTAL||n===cur)return;
+  slides[cur-1].classList.remove('visible');
+  cur=n;
+  slides[cur-1].classList.add('visible');
+  document.getElementById('nc').textContent=cur+' / '+TOTAL;
+  document.getElementById('pf').style.width=(cur/TOTAL*100)+'%';
+  dots.forEach((d,i)=>d.classList.toggle('on',i+1===cur));
+}
+function next(){go(cur+1);}
+function prev(){go(cur-1);}
+
+document.addEventListener('keydown',e=>{
+  if(e.key==='ArrowRight'||e.key===' '){e.preventDefault();next();}
+  if(e.key==='ArrowLeft'){e.preventDefault();prev();}
+  if(e.key==='Home')go(1);if(e.key==='End')go(TOTAL);
+});
+let tx=0;
+document.addEventListener('touchstart',e=>{tx=e.touches[0].clientX;},{passive:true});
+document.addEventListener('touchend',e=>{
+  const d=e.changedTouches[0].clientX-tx;
+  if(Math.abs(d)>50){d<0?next():prev();}
+});
+
+function goFs(){
+  if(!document.fullscreenElement)document.documentElement.requestFullscreen().catch(()=>{});
+  else document.exitFullscreen&&document.exitFullscreen();
+}
+</script>
+</body>
+</html>

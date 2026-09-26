@@ -94,6 +94,8 @@ async def government_page(request):
 
 async def presentation_page(request):
     """Serves the official 12-slide Pitch Deck Presentation."""
+    if os.path.exists("static/pitch_deck.html"):
+        return FileResponse("static/pitch_deck.html")
     if os.path.exists("static/presentation.html"):
         return FileResponse("static/presentation.html")
     return Response("CivicPulse-BRICS Presentation Deck is initializing.", media_type="text/plain")

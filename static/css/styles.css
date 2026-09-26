@@ -1782,13 +1782,19 @@ select.form-control option {
 
 .home-launch-square-grid {
   display: grid !important;
-  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
   gap: 16px !important;
   margin-bottom: 28px !important;
   align-items: start !important;
 }
 
-@media (max-width: 900px) {
+@media (max-width: 1180px) {
+  .home-launch-square-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  }
+}
+
+@media (max-width: 768px) {
   .home-launch-square-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
   }
@@ -2688,18 +2694,24 @@ select.form-control option {
 /* Minimalist 4 Launch Squares Grid */
 .home-launch-square-grid {
   display: grid !important;
-  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
   gap: 16px !important;
   margin-bottom: 28px !important;
 }
 
-@media (max-width: 992px) {
+@media (max-width: 1180px) {
+  .home-launch-square-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  }
+}
+
+@media (max-width: 768px) {
   .home-launch-square-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
   }
 }
 
-@media (max-width: 576px) {
+@media (max-width: 500px) {
   .home-launch-square-grid {
     grid-template-columns: 1fr !important;
   }
