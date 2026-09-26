@@ -3873,10 +3873,7 @@ body {
   }
   
   /* Overrides for fixed header */
-  .header-fixed-wrap {
-      position: relative !important;
-      height: auto !important;
-  }
+  .header-fixed-wrap { position: sticky !important; top: 0 !important; z-index: 10000 !important; } body { padding-top: 0 !important; }
   .app-container {
       margin-top: 10px !important;
       padding: 10px !important;
@@ -3898,4 +3895,5 @@ body {
     font-size: 1.2rem !important;
   }
 }
+
 
