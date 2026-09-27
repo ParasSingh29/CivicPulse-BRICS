@@ -292,14 +292,14 @@ async function performLogin(credentials) {
       localStorage.setItem('civicpulse_active_node', data.user?.node || currentLoginNodeCode);
 
       const isGitHubPages = window.location.hostname.includes('github.io');
-      let target = isGitHubPages ? 'static/citizen.html' : '/citizen';
+      let target = isGitHubPages ? 'static/pages/citizen.html' : '/citizen';
 
       if (data.redirect_url) {
         if (isGitHubPages) {
-          if (data.redirect_url.includes('city')) target = 'static/city_official.html';
-          else if (data.redirect_url.includes('central')) target = 'static/central_official.html';
-          else if (data.redirect_url.includes('gov')) target = 'static/government.html';
-          else target = 'static/citizen.html';
+          if (data.redirect_url.includes('city')) target = 'static/pages/city_official.html';
+          else if (data.redirect_url.includes('central')) target = 'static/pages/central_official.html';
+          else if (data.redirect_url.includes('gov')) target = 'static/pages/government.html';
+          else target = 'static/pages/citizen.html';
         } else {
           target = data.redirect_url;
         }
@@ -318,10 +318,10 @@ async function performLogin(credentials) {
     console.error('Login error:', err);
     // Fallback direct redirection for GitHub Pages and static deployments
     const isGitHubPages = window.location.hostname.includes('github.io');
-    let target = isGitHubPages ? 'static/citizen.html' : '/citizen';
-    if (credentials.role && credentials.role.includes('city')) target = isGitHubPages ? 'static/city_official.html' : '/city-official';
-    else if (credentials.role && credentials.role.includes('central')) target = isGitHubPages ? 'static/central_official.html' : '/central-official';
-    else if (credentials.role && credentials.role.includes('gov')) target = isGitHubPages ? 'static/government.html' : '/government';
+    let target = isGitHubPages ? 'static/pages/citizen.html' : '/citizen';
+    if (credentials.role && credentials.role.includes('city')) target = isGitHubPages ? 'static/pages/city_official.html' : '/city-official';
+    else if (credentials.role && credentials.role.includes('central')) target = isGitHubPages ? 'static/pages/central_official.html' : '/central-official';
+    else if (credentials.role && credentials.role.includes('gov')) target = isGitHubPages ? 'static/pages/government.html' : '/government';
 
     localStorage.setItem('civicpulse_user', JSON.stringify({
       name: credentials.name || (credentials.role.includes('city') ? 'Chief Municipal Engineer' : (credentials.role.includes('gov') || credentials.role.includes('central') ? 'Director General' : 'Citizen Member')),

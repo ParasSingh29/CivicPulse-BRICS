@@ -52,52 +52,52 @@ active_node_state = {"code": "IN", "id": "india"}
 
 async def login_page(request):
     """Serves the sovereign login gateway."""
-    if os.path.exists("static/login.html"):
-        return FileResponse("static/login.html")
-    if os.path.exists("static/index.html"):
-        return FileResponse("static/index.html")
+    if os.path.exists("static/pages/login.html"):
+        return FileResponse("static/pages/login.html")
+    if os.path.exists("static/pages/index.html"):
+        return FileResponse("static/pages/index.html")
     return Response("CivicPulse-BRICS Login is initializing.", media_type="text/plain")
 
 async def citizen_page(request):
     """Serves the dedicated Citizen Portal."""
-    if os.path.exists("static/citizen.html"):
-        return FileResponse("static/citizen.html")
-    if os.path.exists("static/index.html"):
-        return FileResponse("static/index.html")
+    if os.path.exists("static/pages/citizen.html"):
+        return FileResponse("static/pages/citizen.html")
+    if os.path.exists("static/pages/index.html"):
+        return FileResponse("static/pages/index.html")
     return Response("CivicPulse-BRICS Citizen Portal is initializing.", media_type="text/plain")
 
 async def city_official_page(request):
     """Serves the dedicated City Official Command Portal (Municipal Scope)."""
-    if os.path.exists("static/city_official.html"):
-        return FileResponse("static/city_official.html")
-    if os.path.exists("static/government.html"):
-        return FileResponse("static/government.html")
+    if os.path.exists("static/pages/city_official.html"):
+        return FileResponse("static/pages/city_official.html")
+    if os.path.exists("static/pages/government.html"):
+        return FileResponse("static/pages/government.html")
     return Response("CivicPulse-BRICS City Official Command is initializing.", media_type="text/plain")
 
 async def central_official_page(request):
     """Serves the dedicated Central Official Sovereign Planning & BRICS Command Hub."""
-    if os.path.exists("static/central_official.html"):
-        return FileResponse("static/central_official.html")
-    if os.path.exists("static/government.html"):
-        return FileResponse("static/government.html")
+    if os.path.exists("static/pages/central_official.html"):
+        return FileResponse("static/pages/central_official.html")
+    if os.path.exists("static/pages/government.html"):
+        return FileResponse("static/pages/government.html")
     return Response("CivicPulse-BRICS Central Official Command is initializing.", media_type="text/plain")
 
 async def government_page(request):
     """Serves the dedicated Government Command Hub."""
-    if os.path.exists("static/government.html"):
-        return FileResponse("static/government.html")
-    if os.path.exists("static/city_official.html"):
-        return FileResponse("static/city_official.html")
-    if os.path.exists("static/index.html"):
-        return FileResponse("static/index.html")
+    if os.path.exists("static/pages/government.html"):
+        return FileResponse("static/pages/government.html")
+    if os.path.exists("static/pages/city_official.html"):
+        return FileResponse("static/pages/city_official.html")
+    if os.path.exists("static/pages/index.html"):
+        return FileResponse("static/pages/index.html")
     return Response("CivicPulse-BRICS Government Command is initializing.", media_type="text/plain")
 
 async def presentation_page(request):
     """Serves the official 12-slide Pitch Deck Presentation."""
-    if os.path.exists("static/pitch_deck.html"):
-        return FileResponse("static/pitch_deck.html")
-    if os.path.exists("static/presentation.html"):
-        return FileResponse("static/presentation.html")
+    if os.path.exists("static/pages/pitch_deck.html"):
+        return FileResponse("static/pages/pitch_deck.html")
+    if os.path.exists("static/pages/presentation.html"):
+        return FileResponse("static/pages/presentation.html")
     return Response("CivicPulse-BRICS Presentation Deck is initializing.", media_type="text/plain")
 
 async def download_pitch_deck_pptx(request):
