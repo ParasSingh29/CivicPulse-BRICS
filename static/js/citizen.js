@@ -845,8 +845,12 @@ function initModalPinMap(lat, lon) {
   const hint = document.getElementById('map-pin-coords-hint');
   if (hint) hint.textContent = `Lat: ${lat.toFixed(4)}°, Lon: ${lon.toFixed(4)}°`;
 
+  if (window.modalPinMap && window.modalPinMap.getContainer() !== container) {
+    destroyModalPinMap();
+  }
+
   if (!modalPinMap) {
-    modalPinMap = L.map('modal-pin-map', {
+    modalPinMap = L.map(container, {
       center: [lat, lon],
       zoom: 15,
       zoomControl: true
@@ -1599,5 +1603,6 @@ window.handleNotifyMe = function() {
     window.showToast('Subscribed! We will notify you when WhatsApp & Telegram bots go live.', 'success');
   }
 };
+
 
 
