@@ -5,7 +5,7 @@ import urllib.request
 import urllib.parse
 from datetime import datetime
 
-DB_FILE = "civicpulse.db"
+DB_FILE = "data/civicpulse.db"
 
 def init_sms_db():
     """Ensures sms_logs table exists in SQLite database."""

@@ -15,8 +15,8 @@ from api_client import get_all_complaints
 from brics_context import get_brics_node, INFRASTRUCTURE_SECTORS
 from gemini_helper import call_gemini_with_fallback
 
-CITY_PROPOSALS_FILE = "city_proposals.json"
-BRICS_INCOMING_FILE = "brics_incoming_requests.json"
+CITY_PROPOSALS_FILE = "data/city_proposals.json"
+BRICS_INCOMING_FILE = "data/brics_incoming_requests.json"
 
 # ==============================================================================
 # 1. CITY OFFICERS REGISTRY & MUNICIPAL STATUS (RED, YELLOW, GREEN)

@@ -2,7 +2,7 @@ import os
 import json
 from datetime import datetime
 
-DEMANDS_FILE = "demands.json"
+DEMANDS_FILE = "data/demands.json"
 
 def get_all_demands(country_code=None):
     """Retrieves all community demands from demands.json, optionally filtered by country."""

@@ -15,7 +15,7 @@ import secrets
 import io
 from datetime import datetime
 
-DB_FILE = "civicpulse.db"
+DB_FILE = "data/civicpulse.db"
 
 # ==============================================================================
 # 1. SQLITE ACID TRANSACTIONAL DATABASE ENGINE (ZERO CSV DEPENDENCY)
