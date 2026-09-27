@@ -12,6 +12,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
   
   <!-- Custom Enterprise Design System -->
+  <!-- Leaflet CSS for Geospatial Command Maps -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
   <link rel="stylesheet" href="/static/css/styles.css?v=20260926_mobile_fix">
 </head>
 <body>  <!-- Fixed Sovereign Header Bar Stack -->
@@ -202,6 +204,121 @@
         </div>
       </section>
 
+      <!-- ====================================================================
+           SECTION: BRICS SOVEREIGN NATIONS TELEMETRY MATRIX (ALL COUNTRIES DATA TABLE)
+           ==================================================================== -->
+      <section class="card" style="margin-bottom:32px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:10px;">
+          <div>
+            <h3 style="font-size:1.2rem; font-weight:700; margin:0 0 4px 0; color:var(--text-primary);">
+              🌐 BRICS+ Sovereign Nations Telemetry Matrix
+            </h3>
+            <p style="font-size:0.85rem; color:var(--text-muted); margin:0;">
+              Real-time problem tracking, resolution health index, and active municipal officers across all 11 BRICS member states.
+            </p>
+          </div>
+          <span class="nav-badge" style="background:rgba(37,99,235,0.12); color:#60a5fa; border:1px solid rgba(37,99,235,0.3);">
+            11 Sovereign Nodes Live
+          </span>
+        </div>
+
+        <div style="overflow-x:auto;">
+          <table class="table" style="width:100%; border-collapse:collapse;">
+            <thead>
+              <tr style="border-bottom:2px solid var(--border-color); text-align:left; font-size:0.82rem; color:var(--text-muted);">
+                <th style="padding:12px;">Country / Sovereign Node</th>
+                <th style="padding:12px;">Primary Hub City</th>
+                <th style="padding:12px; text-align:center;">Total Problems</th>
+                <th style="padding:12px; text-align:center; color:#ef4444;">🔴 Red Critical</th>
+                <th style="padding:12px; text-align:center; color:#f59e0b;">🟡 Yellow In Progress</th>
+                <th style="padding:12px; text-align:center; color:#10b981;">🟢 Green Resolved</th>
+                <th style="padding:12px; text-align:center;">Health Index</th>
+                <th style="padding:12px; text-align:right;">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="central-country-telemetry-body">
+              <!-- Dynamically populated by GlobalProblemMapSystem -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ====================================================================
+           SECTION: GLOBAL PROBLEMS MAP & FILTERABLE DATA MATRIX
+           ==================================================================== -->
+      <section class="card problem-map-table-section" style="margin-bottom:36px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:18px; flex-wrap:wrap; gap:12px;">
+          <div>
+            <h3 style="font-size:1.2rem; font-weight:700; margin:0 0 4px 0; color:var(--text-primary);">
+              🗺️ Geospatial Problem Command Map & Data Matrix
+            </h3>
+            <p style="font-size:0.85rem; color:var(--text-muted); margin:0;">
+              Interactive Leaflet GIS map synchronized side-by-side with live filterable problem telemetry across countries and cities.
+            </p>
+          </div>
+          <span class="nav-badge" id="central-map-counter-badge" style="background:rgba(16,185,129,0.12); color:#34d399; border:1px solid rgba(16,185,129,0.3); font-weight:700;">
+            Showing Problems...
+          </span>
+        </div>
+
+        <!-- Filter Controls Toolbar -->
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:12px; margin-bottom:18px; background:rgba(255,255,255,0.02); padding:14px; border-radius:var(--radius-md); border:1px solid var(--border-subtle);">
+          <div>
+            <label style="font-size:0.75rem; color:var(--text-muted); display:block; margin-bottom:4px; font-weight:600;">Filter Country</label>
+            <select class="form-control" id="central-map-country-filter" style="width:100%; font-size:0.84rem; padding:6px 10px;">
+              <option value="All">🌐 All BRICS Nations</option>
+            </select>
+          </div>
+          <div>
+            <label style="font-size:0.75rem; color:var(--text-muted); display:block; margin-bottom:4px; font-weight:600;">Filter City</label>
+            <select class="form-control" id="central-map-city-filter" style="width:100%; font-size:0.84rem; padding:6px 10px;">
+              <option value="All">🏙️ All Cities</option>
+            </select>
+          </div>
+          <div>
+            <label style="font-size:0.75rem; color:var(--text-muted); display:block; margin-bottom:4px; font-weight:600;">Filter RYG Status</label>
+            <select class="form-control" id="central-map-status-filter" style="width:100%; font-size:0.84rem; padding:6px 10px;">
+              <option value="All">All Statuses</option>
+              <option value="pending">🔴 Pending / Critical</option>
+              <option value="in_progress">🟡 In Progress</option>
+              <option value="resolved">🟢 Resolved</option>
+            </select>
+          </div>
+          <div>
+            <label style="font-size:0.75rem; color:var(--text-muted); display:block; margin-bottom:4px; font-weight:600;">Search Problems</label>
+            <input type="text" class="form-control" id="central-map-search-input" placeholder="Search title, ward, id..." style="width:100%; font-size:0.84rem; padding:6px 10px;">
+          </div>
+        </div>
+
+        <!-- Side-by-Side Map & Data Table Grid -->
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:18px;" class="map-table-grid">
+          <!-- Left Column: Leaflet Map -->
+          <div style="border-radius:var(--radius-lg); overflow:hidden; border:1px solid var(--border-color); height:500px; position:relative;">
+            <div id="central-geospatial-map" style="width:100%; height:100%; background:#1e293b;"></div>
+          </div>
+
+          <!-- Right Column: Problems Data Table -->
+          <div style="border-radius:var(--radius-lg); border:1px solid var(--border-color); height:500px; overflow-y:auto; background:var(--bg-card);">
+            <table class="table" style="width:100%; border-collapse:collapse;">
+              <thead style="position:sticky; top:0; background:var(--bg-card); z-index:2; border-bottom:2px solid var(--border-color);">
+                <tr style="text-align:left; font-size:0.78rem; color:var(--text-muted);">
+                  <th style="padding:10px 12px;">ID & Flag</th>
+                  <th style="padding:10px 12px;">Location</th>
+                  <th style="padding:10px 12px;">Category & Title</th>
+                  <th style="padding:10px 12px;">Status</th>
+                  <th style="padding:10px 12px; text-align:right;">Action</th>
+                </tr>
+              </thead>
+              <tbody id="central-map-table-body">
+                <!-- Dynamically populated by GlobalProblemMapSystem -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- Launchpad Section Title -->
+      <div style="margin-bottom:18px;">
         <h3 style="font-size:1.25rem; font-weight:700; margin:0 0 4px 0;" data-i18n="sec_central_launchpad">Sovereign Command Directory</h3>
       </div>
 
@@ -530,6 +647,9 @@
 
   <script src="/static/js/i18n.js?v=20260926_all10"></script>
   <script src="/static/js/app.js?v=score_fix"></script>
+  <!-- Leaflet JS for Geospatial Maps -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script src="/static/js/problem_map_table.js"></script>
   <!-- Dedicated Central Official Subsystem -->
   <script src="/static/js/central_official.js?v=20260926_all10"></script>
   <script src="/static/js/ui_enhancements.js"></script>

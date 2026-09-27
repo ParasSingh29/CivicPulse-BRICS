@@ -54,6 +54,19 @@ async function refreshCentralDashboard() {
     loadCentralBricsJVs(),
     loadInboundPartnerRequests()
   ]);
+
+  if (window.GlobalProblemMapSystem) {
+    window.GlobalProblemMapSystem.init({
+      mapId: 'central-geospatial-map',
+      tableBodyId: 'central-map-table-body',
+      countrySelectId: 'central-map-country-filter',
+      citySelectId: 'central-map-city-filter',
+      statusSelectId: 'central-map-status-filter',
+      searchInputId: 'central-map-search-input',
+      counterBadgeId: 'central-map-counter-badge',
+      countryTableBodyId: 'central-country-telemetry-body'
+    });
+  }
 }
 
 // ==============================================================================

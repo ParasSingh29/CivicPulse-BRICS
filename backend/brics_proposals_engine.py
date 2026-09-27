@@ -76,7 +76,33 @@ OFFICERS_REGISTRY = [
         "phone": "+55 11 98101 5566"
     },
     {
-        "id": "OFF-JHB-05",
+        "id": "OFF-MOW-05",
+        "name": "Eng. Dmitri Volkov",
+        "city": "Moscow",
+        "jurisdiction": "Central Administrative Okrug (Central Okrug)",
+        "country": "Russia",
+        "country_code": "RU",
+        "flag": "🇷🇺",
+        "department": "Department of Transport & Road Development",
+        "designation": "Chief Infrastructure Director",
+        "email": "dmitri.volkov@mos.ru",
+        "phone": "+7 495 777 8899"
+    },
+    {
+        "id": "OFF-SHA-06",
+        "name": "Dir. Chen Wei",
+        "city": "Shanghai",
+        "jurisdiction": "Shanghai Metropolitan Planning Zone",
+        "country": "China",
+        "country_code": "CN",
+        "flag": "🇨🇳",
+        "department": "Shanghai Housing & Urban-Rural Development Commission",
+        "designation": "Director of Municipal Infrastructure",
+        "email": "chen.wei@shanghai.gov.cn",
+        "phone": "+86 21 6321 0000"
+    },
+    {
+        "id": "OFF-JHB-07",
         "name": "Dir. Sipho Nkosi",
         "city": "Johannesburg",
         "jurisdiction": "City of Johannesburg Metropolitan (Gauteng)",
@@ -87,6 +113,84 @@ OFFICERS_REGISTRY = [
         "designation": "Executive Infrastructure Director",
         "email": "sipho.nkosi@joburg.gov.za",
         "phone": "+27 11 981 7788"
+    },
+    {
+        "id": "OFF-CAI-08",
+        "name": "Eng. Ahmed Hassan",
+        "city": "Cairo",
+        "jurisdiction": "Greater Cairo Governorate & Nile Basin",
+        "country": "Egypt",
+        "country_code": "EG",
+        "flag": "🇪🇬",
+        "department": "Ministry of Housing, Utilities & Urban Communities",
+        "designation": "Senior Works Supervisor",
+        "email": "ahmed.hassan@cairo.gov.eg",
+        "phone": "+20 2 2391 0000"
+    },
+    {
+        "id": "OFF-JKT-09",
+        "name": "Bpk. Bambang Suryo",
+        "city": "Jakarta",
+        "jurisdiction": "DKI Jakarta Special Capital Region",
+        "country": "Indonesia",
+        "country_code": "ID",
+        "flag": "🇮🇩",
+        "department": "Dinas Bina Marga DKI Jakarta",
+        "designation": "Head of Public Works & Drainage",
+        "email": "bambang.suryo@jakarta.go.id",
+        "phone": "+62 21 3822 000"
+    },
+    {
+        "id": "OFF-DXB-10",
+        "name": "Eng. Tariq Al-Mansoor",
+        "city": "Dubai",
+        "jurisdiction": "Emirate of Dubai Infrastructure Corridor",
+        "country": "UAE",
+        "country_code": "AE",
+        "flag": "🇦🇪",
+        "department": "Dubai Roads & Transport Authority (RTA)",
+        "designation": "Director of Traffic & Infrastructure Planning",
+        "email": "tariq.almansoor@rta.ae",
+        "phone": "+971 4 284 4444"
+    },
+    {
+        "id": "OFF-RUH-11",
+        "name": "Eng. Faisal Al-Saud",
+        "city": "Riyadh",
+        "jurisdiction": "Riyadh Region Metropolitan Authority",
+        "country": "Saudi Arabia",
+        "country_code": "SA",
+        "flag": "🇸🇦",
+        "department": "Royal Commission for Riyadh City (RCRC)",
+        "designation": "Chief Urban Development Engineer",
+        "email": "faisal.alsaud@rcrc.gov.sa",
+        "phone": "+966 11 488 3333"
+    },
+    {
+        "id": "OFF-ADD-12",
+        "name": "Dir. Dawit Haile",
+        "city": "Addis Ababa",
+        "jurisdiction": "Addis Ababa City Administration",
+        "country": "Ethiopia",
+        "country_code": "ET",
+        "flag": "🇪🇹",
+        "department": "Addis Ababa City Roads Authority (AACRA)",
+        "designation": "General Manager",
+        "email": "dawit.haile@addisababa.gov.et",
+        "phone": "+251 11 551 7788"
+    },
+    {
+        "id": "OFF-THR-13",
+        "name": "Eng. Mohammad Reza",
+        "city": "Tehran",
+        "jurisdiction": "Tehran Metropolitan Municipality",
+        "country": "Iran",
+        "country_code": "IR",
+        "flag": "🇮🇷",
+        "department": "Tehran Infrastructure & Transit Organization",
+        "designation": "Director of Municipal Engineering",
+        "email": "mohammad.reza@tehran.ir",
+        "phone": "+98 21 8890 0000"
     }
 ]
 
@@ -95,16 +199,32 @@ def normalize_city_name(val):
     if not val:
         return "Delhi"
     v = str(val).lower()
-    if "delhi" in v or "pitampura" in v or "rohini" in v or "connaught" in v or "janakpuri" in v or "okhla" in v:
+    if "delhi" in v or "pitampura" in v or "rohini" in v or "connaught" in v or "janakpuri" in v or "okhla" in v or "chandni" in v or "aiims" in v or "india" in v:
         return "Delhi"
     if "mumbai" in v or "bandra" in v or "andheri" in v or "dadar" in v or "kurla" in v:
         return "Mumbai"
     if "bengaluru" in v or "bangalore" in v or "koramangala" in v or "whitefield" in v or "silk board" in v:
         return "Bengaluru"
-    if "são paulo" in v or "sao paulo" in v or "itaquera" in v or "pinheiros" in v or "brazil" in v:
+    if "são paulo" in v or "sao paulo" in v or "itaquera" in v or "pinheiros" in v or "jardins" in v or "augusta" in v or "paulista" in v or "brazil" in v:
         return "São Paulo"
-    if "johannesburg" in v or "joburg" in v or "soweto" in v or "sandton" in v or "south africa" in v:
+    if "johannesburg" in v or "joburg" in v or "soweto" in v or "sandton" in v or "alexandra" in v or "south africa" in v:
         return "Johannesburg"
+    if "moscow" in v or "tverskaya" in v or "kutuzovsky" in v or "komsomolskaya" in v or "russia" in v:
+        return "Moscow"
+    if "shanghai" in v or "pudong" in v or "nanjing" in v or "lujiazui" in v or "china" in v:
+        return "Shanghai"
+    if "cairo" in v or "corniche" in v or "khalili" in v or "tahrir" in v or "egypt" in v:
+        return "Cairo"
+    if "jakarta" in v or "sudirman" in v or "pluit" in v or "thamrin" in v or "indonesia" in v:
+        return "Jakarta"
+    if "dubai" in v or "zayed" in v or "safa" in v or "marina" in v or "uae" in v:
+        return "Dubai"
+    if "riyadh" in v or "olaya" in v or "fahd" in v or "saudi" in v:
+        return "Riyadh"
+    if "addis" in v or "ababa" in v or "ethiopia" in v:
+        return "Addis Ababa"
+    if "tehran" in v or "ferdowsi" in v or "iran" in v:
+        return "Tehran"
     return "Delhi"
 
 def get_city_officers_overview(country_code=None):
@@ -115,14 +235,14 @@ def get_city_officers_overview(country_code=None):
     - Green (Resolved / Closed)
     - Total Complaints & Health Index
 
-    If country_code is provided, only officers belonging to that BRICS nation are returned.
+    If country_code is provided and not 'ALL', only officers belonging to that BRICS nation are returned.
     """
     all_complaints = get_all_complaints()
     officers = []
 
     # Filter the registry to only include officers for the specified country
     registry = OFFICERS_REGISTRY
-    if country_code:
+    if country_code and country_code.upper() != "ALL":
         registry = [o for o in OFFICERS_REGISTRY if o.get("country_code", "").upper() == country_code.upper()]
 
     for off in registry:

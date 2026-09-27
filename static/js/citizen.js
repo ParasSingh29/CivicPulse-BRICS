@@ -10,6 +10,19 @@ window.initCitizenPortal = function() {
   try { if (window.loadCitizenDemands) window.loadCitizenDemands(); } catch(e) { console.warn('loadCitizenDemands notice:', e); }
   try { if (window.loadComplaints) window.loadComplaints(); } catch(e) { console.warn('loadComplaints notice:', e); }
   try { if (window.setupAICitizenAgent) window.setupAICitizenAgent(); } catch(e) { console.warn('setupAICitizenAgent notice:', e); }
+
+  if (window.GlobalProblemMapSystem && document.getElementById('cit-geospatial-map')) {
+    window.GlobalProblemMapSystem.init({
+      mapId: 'cit-geospatial-map',
+      tableBodyId: 'cit-map-table-body',
+      countrySelectId: 'cit-map-country-filter',
+      citySelectId: 'cit-map-city-filter',
+      statusSelectId: 'cit-map-status-filter',
+      searchInputId: 'cit-map-search-input',
+      counterBadgeId: 'cit-map-counter-badge',
+      countryTableBodyId: 'cit-country-telemetry-body'
+    });
+  }
 };
 
 // Immediate fallback registration in case DOM is already ready

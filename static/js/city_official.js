@@ -158,6 +158,19 @@ async function refreshCityOfficialDashboard() {
     loadCityAiSuggestions(),
     loadCityProposalsFeed()
   ]);
+
+  if (window.GlobalProblemMapSystem) {
+    window.GlobalProblemMapSystem.init({
+      mapId: 'city-geospatial-map',
+      tableBodyId: 'city-map-table-body',
+      countrySelectId: 'city-map-country-filter',
+      citySelectId: 'city-map-city-filter',
+      statusSelectId: 'city-map-status-filter',
+      searchInputId: 'city-map-search-input',
+      counterBadgeId: 'city-map-counter-badge',
+      countryTableBodyId: 'city-country-telemetry-body'
+    });
+  }
 }
 
 function getCleanCityDescription(desc) {

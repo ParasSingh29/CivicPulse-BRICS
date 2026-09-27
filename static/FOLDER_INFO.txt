@@ -120,6 +120,14 @@ PURPOSE:
              - Status updates for cross-border collaborations
    USED BY : static/pages/central_official.html
 
+8. problem_map_table.js
+   PURPOSE : Universal Geospatial Command Map & Data Matrix Controller:
+             - Renders Leaflet GIS map with custom RYG status pins
+             - Synchronizes side-by-side problem data table with real-time filters
+             - Filters by All BRICS Nations, Specific Country, City, RYG Status & Live Search
+             - Renders BRICS+ Sovereign Nations Telemetry Matrix table across 11 member states
+   USED BY : static/pages/central_official.html, static/pages/city_official.html, static/pages/citizen.html, static/pages/index.html
+
 ----------------------------------------------------
   static/css/
 ----------------------------------------------------
