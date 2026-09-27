@@ -160,6 +160,42 @@ async function switchLoginNode(code) {
   }
 }
 
+window.switchAuthMode = function(role, mode) {
+  const loginView = document.getElementById(`${role}-login-view`);
+  const regView = document.getElementById(`${role}-register-view`);
+  const loginBtn = document.getElementById(`btn-mode-login-${role}`);
+  const regBtn = document.getElementById(`btn-mode-reg-${role}`);
+
+  if (loginView && regView) {
+    if (mode === 'register') {
+      loginView.style.display = 'none';
+      regView.style.display = 'block';
+      if (loginBtn) loginBtn.classList.remove('active');
+      if (regBtn) regBtn.classList.add('active');
+    } else {
+      regView.style.display = 'none';
+      loginView.style.display = 'block';
+      if (regBtn) regBtn.classList.remove('active');
+      if (loginBtn) loginBtn.classList.add('active');
+    }
+  }
+};
+
+function showAuthError(message) {
+  let errBox = document.getElementById('auth-error-banner');
+  if (!errBox) {
+    errBox = document.createElement('div');
+    errBox.id = 'auth-error-banner';
+    errBox.style.cssText = 'position:fixed; top:80px; left:50%; transform:translateX(-50%); z-index:99999; background:rgba(225,29,72,0.95); color:#ffffff; padding:12px 24px; border-radius:12px; font-weight:600; font-size:0.92rem; box-shadow:0 8px 32px rgba(225,29,72,0.5); border:1px solid rgba(255,255,255,0.25); text-align:center; max-width:90%; transition:all 0.3s ease;';
+    document.body.appendChild(errBox);
+  }
+  errBox.innerHTML = `<span>⚠️ ${message}</span>`;
+  errBox.style.display = 'block';
+  setTimeout(() => {
+    if (errBox) errBox.style.display = 'none';
+  }, 5000);
+}
+
 // ==============================================================================
 // 3. EVENT HANDLERS & AUTH FLOW
 // ==============================================================================
@@ -172,102 +208,205 @@ function setupLoginEvents() {
     });
   }
 
-  // 1. Citizen Login Form Submit
+  // --- 1. CITIZEN LOGIN & REGISTER ---
   const citForm = document.getElementById('citizen-login-form');
   if (citForm) {
     citForm.addEventListener('submit', (e) => {
       e.preventDefault();
       const email = document.getElementById('citizen-email').value.trim();
       const password = document.getElementById('citizen-password').value;
+      if (!email || !password) {
+        showAuthError('Please fill in both email and password.');
+        return;
+      }
       performLogin({
         role: 'citizen',
         email: email,
         password: password,
-        name: 'Priya Sharma (Verified Resident)',
+        is_demo: false,
+        node: currentLoginNodeCode
+      });
+    });
+  }
+
+  const citRegForm = document.getElementById('citizen-register-form');
+  if (citRegForm) {
+    citRegForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const name = document.getElementById('reg-citizen-name').value.trim();
+      const email = document.getElementById('reg-citizen-email').value.trim();
+      const phone = document.getElementById('reg-citizen-phone')?.value.trim() || '';
+      const city = document.getElementById('reg-citizen-city')?.value.trim() || 'Delhi';
+      const password = document.getElementById('reg-citizen-password').value;
+      const confirmPass = document.getElementById('reg-citizen-confirm').value;
+
+      if (password !== confirmPass) {
+        showAuthError('Passwords do not match. Please re-enter.');
+        return;
+      }
+
+      performRegister({
+        role: 'citizen',
+        name: name,
+        email: email,
+        phone: phone,
+        city: city,
+        password: password,
         node: currentLoginNodeCode
       });
     });
   }
 
   // Citizen 1-Click Fast Demo
-  const btnDemoCitizen = document.getElementById('btn-demo-citizen');
-  if (btnDemoCitizen) {
-    btnDemoCitizen.addEventListener('click', (e) => {
-      e.preventDefault();
-      performLogin({
-        role: 'citizen',
-        name: 'Priya Sharma (Verified Resident)',
-        email: 'priya.sharma@delhi.gov.in',
-        node: currentLoginNodeCode
+  ['btn-demo-citizen', 'btn-demo-citizen-reg'].forEach(btnId => {
+    const btn = document.getElementById(btnId);
+    if (btn) {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        performLogin({
+          role: 'citizen',
+          name: 'Priya Sharma (Verified Resident)',
+          email: 'priya.sharma@delhi.gov.in',
+          is_demo: true,
+          node: currentLoginNodeCode
+        });
       });
-    });
-  }
+    }
+  });
 
-  // 2. City Official Login Form Submit
+  // --- 2. CITY OFFICIAL LOGIN & REGISTER ---
   const cityForm = document.getElementById('city-login-form');
   if (cityForm) {
     cityForm.addEventListener('submit', (e) => {
       e.preventDefault();
       const email = document.getElementById('city-email').value.trim();
       const password = document.getElementById('city-password').value;
+      if (!email || !password) {
+        showAuthError('Please fill in both email and password.');
+        return;
+      }
       performLogin({
         role: 'city_official',
         email: email,
         password: password,
-        name: 'Er. Vikram Sharma (Chief Municipal Engineer)',
+        is_demo: false,
+        node: currentLoginNodeCode
+      });
+    });
+  }
+
+  const cityRegForm = document.getElementById('city-register-form');
+  if (cityRegForm) {
+    cityRegForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const name = document.getElementById('reg-city-name').value.trim();
+      const email = document.getElementById('reg-city-email').value.trim();
+      const dept = document.getElementById('reg-city-dept')?.value.trim() || 'Public Works Dept';
+      const city = document.getElementById('reg-city-jurisdiction')?.value.trim() || 'Delhi';
+      const password = document.getElementById('reg-city-password').value;
+      const confirmPass = document.getElementById('reg-city-confirm').value;
+
+      if (password !== confirmPass) {
+        showAuthError('Passwords do not match. Please re-enter.');
+        return;
+      }
+
+      performRegister({
+        role: 'city_official',
+        name: name,
+        email: email,
+        city: city,
+        department: dept,
+        password: password,
         node: currentLoginNodeCode
       });
     });
   }
 
   // City Official 1-Click Fast Demo
-  const btnDemoCity = document.getElementById('btn-demo-city');
-  if (btnDemoCity) {
-    btnDemoCity.addEventListener('click', (e) => {
-      e.preventDefault();
-      performLogin({
-        role: 'city_official',
-        name: 'Er. Vikram Sharma (Chief Municipal Engineer)',
-        email: 'vikram.sharma@delhi.gov.in',
-        node: currentLoginNodeCode
+  ['btn-demo-city', 'btn-demo-city-reg'].forEach(btnId => {
+    const btn = document.getElementById(btnId);
+    if (btn) {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        performLogin({
+          role: 'city_official',
+          name: 'Er. Vikram Sharma (Chief Municipal Engineer)',
+          email: 'vikram.sharma@delhi.gov.in',
+          is_demo: true,
+          node: currentLoginNodeCode
+        });
       });
-    });
-  }
+    }
+  });
 
-  // 3. Central Official Government Hub Login Form Submit
+  // --- 3. CENTRAL OFFICIAL GOVERNMENT HUB LOGIN & REGISTER ---
   const govForm = document.getElementById('gov-login-form');
   if (govForm) {
     govForm.addEventListener('submit', (e) => {
       e.preventDefault();
       const email = document.getElementById('gov-email').value.trim();
       const password = document.getElementById('gov-password').value;
+      if (!email || !password) {
+        showAuthError('Please fill in both email and password.');
+        return;
+      }
       performLogin({
         role: 'central_official',
         email: email,
         password: password,
-        name: 'Dr. Rajesh Verma (Director General, Infrastructure & CapEx)',
+        is_demo: false,
+        node: currentLoginNodeCode
+      });
+    });
+  }
+
+  const govRegForm = document.getElementById('gov-register-form');
+  if (govRegForm) {
+    govRegForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const name = document.getElementById('reg-gov-name').value.trim();
+      const email = document.getElementById('reg-gov-email').value.trim();
+      const ministry = document.getElementById('reg-gov-ministry')?.value.trim() || 'Ministry of Urban Infrastructure';
+      const password = document.getElementById('reg-gov-password').value;
+      const confirmPass = document.getElementById('reg-gov-confirm').value;
+
+      if (password !== confirmPass) {
+        showAuthError('Passwords do not match. Please re-enter.');
+        return;
+      }
+
+      performRegister({
+        role: 'central_official',
+        name: name,
+        email: email,
+        ministry: ministry,
+        password: password,
         node: currentLoginNodeCode
       });
     });
   }
 
   // Central Official 1-Click Fast Demo
-  const btnDemoGov = document.getElementById('btn-demo-gov');
-  if (btnDemoGov) {
-    btnDemoGov.addEventListener('click', (e) => {
-      e.preventDefault();
-      performLogin({
-        role: 'central_official',
-        name: 'Dr. Rajesh Verma (Director General, Infrastructure & CapEx)',
-        email: 'director.general@capex.brics.gov',
-        node: currentLoginNodeCode
+  ['btn-demo-gov', 'btn-demo-gov-reg'].forEach(btnId => {
+    const btn = document.getElementById(btnId);
+    if (btn) {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        performLogin({
+          role: 'central_official',
+          name: 'Dr. Rajesh Verma (Director General, Infrastructure & CapEx)',
+          email: 'director.general@brics.gov',
+          is_demo: true,
+          node: currentLoginNodeCode
+        });
       });
-    });
-  }
+    }
+  });
 }
 
 // ==============================================================================
-// 4. PERFORM LOGIN & ROUTING
+// 4. PERFORM LOGIN & REGISTER ROUTING
 // ==============================================================================
 async function performLogin(credentials) {
   const submitBtns = document.querySelectorAll('.btn-portal-action, .btn-demo-quick');
@@ -285,7 +424,7 @@ async function performLogin(credentials) {
     });
 
     const data = await res.json();
-    if (data.status === 'ok') {
+    if (res.ok && data.status === 'ok') {
       // Save session info
       localStorage.setItem('civicpulse_user', JSON.stringify(data.user));
       localStorage.setItem('civicpulse_token', data.token);
@@ -308,7 +447,7 @@ async function performLogin(credentials) {
       document.body.style.opacity = '0.85';
       window.location.href = target;
     } else {
-      alert('Authentication failed. Please check your credentials.');
+      showAuthError(data.message || 'Invalid login credentials. Please check your email and password, or click Register Account.');
       submitBtns.forEach(b => {
         b.disabled = false;
         if (b.dataset.origHtml) b.innerHTML = b.dataset.origHtml;
@@ -316,18 +455,65 @@ async function performLogin(credentials) {
     }
   } catch (err) {
     console.error('Login error:', err);
-    // Fallback direct redirection for GitHub Pages and static deployments
-    const isGitHubPages = window.location.hostname.includes('github.io');
-    let target = isGitHubPages ? 'static/pages/citizen.html' : '/citizen';
-    if (credentials.role && credentials.role.includes('city')) target = isGitHubPages ? 'static/pages/city_official.html' : '/city-official';
-    else if (credentials.role && credentials.role.includes('central')) target = isGitHubPages ? 'static/pages/central_official.html' : '/central-official';
-    else if (credentials.role && credentials.role.includes('gov')) target = isGitHubPages ? 'static/pages/government.html' : '/government';
-
-    localStorage.setItem('civicpulse_user', JSON.stringify({
-      name: credentials.name || (credentials.role.includes('city') ? 'Chief Municipal Engineer' : (credentials.role.includes('gov') || credentials.role.includes('central') ? 'Director General' : 'Citizen Member')),
-      role: credentials.role,
-      node: currentLoginNodeCode
-    }));
-    window.location.href = target;
+    showAuthError('Connection error. Please try again.');
+    submitBtns.forEach(b => {
+      b.disabled = false;
+      if (b.dataset.origHtml) b.innerHTML = b.dataset.origHtml;
+    });
   }
 }
+
+async function performRegister(credentials) {
+  const submitBtns = document.querySelectorAll('.btn-portal-action, .btn-demo-quick');
+  submitBtns.forEach(b => {
+    b.disabled = true;
+    b.dataset.origHtml = b.innerHTML;
+    b.innerHTML = `<span>Creating Account...</span>`;
+  });
+
+  try {
+    const res = await fetch('/api/auth/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(credentials)
+    });
+
+    const data = await res.json();
+    if (res.ok && data.status === 'ok') {
+      localStorage.setItem('civicpulse_user', JSON.stringify(data.user));
+      localStorage.setItem('civicpulse_token', data.token);
+      localStorage.setItem('civicpulse_active_node', data.user?.node || currentLoginNodeCode);
+
+      const isGitHubPages = window.location.hostname.includes('github.io');
+      let target = isGitHubPages ? 'static/pages/citizen.html' : '/citizen';
+
+      if (data.redirect_url) {
+        if (isGitHubPages) {
+          if (data.redirect_url.includes('city')) target = 'static/pages/city_official.html';
+          else if (data.redirect_url.includes('central')) target = 'static/pages/central_official.html';
+          else if (data.redirect_url.includes('gov')) target = 'static/pages/government.html';
+          else target = 'static/pages/citizen.html';
+        } else {
+          target = data.redirect_url;
+        }
+      }
+
+      document.body.style.opacity = '0.85';
+      window.location.href = target;
+    } else {
+      showAuthError(data.message || 'Registration failed. Please try again.');
+      submitBtns.forEach(b => {
+        b.disabled = false;
+        if (b.dataset.origHtml) b.innerHTML = b.dataset.origHtml;
+      });
+    }
+  } catch (err) {
+    console.error('Registration error:', err);
+    showAuthError('Connection error during registration. Please try again.');
+    submitBtns.forEach(b => {
+      b.disabled = false;
+      if (b.dataset.origHtml) b.innerHTML = b.dataset.origHtml;
+    });
+  }
+}
+
