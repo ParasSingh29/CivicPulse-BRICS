@@ -178,6 +178,30 @@
 
       <!-- Launchpad Section Title -->
       <div style="margin-bottom:18px;">
+<!-- National Sovereign Health HUD & RYG Metrics -->
+      <section class="kpi-grid" style="margin-bottom:28px;">
+        <div class="kpi-card" style="border-left: 4px solid #2563eb;">
+          <div class="kpi-label" data-i18n="kpi_total_nat_problems">Total National Problems</div>
+          <div class="kpi-value" id="central-kpi-total-nat" style="color:var(--text-primary);">--</div>
+          <div class="kpi-delta" id="central-nat-scope" data-i18n="nat_scoped_basin">Across All Municipalities</div>
+        </div>
+        <div class="kpi-card" style="border-left: 4px solid #ef4444;">
+          <div class="kpi-label" style="color:#ef4444;" data-i18n="kpi_red_problems">● Red (Critical / Pending)</div>
+          <div class="kpi-value" id="central-kpi-red" style="color:#ef4444;">--</div>
+          <div class="kpi-delta alert" data-i18n="kpi_nat_red_desc">Action Required by City Units</div>
+        </div>
+        <div class="kpi-card" style="border-left: 4px solid #f59e0b;">
+          <div class="kpi-label" style="color:#f59e0b;" data-i18n="kpi_yellow_problems">● Yellow (In Progress)</div>
+          <div class="kpi-value" id="central-kpi-yellow" style="color:#f59e0b;">--</div>
+          <div class="kpi-delta" style="color:#f59e0b;" data-i18n="kpi_nat_yellow_desc">Under Municipal Resolution</div>
+        </div>
+        <div class="kpi-card" style="border-left: 4px solid #10b981;">
+          <div class="kpi-label" style="color:#10b981;" data-i18n="kpi_green_problems">● Green (Resolved)</div>
+          <div class="kpi-value" id="central-kpi-green" style="color:#10b981;">--</div>
+          <div class="kpi-delta" style="color:#10b981;" data-i18n="kpi_nat_green_desc">Successfully Solved</div>
+        </div>
+      </section>
+
         <h3 style="font-size:1.25rem; font-weight:700; margin:0 0 4px 0;" data-i18n="sec_central_launchpad">Sovereign Command Directory</h3>
       </div>
 

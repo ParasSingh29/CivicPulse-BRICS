@@ -91,10 +91,12 @@ window.loadCityOfficersOverview = async function loadCityOfficersOverview() {
       natGreen += o.green_problems || 0;
     });
 
+    const kpiTotal = document.getElementById('central-kpi-total-nat');
     const kpiRed = document.getElementById('central-kpi-red');
     const kpiYellow = document.getElementById('central-kpi-yellow');
     const kpiGreen = document.getElementById('central-kpi-green');
 
+    if (kpiTotal) kpiTotal.textContent = natTotal;
     if (kpiRed) kpiRed.textContent = natRed;
     if (kpiYellow) kpiYellow.textContent = natYellow;
     if (kpiGreen) kpiGreen.textContent = natGreen;
