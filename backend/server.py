@@ -50,6 +50,12 @@ active_node_state = {"code": "IN", "id": "india"}
 # API ROUTE HANDLERS
 # ==============================================================================
 
+async def favicon_api(request):
+    """Serves the official CivicPulse-BRICS logo emblem as favicon.ico."""
+    if os.path.exists("static/img/brics_logo.png"):
+        return FileResponse("static/img/brics_logo.png", media_type="image/png")
+    return Response(status_code=404)
+
 async def login_page(request):
     """Serves the sovereign login gateway."""
     if os.path.exists("static/pages/login.html"):
@@ -844,6 +850,7 @@ os.makedirs("static/css", exist_ok=True)
 os.makedirs("static/js", exist_ok=True)
 
 routes = [
+    Route("/favicon.ico", endpoint=favicon_api, methods=["GET"]),
     Route("/", endpoint=login_page, methods=["GET"]),
     Route("/login", endpoint=login_page, methods=["GET"]),
     Route("/citizen", endpoint=citizen_page, methods=["GET"]),

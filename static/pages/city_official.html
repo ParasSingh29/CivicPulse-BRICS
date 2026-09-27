@@ -6,6 +6,11 @@
   <title>CivicPulse-BRICS — City Official Portal</title>
   <meta name="description" content="Dedicated Municipal Command Portal for City Officials: Resolve city-scoped citizen problems, synthesize local area AI infrastructure proposals, and upvote peer cities' reports.">
   
+  <!-- CivicPulse-BRICS Favicon -->
+  <link rel="icon" type="image/png" href="/static/img/brics_logo.png">
+  <link rel="shortcut icon" type="image/png" href="/static/img/brics_logo.png">
+  <link rel="apple-touch-icon" href="/static/img/brics_logo.png">
+  
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -86,7 +91,8 @@
 
         <div class="nav-divider"></div>
 
-        <!-- City is fixed to the logged-in officer's assigned jurisdiction (no switcher) -->
+        <!-- City is fixed to the logged-in officer's assigned jurisdiction -->
+        <span id="city-selector" style="display:none;"></span>
 
         <!-- Language Selector -->
         <div class="lang-select-wrap">

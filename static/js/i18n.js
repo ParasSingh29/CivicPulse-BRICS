@@ -8,7 +8,11 @@
  * Malayalam (ml), Punjabi (pa), Odia (or), Assamese (as), Urdu (ur).
  */
 
-window.I18N = {};
+window.I18N = {
+  "en": { "nav_back": "Back", "nav_home": "Home", "btn_use_current_location": "Use Current Location", "btn_voice_input": "Voice Input" },
+  "hi": {}, "pt": {}, "ru": {}, "zh": {}, "ar": {}, "id": {}, "fa": {}, "am": {}, "zu": {}, "af": {}, "xh": {},
+  "bn": {}, "mr": {}, "ta": {}, "te": {}, "gu": {}, "kn": {}, "ml": {}, "pa": {}, "or": {}, "as": {}, "ur": {}
+};
 
 /**
  * Universal translation getter with multi-level fallback
