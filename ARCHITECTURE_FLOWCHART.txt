@@ -1,0 +1,274 @@
+====================================================
+  CIVICPULSE-BRICS — MASTER FILE FLOW & ARCHITECTURE
+====================================================
+
+  This document shows how ALL files in the project interact with each
+  other — from browser request to database and back.
+
+====================================================
+  SECTION 1: HIGH-LEVEL SYSTEM ARCHITECTURE
+====================================================
+
+  ┌──────────────────────────────────────────────────────────────────┐
+  │                        BROWSER (User)                           │
+  │   login.html / citizen.html / city_official.html /              │
+  │   government.html / central_official.html                       │
+  └──────────────────┬───────────────────────────────────────────────┘
+                     │ HTTP Requests (fetch/XHR)
+                     ▼
+  ┌──────────────────────────────────────────────────────────────────┐
+  │                   server.py  (FastAPI/Starlette)                 │
+  │             THE CENTRAL HUB — All routes pass through here      │
+  └──┬──────────────┬───────────┬────────────┬────────────┬──────────┘
+     │              │           │            │            │
+     ▼              ▼           ▼            ▼            ▼
+api_client.py  demands_     brics_       megaplan_   messaging_
+(SQLite DB)    engine.py    proposals_   engine.py   gateway.py
+               (demands.    engine.py    (AI Plans)  (WhatsApp/
+                json)       (city_                    SMS)
+                            proposals.               │
+                            json,                    ▼
+                            brics_               sms_gateway.py
+                            incoming.            (SMS + DB logs)
+                            json)
+
+  External AI:  gemini_helper.py  ◄──── (used by megaplan, brics_proposals,
+                                              budget_engine, server.py)
+  External Data: public_data_helper.py ◄── (weather/air quality APIs)
+  TTS Audio:    tts_helper.py ◄──────────── (Google Cloud TTS)
+  BRICS Data:   brics_context.py ◄──────── (nation metadata, sectors)
+  Budget Calc:  budget_engine.py ◄────────── (cost estimation)
+  DPG Spec:     dpg_spec.py ◄──────────────── (API documentation)
+
+====================================================
+  SECTION 2: REQUEST LIFECYCLE FLOWCHARTS
+====================================================
+
+──────────────────────────────────────────────────
+  FLOW A: Citizen Reports an Issue
+──────────────────────────────────────────────────
+
+  citizen.html
+      │  User fills complaint form, pins location on map
+      │  JS: citizen.js → fetch POST /api/complaints
+      ▼
+  server.py  [POST /api/complaints]
+      │  Validates input, saves photo to static/uploads/
+      │  Calls: gemini_helper.py → Gemini AI (triage & severity)
+      │  Calls: public_data_helper.py → live weather context
+      ▼
+  api_client.py  [save_complaint()]
+      │  Writes to: data/civicpulse.db (complaints table)
+      ▼
+  messaging_gateway.py
+      │  Sends WhatsApp/SMS confirmation to citizen
+      ▼
+  sms_gateway.py → data/civicpulse.db (sms_logs table)
+
+  [RESPONSE]
+  server.py → JSON {complaint_id, ai_summary, severity}
+      ▼
+  citizen.js → Updates complaint tracker UI on citizen.html
+
+──────────────────────────────────────────────────
+  FLOW B: Citizen Uses "Pin on Map" or "Use GPS"
+──────────────────────────────────────────────────
+
+  citizen.html (modal open)
+      │  User clicks "Use Current Location" or "Pin on Map"
+      ▼
+  citizen.js
+      │  GPS: navigator.geolocation → lat/lon
+      │  OR Leaflet.js map → user drags pin → lat/lon
+      │  Calls: fetch GET /api/location/reverse?lat=&lon=
+      ▼
+  server.py [GET /api/location/reverse]
+      │  Calls Nominatim (OpenStreetMap) reverse geocoding API
+      ▼
+  citizen.js → applyCoordinates()
+      │  Fills GPS Address field, shows location chip
+      │  Stores lat/lon in form dataset
+
+──────────────────────────────────────────────────
+  FLOW C: City Official Resolves a Complaint
+──────────────────────────────────────────────────
+
+  city_official.html
+      │  Official selects complaint, updates status + uploads photo
+      │  JS: city_official.js → fetch PATCH /api/complaints/{id}
+      ▼
+  server.py [PATCH /api/complaints/{id}]
+      │  Saves resolution photo to static/uploads/
+      ▼
+  api_client.py [update_complaint_status()]
+      │  Writes to: data/civicpulse.db
+      ▼
+  messaging_gateway.py / sms_gateway.py
+      │  Notifies citizen of resolution via SMS/WhatsApp
+      ▼
+  city_official.js → Refreshes complaint list on UI
+
+──────────────────────────────────────────────────
+  FLOW D: AI MegaPlan Generation
+──────────────────────────────────────────────────
+
+  city_official.html or government.html
+      │  Official clicks "Generate AI MegaPlan"
+      │  JS: city_official.js / government.js → fetch POST /api/megaplan
+      ▼
+  server.py [POST /api/megaplan]
+      │  Fetches all complaints: api_client.py
+      │  Gets BRICS context: brics_context.py
+      │  Gets live data: public_data_helper.py
+      ▼
+  megaplan_engine.py
+      │  Builds structured prompt with complaint clusters
+      ▼
+  gemini_helper.py → Google Gemini AI API
+      │  Returns structured MegaPlan JSON
+      ▼
+  megaplan_engine.py → Returns plan to server.py
+      ▼
+  JS (government.js / city_official.js) → Renders plan cards on UI
+
+──────────────────────────────────────────────────
+  FLOW E: Citizen Proposes a Community Project
+──────────────────────────────────────────────────
+
+  citizen.html (Community Demand modal)
+      │  Citizen fills project form + pins location on map
+      │  JS: citizen.js → fetch POST /api/demands
+      ▼
+  server.py [POST /api/demands]
+      │  [AI estimates cost + beneficiaries via gemini_helper.py]
+      ▼
+  demands_engine.py [save_demand()]
+      │  Writes to: data/demands.json
+      ▼
+  server.py → Returns {demand_id, ai_cost_estimate, beneficiary_estimate}
+      ▼
+  citizen.js → Shows demand in the community voting list
+
+──────────────────────────────────────────────────
+  FLOW F: Cross-BRICS Collaboration Proposal
+──────────────────────────────────────────────────
+
+  government.html
+      │  Central official sends BRICS project proposal
+      │  JS: government.js → fetch POST /api/brics/proposals
+      ▼
+  server.py [POST /api/brics/proposals]
+      ▼
+  brics_proposals_engine.py
+      │  Reads: brics_context.py (node metadata)
+      │  Calls: gemini_helper.py (proposal enrichment)
+      │  Writes to: data/brics_incoming_requests.json
+      ▼
+  central_official.html
+      │  Receiving nation's official sees the incoming request
+      │  JS: central_official.js → fetch GET /api/brics/proposals
+      ▼
+  server.py → brics_proposals_engine.py → Returns proposals
+      ▼
+  central_official.js → Renders proposal cards for review/approval
+
+──────────────────────────────────────────────────
+  FLOW G: Login & Authentication
+──────────────────────────────────────────────────
+
+  login.html
+      │  User enters credentials
+      │  JS: login.js → fetch POST /api/auth/login
+      ▼
+  server.py [POST /api/auth/login]
+      ▼
+  api_client.py [verify_user_credentials()]
+      │  Reads: data/civicpulse.db (users table)
+      │  Returns: {token, role, redirect_url}
+      ▼
+  login.js
+      │  Stores session token in localStorage
+      │  Redirects to:
+      │   - /citizen            → citizen.html
+      │   - /city-official      → city_official.html
+      │   - /government         → government.html
+      │   - /central-official   → central_official.html
+
+====================================================
+  SECTION 3: FRONTEND FILE DEPENDENCY MAP
+====================================================
+
+  All HTML pages load scripts in this order:
+  ─────────────────────────────────────────
+  1. static/css/styles.css       (global styles)
+  2. static/js/app.js            (AppState, icons, shared utils)
+  3. static/js/i18n.js           (Google Translate GNMT integration)
+  4. [role-specific JS file]     (citizen.js / city_official.js / etc.)
+
+  citizen.html  ──────► citizen.js
+                         ├── fetch /api/complaints
+                         ├── fetch /api/demands
+                         ├── fetch /api/location/reverse
+                         ├── fetch /api/voice/transcribe
+                         └── Leaflet.js (map library, CDN)
+
+  city_official.html ──► city_official.js
+                         ├── fetch /api/complaints
+                         ├── fetch PATCH /api/complaints/{id}
+                         ├── fetch POST /api/megaplan
+                         └── fetch POST /api/city/proposals
+
+  government.html ─────► government.js
+                         ├── fetch /api/brics/nodes
+                         ├── fetch /api/city/proposals
+                         ├── fetch POST /api/brics/proposals
+                         └── fetch POST /api/megaplan
+
+  central_official.html ► central_official.js
+                         ├── fetch /api/brics/proposals
+                         └── fetch PATCH /api/brics/proposals/{id}
+
+  login.html ──────────► login.js
+                         └── fetch POST /api/auth/login
+
+====================================================
+  SECTION 4: DATA FLOW MAP
+====================================================
+
+  USER ACTION                FILE WRITTEN / READ
+  ──────────────────────     ─────────────────────────────────────
+  Report Issue               data/civicpulse.db  (complaints table)
+  Upload Photo               static/uploads/*.jpg
+  Use GPS / Pin Map          No file; coordinates → form fields
+  Propose Community Project  data/demands.json
+  Vote on Demand             data/demands.json  (upvotes field)
+  City Official Login        data/civicpulse.db  (users table)
+  Resolve Complaint          data/civicpulse.db  (updated status)
+  Upload Resolution Photo    static/uploads/*.jpg
+  Submit City Proposal       data/city_proposals.json
+  Vote on City Proposal      data/city_proposals.json  (votes field)
+  Send BRICS Proposal        data/brics_incoming_requests.json
+  Generate AI MegaPlan       No file; response is in-memory JSON
+  Send SMS Alert             data/civicpulse.db  (sms_logs table)
+
+====================================================
+  SECTION 5: DEPLOYMENT FLOW
+====================================================
+
+  GitHub Push (main branch)
+      │
+      ▼
+  Render (Auto-Deploy triggered)
+      │  Reads: Dockerfile  (build instructions)
+      │  Copies: requirements.txt → pip install
+      │  Copies: entire project into /app
+      │  Sets: PYTHONPATH=/app/backend
+      │
+      ▼
+  Docker Container Starts
+      │  CMD: uvicorn backend.server:app --host 0.0.0.0 --port 8080
+      │
+      ▼
+  Live at: https://civicpulse-brics.onrender.com
+
+====================================================

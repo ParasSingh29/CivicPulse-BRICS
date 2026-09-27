@@ -1,0 +1,33 @@
+====================================================
+  CIVICPULSE-BRICS — PUBLIC FOLDER
+====================================================
+
+PURPOSE:
+  This folder contains the static root-level HTML files served directly
+  at the top-level domain. These are minimal pages that either redirect
+  users or handle error states. They are NOT the main portal pages
+  (those live in static/pages/).
+
+----------------------------------------------------
+  FILES IN THIS FOLDER
+----------------------------------------------------
+
+1. index.html
+   PURPOSE : The top-level homepage served at the root URL (e.g.,
+             civicpulse-brics.onrender.com/). This page is also used
+             as the GitHub Pages static site entry point. It typically
+             contains a brief landing description and links/redirects
+             to the login portal or portal cards.
+   USED BY : GitHub Pages deployment (root index), Render fallback.
+   NOTE    : Different from static/pages/index.html (which is the
+             role-selector page served by the Python backend).
+
+2. 404.html
+   PURPOSE : Custom "Page Not Found" error page. Displayed when a user
+             navigates to a route that does not exist. Shows a friendly
+             CivicPulse-branded error message with a link back to home.
+   USED BY : Render / GitHub Pages (auto-detected as the 404 handler).
+             .nojekyll (root file) signals GitHub Pages to skip Jekyll,
+             enabling this custom 404.
+
+====================================================

@@ -1,0 +1,51 @@
+====================================================
+  CIVICPULSE-BRICS — SCRIPTS FOLDER
+====================================================
+
+PURPOSE:
+  This folder contains standalone utility scripts used for development,
+  testing, and presentation generation. These are NOT part of the live
+  server — they are run manually from the command line.
+
+----------------------------------------------------
+  FILES IN THIS FOLDER
+----------------------------------------------------
+
+1. create_presentation_pptx.py
+   PURPOSE : Generates the full CivicPulse-BRICS pitch deck as a .pptx
+             (PowerPoint) file using the python-pptx library. Builds all
+             slides with branding, charts, and content programmatically.
+   HOW TO RUN : python scripts/create_presentation_pptx.py
+   OUTPUT  : presentations/CivicPulse-BRICS_Pitch_Deck.pptx
+   USED BY : Developer/designer running it manually to regenerate decks.
+
+2. create_presentation_light.py
+   PURPOSE : Generates a lighter, simplified version of the pitch deck
+             (fewer slides, smaller file size) suitable for email sharing
+             or quick demos.
+   HOW TO RUN : python scripts/create_presentation_light.py
+   OUTPUT  : presentations/CivicPulse-BRICS_Pitch_Deck_Light.pptx
+   USED BY : Developer/designer running it manually.
+
+3. test_sms_gateway.py
+   PURPOSE : Integration test script for the SMS gateway. Tests Twilio
+             SMS sending, delivery status checks, and the SMS log API
+             endpoint against a running server instance.
+   HOW TO RUN : python scripts/test_sms_gateway.py
+   USED BY : Developer during testing. Requires a running backend server.
+
+4. test_verification.py
+   PURPOSE : End-to-end verification test suite. Tests all major API
+             endpoints: authentication (citizen & gov), complaint
+             submission, status updates, BRICS node endpoints, budget
+             queries, voting, and plan generation.
+   HOW TO RUN : python scripts/test_verification.py
+   USED BY : Developer during CI/CD verification or after major changes.
+
+5. temp_script.py
+   PURPOSE : Temporary one-off utility script used during development
+             (e.g., database migration, data seeding, or quick fixes).
+             Not intended for permanent use.
+   USED BY : Developer for ad-hoc tasks. Safe to delete once done.
+
+====================================================
