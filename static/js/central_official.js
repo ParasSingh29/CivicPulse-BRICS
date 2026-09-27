@@ -63,6 +63,7 @@ async function refreshCentralDashboard() {
       citySelectId: 'central-map-city-filter',
       statusSelectId: 'central-map-status-filter',
       searchInputId: 'central-map-search-input',
+      mapModeSelectId: 'central-map-mode-select',
       counterBadgeId: 'central-map-counter-badge',
       countryTableBodyId: 'central-country-telemetry-body'
     });

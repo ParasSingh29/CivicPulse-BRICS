@@ -19,6 +19,7 @@ window.initCitizenPortal = function() {
       citySelectId: 'cit-map-city-filter',
       statusSelectId: 'cit-map-status-filter',
       searchInputId: 'cit-map-search-input',
+      mapModeSelectId: 'cit-map-mode-select',
       counterBadgeId: 'cit-map-counter-badge',
       countryTableBodyId: 'cit-country-telemetry-body'
     });

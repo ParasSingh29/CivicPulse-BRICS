@@ -309,19 +309,63 @@
           </div>
         </div>
 
+        <!-- CARD 5: PROBLEM DATA & GIS HEATMAP -->
+        <div class="home-launch-card" style="--card-accent: #8b5cf6;" data-open-tab="central-tab-data" onclick="window.switchTab('central-tab-data')">
+          <div>
+            <div class="launch-card-header">
+              <div class="launch-card-icon" style="color:#a78bfa; background:rgba(139,92,246,0.1); border-color:rgba(139,92,246,0.25);">
+                <svg class="svg-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>
+                </svg>
+              </div>
+              <span class="launch-card-badge" style="color:#a78bfa; background:rgba(139,92,246,0.12); border:1px solid rgba(139,92,246,0.3);" data-i18n="badge_gis_analytics">
+                GIS & Telemetry
+              </span>
+            </div>
+            <h4 class="launch-card-title" data-i18n="title_problem_data_heatmap">BRICS Data & GIS Heatmap</h4>
+            <p class="launch-card-desc" data-i18n="desc_problem_data_heatmap">
+              Explore interactive problem GIS pinpoint maps, density heatmaps, and 11-nation BRICS telemetry matrices with live filters.
+            </p>
+          </div>
+          <div class="launch-card-action" style="color:#a78bfa;">
+            <span data-i18n="btn_explore_data_heatmap">Open Data & Heatmap</span>
+            <span>→</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ====================================================================
+         TAB DATA: PROBLEM DATA, GEOSPATIAL MAP & DENSITY HEATMAP
+         ==================================================================== -->
+    <div class="tab-content" id="central-tab-data" style="display:none;">
+      <!-- Section Navigation Banner -->
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px; padding-bottom:16px; border-bottom:1px solid var(--border-color);">
+        <div>
+          <h2 style="font-size:1.5rem; font-weight:800; margin:0 0 6px 0; color:var(--text-primary);">
+            📊 Problem Data, GIS Command Map & Density Heatmap
+          </h2>
+          <p style="font-size:0.9rem; color:var(--text-muted); margin:0;">
+            Comprehensive spatial intelligence, density heatmaps, and 11-country telemetry matrices.
+          </p>
+        </div>
+        <button class="btn btn-secondary back-to-home-btn" onclick="window.switchTab('central-tab-home')" style="display:flex; align-items:center; gap:6px;">
+          ← Back to Launchpad
+        </button>
       </div>
 
       <!-- ====================================================================
-           SECTION: GLOBAL PROBLEMS MAP & FILTERABLE DATA MATRIX
+           SECTION: GLOBAL PROBLEMS MAP & FILTERABLE DATA MATRIX WITH HEATMAP
            ==================================================================== -->
-      <section class="card problem-map-table-section" style="margin-bottom:32px; margin-top:28px;">
+      <section class="card problem-map-table-section" style="margin-bottom:32px;">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:18px; flex-wrap:wrap; gap:12px;">
           <div>
             <h3 style="font-size:1.2rem; font-weight:700; margin:0 0 4px 0; color:var(--text-primary);">
-              🗺️ Geospatial Problem Command Map & Data Matrix
+              🗺️ Geospatial Problem Command Map & Density Heatmap
             </h3>
             <p style="font-size:0.85rem; color:var(--text-muted); margin:0;">
-              Interactive Leaflet GIS map synchronized side-by-side with live filterable problem telemetry across countries and cities.
+              Interactive Leaflet GIS map with toggleable Pin Markers and Problem Intensity Density Heatmap layer.
             </p>
           </div>
           <span class="nav-badge" id="central-map-counter-badge" style="background:rgba(16,185,129,0.12); color:#34d399; border:1px solid rgba(16,185,129,0.3); font-weight:700;">
@@ -330,7 +374,7 @@
         </div>
 
         <!-- Filter Controls Toolbar -->
-        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:12px; margin-bottom:18px; background:rgba(255,255,255,0.02); padding:14px; border-radius:var(--radius-md); border:1px solid var(--border-subtle);">
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(160px, 1fr)); gap:12px; margin-bottom:18px; background:rgba(255,255,255,0.02); padding:14px; border-radius:var(--radius-md); border:1px solid var(--border-subtle);">
           <div>
             <label style="font-size:0.75rem; color:var(--text-muted); display:block; margin-bottom:4px; font-weight:600;">Filter Country</label>
             <select class="form-control" id="central-map-country-filter" style="width:100%; font-size:0.84rem; padding:6px 10px;">
@@ -350,6 +394,14 @@
               <option value="pending">🔴 Pending / Critical</option>
               <option value="in_progress">🟡 In Progress</option>
               <option value="resolved">🟢 Resolved</option>
+            </select>
+          </div>
+          <div>
+            <label style="font-size:0.75rem; color:var(--text-muted); display:block; margin-bottom:4px; font-weight:600;">Map Layer View</label>
+            <select class="form-control" id="central-map-mode-select" style="width:100%; font-size:0.84rem; padding:6px 10px; font-weight:600; color:#a78bfa;">
+              <option value="both">🗺️ Combined Pins & Heatmap</option>
+              <option value="heat">🔥 Problem Density Heatmap</option>
+              <option value="pin">📍 Pin Markers Only</option>
             </select>
           </div>
           <div>
@@ -648,8 +700,9 @@
 
   <script src="/static/js/i18n.js?v=20260926_all10"></script>
   <script src="/static/js/app.js?v=score_fix"></script>
-  <!-- Leaflet JS for Geospatial Maps -->
+  <!-- Leaflet JS & Heatmap Engine for Geospatial Maps -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script src="https://cdn.jsdelivr.net/npm/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
   <script src="/static/js/problem_map_table.js"></script>
   <!-- Dedicated Central Official Subsystem -->
   <script src="/static/js/central_official.js?v=20260926_all10"></script>

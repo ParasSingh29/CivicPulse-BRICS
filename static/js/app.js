@@ -275,7 +275,13 @@ function setupEventListeners() {
     if (targetId === 'central-tab-brics-jv' && window.loadCentralBricsJVs) window.loadCentralBricsJVs();
     if (targetId === 'central-tab-inbound-requests' && window.loadInboundPartnerRequests) window.loadInboundPartnerRequests();
 
-    // Trigger map resize if GIS map tab is activated
+    // Trigger map resize & re-render if Data & Heatmap tabs are activated
+    if ((targetId.includes('data') || targetId.includes('map')) && window.GlobalProblemMapSystem) {
+      setTimeout(() => {
+        window.GlobalProblemMapSystem.invalidateAllMaps();
+      }, 250);
+    }
+
     if (targetId === 'gov-tab-map' && window.govMap) {
       setTimeout(() => window.govMap.invalidateSize(), 250);
     }

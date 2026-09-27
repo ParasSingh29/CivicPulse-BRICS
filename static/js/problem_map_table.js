@@ -1,5 +1,5 @@
 /**
- * CivicPulse-BRICS: Global Problems Command Map, Country Telemetry Table & Filter Controller
+ * CivicPulse-BRICS: Global Problems Command Map, Heatmap Engine, Country Telemetry Table & Filter Controller
  */
 
 window.GlobalProblemMapSystem = {
@@ -16,6 +16,7 @@ window.GlobalProblemMapSystem = {
       citySelectId,
       statusSelectId,
       searchInputId,
+      mapModeSelectId,
       counterBadgeId,
       countryTableBodyId
     } = config;
@@ -54,10 +55,12 @@ window.GlobalProblemMapSystem = {
       attribution: '&copy; OpenStreetMap & CivicPulse-BRICS'
     }).addTo(map);
 
+    const heatGroup = L.layerGroup().addTo(map);
     const markersGroup = L.layerGroup().addTo(map);
 
     const instance = {
       map,
+      heatGroup,
       markersGroup,
       markersMap: {},
       config
@@ -73,14 +76,27 @@ window.GlobalProblemMapSystem = {
     const citySelect = document.getElementById(citySelectId);
     const statusSelect = document.getElementById(statusSelectId);
     const searchInput = document.getElementById(searchInputId);
+    const mapModeSelect = document.getElementById(mapModeSelectId);
 
     if (countrySelect) countrySelect.addEventListener('change', updateHandler);
     if (citySelect) citySelect.addEventListener('change', updateHandler);
     if (statusSelect) statusSelect.addEventListener('change', updateHandler);
     if (searchInput) searchInput.addEventListener('input', updateHandler);
+    if (mapModeSelect) mapModeSelect.addEventListener('change', updateHandler);
 
     // Initial render
     this.filterAndRender(mapId);
+  },
+
+  invalidateAllMaps() {
+    Object.keys(this.instances).forEach(key => {
+      try {
+        const inst = this.instances[key];
+        if (inst && inst.map) {
+          inst.map.invalidateSize();
+        }
+      } catch(e) {}
+    });
   },
 
   async fetchComplaints() {
@@ -178,11 +194,12 @@ window.GlobalProblemMapSystem = {
     const instance = this.instances[mapId];
     if (!instance) return;
 
-    const { config, map, markersGroup } = instance;
+    const { config, map, heatGroup, markersGroup } = instance;
     const countryVal = document.getElementById(config.countrySelectId)?.value || 'All';
     const cityVal = document.getElementById(config.citySelectId)?.value || 'All';
     const statusVal = document.getElementById(config.statusSelectId)?.value || 'All';
     const searchVal = (document.getElementById(config.searchInputId)?.value || '').toLowerCase().trim();
+    const mapMode = document.getElementById(config.mapModeSelectId)?.value || 'both';
 
     const filtered = this.complaintsData.filter(c => {
       if (countryVal !== 'All' && c.country !== countryVal) return false;
@@ -209,44 +226,84 @@ window.GlobalProblemMapSystem = {
       counterBadge.textContent = `${showTxt} ${filtered.length} ${ofTxt} ${this.complaintsData.length} ${probTxt}`;
     }
 
-    // Clear map markers
+    // Clear map layers
     markersGroup.clearLayers();
+    heatGroup.clearLayers();
     instance.markersMap = {};
 
     const bounds = [];
 
-    filtered.forEach(c => {
-      let markerColor = '#ef4444'; // Pending Red
-      const st = c.status.toLowerCase();
-      if (st.includes('progress') || st.includes('dispatch')) markerColor = '#f59e0b';
-      else if (st.includes('resolved') || st.includes('closed') || st.includes('fixed')) markerColor = '#10b981';
+    // Render Heatmap Layer if requested (mode is 'heat' or 'both')
+    if (mapMode === 'heat' || mapMode === 'both') {
+      if (window.L && L.heatLayer) {
+        const heatPoints = filtered.map(c => {
+          const st = c.status.toLowerCase();
+          let weight = 0.5;
+          if (st.includes('pending') || st.includes('critical')) weight = 1.0;
+          else if (st.includes('progress') || st.includes('dispatch')) weight = 0.65;
+          else if (st.includes('resolved') || st.includes('fixed')) weight = 0.3;
+          return [c.lat, c.lon, weight];
+        });
+        L.heatLayer(heatPoints, {
+          radius: 28,
+          blur: 16,
+          maxZoom: 15,
+          gradient: { 0.2: '#3b82f6', 0.5: '#10b981', 0.8: '#f59e0b', 1.0: '#ef4444' }
+        }).addTo(heatGroup);
+      } else {
+        // Fallback Heat Circles if Leaflet.heat script is loading or offline
+        filtered.forEach(c => {
+          const st = c.status.toLowerCase();
+          let heatColor = '#ef4444';
+          if (st.includes('progress') || st.includes('dispatch')) heatColor = '#f59e0b';
+          else if (st.includes('resolved') || st.includes('fixed')) heatColor = '#10b981';
 
-      const customIcon = L.divIcon({
-        className: 'custom-map-pin',
-        html: `<div style="background-color:${markerColor}; width:14px; height:14px; border-radius:50%; border:2px solid #fff; box-shadow:0 0 8px ${markerColor};"></div>`,
-        iconSize: [14, 14],
-        iconAnchor: [7, 7]
-      });
+          L.circleMarker([c.lat, c.lon], {
+            radius: 24,
+            fillColor: heatColor,
+            fillOpacity: 0.35,
+            stroke: false
+          }).addTo(heatGroup);
+        });
+      }
+    }
 
-      const marker = L.marker([c.lat, c.lon], { icon: customIcon }).addTo(markersGroup);
-      
-      const popupHtml = `
-        <div style="font-family:var(--font-sans); min-width:200px; color:#0f172a;">
-          <div style="font-weight:700; font-size:0.9rem; margin-bottom:4px; color:#1e293b;">${c.flag} ${c.category || 'Infrastructure Report'}</div>
-          <div style="font-size:0.8rem; color:#475569; margin-bottom:6px;">📍 ${c.city}, ${c.country}</div>
-          <div style="font-size:0.8rem; color:#334155; margin-bottom:8px;">${c.description ? c.description.substring(0, 90) + '...' : ''}</div>
-          <div style="display:flex; justify-content:space-between; align-items:center;">
-            <span style="font-size:0.72rem; padding:2px 8px; border-radius:12px; font-weight:700; color:#fff; background:${markerColor};">
-              ${c.status}
-            </span>
-            <span style="font-size:0.72rem; color:#64748b; font-family:var(--font-mono);">${c.id}</span>
+    // Render Pin Markers if requested (mode is 'pin' or 'both')
+    if (mapMode === 'pin' || mapMode === 'both') {
+      filtered.forEach(c => {
+        let markerColor = '#ef4444'; // Pending Red
+        const st = c.status.toLowerCase();
+        if (st.includes('progress') || st.includes('dispatch')) markerColor = '#f59e0b';
+        else if (st.includes('resolved') || st.includes('closed') || st.includes('fixed')) markerColor = '#10b981';
+
+        const customIcon = L.divIcon({
+          className: 'custom-map-pin',
+          html: `<div style="background-color:${markerColor}; width:14px; height:14px; border-radius:50%; border:2px solid #fff; box-shadow:0 0 8px ${markerColor};"></div>`,
+          iconSize: [14, 14],
+          iconAnchor: [7, 7]
+        });
+
+        const marker = L.marker([c.lat, c.lon], { icon: customIcon }).addTo(markersGroup);
+        
+        const popupHtml = `
+          <div style="font-family:var(--font-sans); min-width:200px; color:#0f172a;">
+            <div style="font-weight:700; font-size:0.9rem; margin-bottom:4px; color:#1e293b;">${c.flag} ${c.category || 'Infrastructure Report'}</div>
+            <div style="font-size:0.8rem; color:#475569; margin-bottom:6px;">📍 ${c.city}, ${c.country}</div>
+            <div style="font-size:0.8rem; color:#334155; margin-bottom:8px;">${c.description ? c.description.substring(0, 90) + '...' : ''}</div>
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <span style="font-size:0.72rem; padding:2px 8px; border-radius:12px; font-weight:700; color:#fff; background:${markerColor};">
+                ${c.status}
+              </span>
+              <span style="font-size:0.72rem; color:#64748b; font-family:var(--font-mono);">${c.id}</span>
+            </div>
           </div>
-        </div>
-      `;
-      marker.bindPopup(popupHtml);
-      instance.markersMap[c.id] = marker;
-      bounds.push([c.lat, c.lon]);
-    });
+        `;
+        marker.bindPopup(popupHtml);
+        instance.markersMap[c.id] = marker;
+      });
+    }
+
+    filtered.forEach(c => bounds.push([c.lat, c.lon]));
 
     if (bounds.length > 0 && map) {
       map.fitBounds(bounds, { padding: [30, 30], maxZoom: 13 });

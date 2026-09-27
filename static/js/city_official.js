@@ -167,6 +167,7 @@ async function refreshCityOfficialDashboard() {
       citySelectId: 'city-map-city-filter',
       statusSelectId: 'city-map-status-filter',
       searchInputId: 'city-map-search-input',
+      mapModeSelectId: 'city-map-mode-select',
       counterBadgeId: 'city-map-counter-badge',
       countryTableBodyId: 'city-country-telemetry-body'
     });
