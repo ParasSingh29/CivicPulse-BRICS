@@ -2,7 +2,7 @@
 steps:
   # 1. Build the container image using Cloud Build
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['build', '-f', 'config/Dockerfile', '-t', 'gcr.io/$PROJECT_ID/civicpulse-brics:$COMMIT_SHA', '.']
+    args: ['build', '-t', 'gcr.io/$PROJECT_ID/civicpulse-brics:$COMMIT_SHA', '.']
 
   # 2. Push image to Google Container / Artifact Registry
   - name: 'gcr.io/cloud-builders/docker'
