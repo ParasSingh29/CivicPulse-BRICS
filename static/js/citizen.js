@@ -297,8 +297,10 @@ function renderDemands(demandsList) {
 
   if (!demandsList.length) {
     container.innerHTML = `
-      <div style="background:var(--bg-card); border:1px solid var(--border-color); border-radius:var(--radius-md); padding:32px; text-align:center; color:var(--text-muted);">
-        No community demands posted for this region yet. Be the first to propose one!
+      <div class="empty-state-wrap">
+        <span class="empty-state-icon">🗳️</span>
+        <h3 class="empty-state-title">No community projects yet!</h3>
+        <p class="empty-state-subtitle">Be the first to propose a project for your neighbourhood. High-vote proposals go directly to city planners!</p>
       </div>
     `;
     return;
