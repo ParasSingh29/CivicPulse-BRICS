@@ -224,10 +224,114 @@
 
       <!-- Launchpad Section Title -->
       <div style="margin-bottom:18px;">
+        <h3 style="font-size:1.25rem; font-weight:700; margin:0 0 4px 0;" data-i18n="sec_launchpad_city">Municipal Operations Launchpad</h3>
+      </div>
+
+      <!-- 4 Interactive City Official Launch Cards -->
+      <div class="home-launch-grid" style="grid-template-columns:repeat(auto-fit, minmax(250px, 1fr));">
+        
+        <!-- CARD 1: REPAIR QUEUE -->
+        <div class="home-launch-card" style="--card-accent: #10b981;" data-open-tab="city-tab-complaints" onclick="window.switchTab('city-tab-complaints')">
+          <div>
+            <div class="launch-card-header">
+              <div class="launch-card-icon" style="color:#10b981; background:rgba(16,185,129,0.1); border-color:rgba(16,185,129,0.25);">
+                <svg class="svg-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
+                </svg>
+              </div>
+              <span class="launch-card-badge" style="color:#10b981; background:rgba(16,185,129,0.12); border:1px solid rgba(16,185,129,0.3);" data-i18n="badge_city_scope">
+                City Scope
+              </span>
+            </div>
+            <h4 class="launch-card-title" data-i18n="card_city_queue_title">City Repair Queue</h4>
+            <p class="launch-card-desc" data-i18n="desc_city_scope">
+              Manage city-scoped citizen problems, dispatch repair teams, update incident status, and inspect closed work.
+            </p>
+          </div>
+          <div class="launch-card-action" style="color:#10b981;">
+            <span data-i18n="btn_open_repair_queue">Open Repair Queue</span>
+            <span>→</span>
+          </div>
+        </div>
+
+        <!-- CARD 2: LOCAL AI SUGGESTIONS -->
+        <div class="home-launch-card" style="--card-accent: #3b82f6;" data-open-tab="city-tab-ai-plan" onclick="window.switchTab('city-tab-ai-plan')">
+          <div>
+            <div class="launch-card-header">
+              <div class="launch-card-icon" style="color:#60a5fa; background:rgba(59,130,246,0.1); border-color:rgba(59,130,246,0.25);">
+                <svg class="svg-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+                </svg>
+              </div>
+              <span class="launch-card-badge" style="color:#60a5fa; background:rgba(59,130,246,0.12); border:1px solid rgba(59,130,246,0.3);" data-i18n="badge_gemini_ai">
+                Gemini AI
+              </span>
+            </div>
+            <h4 class="launch-card-title" data-i18n="title_local_ai_planner">Local Area AI Planner</h4>
+            <p class="launch-card-desc" data-i18n="desc_local_ai_planner">
+              Review AI suggestions for major structural projects (like elevated metro lines for traffic) synthesized from complaints.
+            </p>
+          </div>
+          <div class="launch-card-action" style="color:#60a5fa;">
+            <span data-i18n="btn_view_ai_suggestions">View AI Suggestions</span>
+            <span>→</span>
+          </div>
+        </div>
+
+        <!-- CARD 3: INTER-CITY PROPOSALS -->
+        <div class="home-launch-card" style="--card-accent: #f59e0b;" data-open-tab="city-tab-proposals" onclick="window.switchTab('city-tab-proposals')">
+          <div>
+            <div class="launch-card-header">
+              <div class="launch-card-icon" style="color:#fbbf24; background:rgba(245,158,11,0.1); border-color:rgba(245,158,11,0.25);">
+                <svg class="svg-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/>
+                </svg>
+              </div>
+              <span class="launch-card-badge" style="color:#fbbf24; background:rgba(245,158,11,0.12); border:1px solid rgba(245,158,11,0.3);" data-i18n="badge_brics_mesh">
+                BRICS Mesh
+              </span>
+            </div>
+            <h4 class="launch-card-title" data-i18n="title_intercity_proposals">Inter-City Proposals</h4>
+            <p class="launch-card-desc" data-i18n="desc_intercity_proposals">
+              Explore strategic infrastructure proposals submitted to Centre by municipal engineers across cities and upvote peer projects.
+            </p>
+          </div>
+          <div class="launch-card-action" style="color:#fbbf24;">
+            <span data-i18n="btn_explore_city_proposals">Explore City Proposals</span>
+            <span>→</span>
+          </div>
+        </div>
+
+        <!-- CARD 4: FILE PROPOSAL -->
+        <div class="home-launch-card" style="--card-accent: #ec4899;" id="btn-trigger-file-proposal-home">
+          <div>
+            <div class="launch-card-header">
+              <div class="launch-card-icon" style="color:#f472b6; background:rgba(236,72,153,0.1); border-color:rgba(236,72,153,0.25);">
+                <svg class="svg-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+                </svg>
+              </div>
+              <span class="launch-card-badge" style="color:#f472b6; background:rgba(236,72,153,0.12); border:1px solid rgba(236,72,153,0.3);" data-i18n="badge_capex_direct">
+                CapEx Direct
+              </span>
+            </div>
+            <h4 class="launch-card-title" data-i18n="title_file_new_proposal">File New Proposal</h4>
+            <p class="launch-card-desc" data-i18n="desc_file_new_proposal">
+              Submit a new strategic municipal infrastructure proposal directly to the National Planning Commission for central funding.
+            </p>
+          </div>
+          <div class="launch-card-action" style="color:#f472b6;">
+            <span data-i18n="btn_open_proposal_form">+ Open Proposal Form</span>
+            <span>→</span>
+          </div>
+        </div>
+
+      </div>
+
       <!-- ====================================================================
            SECTION: BRICS SOVEREIGN NATIONS TELEMETRY MATRIX (ALL COUNTRIES DATA TABLE)
            ==================================================================== -->
-      <section class="card" style="margin-bottom:32px;">
+      <section class="card" style="margin-bottom:32px; margin-top:28px;">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:10px;">
           <div>
             <h3 style="font-size:1.2rem; font-weight:700; margin:0 0 4px 0; color:var(--text-primary);">
@@ -336,110 +440,6 @@
           </div>
         </div>
       </section>
-
-        <h3 style="font-size:1.25rem; font-weight:700; margin:0 0 4px 0;" data-i18n="sec_launchpad_city">Municipal Operations Launchpad</h3>
-      </div>
-
-      <!-- 4 Interactive City Official Launch Cards -->
-      <div class="home-launch-grid" style="grid-template-columns:repeat(auto-fit, minmax(250px, 1fr));">
-        
-        <!-- CARD 1: REPAIR QUEUE -->
-        <div class="home-launch-card" style="--card-accent: #10b981;" data-open-tab="city-tab-complaints" onclick="window.switchTab('city-tab-complaints')">
-          <div>
-            <div class="launch-card-header">
-              <div class="launch-card-icon" style="color:#10b981; background:rgba(16,185,129,0.1); border-color:rgba(16,185,129,0.25);">
-                <svg class="svg-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
-                </svg>
-              </div>
-              <span class="launch-card-badge" style="color:#10b981; background:rgba(16,185,129,0.12); border:1px solid rgba(16,185,129,0.3);" data-i18n="badge_city_scope">
-                City Scope
-              </span>
-            </div>
-            <h4 class="launch-card-title" data-i18n="card_city_queue_title">City Repair Queue</h4>
-            <p class="launch-card-desc" data-i18n="desc_city_scope">
-              Manage city-scoped citizen problems, dispatch repair teams, update incident status, and inspect closed work.
-            </p>
-          </div>
-          <div class="launch-card-action" style="color:#10b981;">
-            <span data-i18n="btn_open_repair_queue">Open Repair Queue</span>
-            <span>→</span>
-          </div>
-        </div>
-
-        <!-- CARD 2: LOCAL AI SUGGESTIONS -->
-        <div class="home-launch-card" style="--card-accent: #3b82f6;" data-open-tab="city-tab-ai-plan" onclick="window.switchTab('city-tab-ai-plan')">
-          <div>
-            <div class="launch-card-header">
-              <div class="launch-card-icon" style="color:#60a5fa; background:rgba(59,130,246,0.1); border-color:rgba(59,130,246,0.25);">
-                <svg class="svg-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
-                </svg>
-              </div>
-              <span class="launch-card-badge" style="color:#60a5fa; background:rgba(59,130,246,0.12); border:1px solid rgba(59,130,246,0.3);" data-i18n="badge_gemini_ai">
-                Gemini AI
-              </span>
-            </div>
-            <h4 class="launch-card-title" data-i18n="title_local_ai_planner">Local Area AI Planner</h4>
-            <p class="launch-card-desc" data-i18n="desc_local_ai_planner">
-              Review AI suggestions for major structural projects (like elevated metro lines for traffic) synthesized from complaints.
-            </p>
-          </div>
-          <div class="launch-card-action" style="color:#60a5fa;">
-            <span data-i18n="btn_view_ai_suggestions">View AI Suggestions</span>
-            <span>→</span>
-          </div>
-        </div>
-
-        <!-- CARD 3: INTER-CITY PROPOSALS -->
-        <div class="home-launch-card" style="--card-accent: #f59e0b;" data-open-tab="city-tab-proposals" onclick="window.switchTab('city-tab-proposals')">
-          <div>
-            <div class="launch-card-header">
-              <div class="launch-card-icon" style="color:#fbbf24; background:rgba(245,158,11,0.1); border-color:rgba(245,158,11,0.25);">
-                <svg class="svg-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/>
-                </svg>
-              </div>
-              <span class="launch-card-badge" style="color:#fbbf24; background:rgba(245,158,11,0.12); border:1px solid rgba(245,158,11,0.3);" data-i18n="badge_brics_mesh">
-                BRICS Mesh
-              </span>
-            </div>
-            <h4 class="launch-card-title" data-i18n="title_intercity_proposals">Inter-City Proposals</h4>
-            <p class="launch-card-desc" data-i18n="desc_intercity_proposals">
-              Explore strategic infrastructure proposals submitted to Centre by municipal engineers across cities and upvote peer projects.
-            </p>
-          </div>
-          <div class="launch-card-action" style="color:#fbbf24;">
-            <span data-i18n="btn_explore_city_proposals">Explore City Proposals</span>
-            <span>→</span>
-          </div>
-        </div>
-
-        <!-- CARD 4: FILE PROPOSAL -->
-        <div class="home-launch-card" style="--card-accent: #ec4899;" id="btn-trigger-file-proposal-home">
-          <div>
-            <div class="launch-card-header">
-              <div class="launch-card-icon" style="color:#f472b6; background:rgba(236,72,153,0.1); border-color:rgba(236,72,153,0.25);">
-                <svg class="svg-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
-                </svg>
-              </div>
-              <span class="launch-card-badge" style="color:#f472b6; background:rgba(236,72,153,0.12); border:1px solid rgba(236,72,153,0.3);" data-i18n="badge_capex_direct">
-                CapEx Direct
-              </span>
-            </div>
-            <h4 class="launch-card-title" data-i18n="title_file_new_proposal">File New Proposal</h4>
-            <p class="launch-card-desc" data-i18n="desc_file_new_proposal">
-              Submit a new strategic municipal infrastructure proposal directly to the National Planning Commission for central funding.
-            </p>
-          </div>
-          <div class="launch-card-action" style="color:#f472b6;">
-            <span data-i18n="btn_open_proposal_form">+ Open Proposal Form</span>
-            <span>→</span>
-          </div>
-        </div>
-
-      </div>
     </div>
 
     <!-- ========================================================================
