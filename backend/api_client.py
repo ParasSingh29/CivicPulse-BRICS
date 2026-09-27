@@ -143,32 +143,6 @@ def init_database():
             """, (off[0], off[1], off[2], off[3], off[4], off[5], off[6], pwd_hash, salt))
         conn.commit()
 
-    # Seed Diverse Sample Complaints across BRICS cities if count is low
-    cursor.execute("SELECT COUNT(*) FROM complaints")
-    count = cursor.fetchone()[0]
-    if count < 10:
-        seed_complaints = [
-            ("CP-DEL-TRF-01", "citizen_delhi@gov.in", "Roads, Bridges & Arterial Corridors", "Severe arterial traffic paralysis on Outer Ring Road and Pitampura flyover intersection. Commuters stranded for 75 minutes in standstill bottleneck during peak hours.\n\n[Priority]: Critical", json.dumps({"address": "Outer Ring Road, Pitampura, North West Delhi", "latitude": 28.6987, "longitude": 77.1385, "city": "Delhi"}), "Pending", "2026-09-06 08:30:00"),
-            ("CP-DEL-WTR-02", "paras@civicpulse.org", "Water Supply & Pipeline Leakage", "Main feeder pipeline rupture causing road subsidence and drinking water contamination in Janakpuri.\n\n[Priority]: High", json.dumps({"address": "Janakpuri Block B, West Delhi", "latitude": 28.6219, "longitude": 77.0878, "city": "Delhi"}), "In Progress", "2026-09-06 09:15:00"),
-            ("CP-DEL-FL-03", "citizen_delhi@gov.in", "Stormwater Drainage & Monsoon Floods", "Yamuna flood basin drainage backflow and open stormwater nullah overflow threatening 40,000 households in Seelampur.\n\n[Priority]: Critical", json.dumps({"address": "Seelampur Main Market, North-East Delhi", "latitude": 28.6644, "longitude": 77.2678, "city": "Delhi"}), "Pending", "2026-09-05 14:00:00"),
-            ("CP-DEL-HLT-04", "priya@delhi.gov.in", "Public Health, Clinics & Vector Control", "Rohini Sector 14 dispensary lacks trauma triage unit; road accident patients transferred 22km to central hospital.\n\n[Priority]: High", json.dumps({"address": "Rohini Sector 14, North West Delhi", "latitude": 28.7159, "longitude": 77.1264, "city": "Delhi"}), "Resolved", "2026-09-04 11:20:00"),
-            ("CP-MUM-RL-01", "commuter_mumbai@gov.in", "Public Transport & Transit Hubs", "Suburban Western Railway slow crawl speeds between Dadar and Andheri. Extreme crowding with 16 commuters per sq meter, trains delayed by 45 minutes due to ancient mechanical signaling.\n\n[Priority]: Critical", json.dumps({"address": "Dadar Junction Railway Station, Mumbai", "latitude": 19.0178, "longitude": 72.8478, "city": "Mumbai"}), "Pending", "2026-09-06 08:00:00"),
-            ("CP-MUM-RL-02", "freight_mumbai@gov.in", "Public Transport & Transit Hubs", "Central Railway inter-city freight trains blocking passenger express tracks between Kurla and Kalyan. Average speed under 35 km/h.\n\n[Priority]: High", json.dumps({"address": "Kurla Terminus Freight Yard, Mumbai", "latitude": 19.0657, "longitude": 72.8797, "city": "Mumbai"}), "In Progress", "2026-09-05 16:45:00"),
-            ("CP-MUM-RD-03", "citizen_mumbai@gov.in", "Roads, Bridges & Arterial Corridors", "JVLR East-West arterial road completely choked with container trucks causing 2-hour gridlock.\n\n[Priority]: Critical", json.dumps({"address": "Jogeshwari-Vikhroli Link Road (JVLR), Mumbai", "latitude": 19.1254, "longitude": 72.8741, "city": "Mumbai"}), "Resolved", "2026-09-04 18:30:00"),
-            ("CP-BLR-TRF-01", "techie_blr@gov.in", "Public Transport & Transit Hubs", "Silk Board flyover bottleneck gridlocked for 3 km towards Electronic City. Daily commuter travel time exceeds 2 hours for a 12 km stretch.\n\n[Priority]: Critical", json.dumps({"address": "Central Silk Board Junction, Hosur Road, Bengaluru", "latitude": 12.9172, "longitude": 77.6228, "city": "Bengaluru"} ), "Pending", "2026-09-06 09:00:00"),
-            ("CP-BLR-WTR-02", "citizen_blr@gov.in", "Water Supply & Pipeline Leakage", "Bellandur lake drainage channel blocked with toxic sludge and industrial foam overflowing into residential perimeter.\n\n[Priority]: High", json.dumps({"address": "Bellandur Lake Spillway, South-East Bengaluru", "latitude": 12.9345, "longitude": 77.6657, "city": "Bengaluru"}), "In Progress", "2026-09-05 13:10:00"),
-            ("CP-SP-TRF-01", "carlos@sp.gov.br", "Roads, Bridges & Arterial Corridors", "Marginal Pinheiros e Tietê expressways paralyzed for 18 km due to surface sinkholes and freight truck rollover.\n\n[Priority]: Critical", json.dumps({"address": "Marginal Pinheiros / Ponte Estaiada, São Paulo", "latitude": -23.6134, "longitude": -46.6985, "city": "São Paulo"}), "Pending", "2026-09-06 07:45:00"),
-            ("CP-SP-DRN-02", "sao_paulo@gov.br", "Stormwater Drainage & Monsoon Floods", "Tamanduateí river overflow channel blocked with industrial debris causing severe flash flooding along Avenida dos Estados.\n\n[Priority]: Critical", json.dumps({"address": "Avenida dos Estados, São Paulo", "latitude": -23.5505, "longitude": -46.6333, "city": "São Paulo"}), "In Progress", "2026-09-05 10:20:00"),
-            ("CP-JHB-PWR-01", "sipho@jhb.gov.za", "Electricity, Streetlights & Grid", "Soweto West electrical substation transformer blowout leaving industrial & residential blocks in darkness for 48 hours.\n\n[Priority]: Critical", json.dumps({"address": "Soweto West, Johannesburg", "latitude": -26.2485, "longitude": 27.8540, "city": "Johannesburg"}), "Pending", "2026-09-06 06:30:00"),
-            ("CP-JHB-WTR-02", "water_jhb@gov.za", "Water Supply & Pipeline Leakage", "Diepsloot bulk water booster pump non-operational due to rolling loadshedding, cutting off drinking water to 90,000 residents.\n\n[Priority]: High", json.dumps({"address": "Diepsloot West, Region A, Johannesburg", "latitude": -25.9333, "longitude": 28.0167, "city": "Johannesburg"}), "In Progress", "2026-09-04 15:00:00")
-        ]
-        for c in seed_complaints:
-            cursor.execute("""
-            INSERT OR IGNORE INTO complaints (id, user_id, category, description, location_json, status, timestamp)
-            VALUES (?, ?, ?, ?, ?, ?, ?)
-            """, c)
-        conn.commit()
-
     conn.close()
 
 # Initialize DB schema at import
@@ -177,6 +151,15 @@ init_database()
 # ==============================================================================
 # 2. COMPLAINT OPERATIONS
 # ==============================================================================
+
+def delete_all_complaints():
+    """Deletes all complaints from the SQLite database."""
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("DELETE FROM complaints")
+    conn.commit()
+    conn.close()
+    return True
 
 def resolve_user_name(user_id, conn=None):
     """Resolves human display name for a given user_id (email, phone, or ID)."""
