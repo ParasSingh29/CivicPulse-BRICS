@@ -878,9 +878,28 @@
                 </svg>
                 <span id="demand-loc-btn-label" data-i18n="btn_use_current_location">Use Current Location</span>
               </button>
+              <button type="button" class="btn-location-detect btn-pin-map" id="btn-demand-toggle-pin-map" title="Pin location on interactive map">
+                <svg class="svg-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                  <circle cx="12" cy="10" r="3"/>
+                </svg>
+                <span id="demand-pin-map-btn-label">📍 <span data-i18n="btn_pin_on_map">Pin on Map</span></span>
+              </button>
             </div>
           </div>
-          <input type="text" class="form-control" id="modal-demand-gps-address" placeholder="Click 'Use Current Location'..." readonly style="background:rgba(255,255,255,0.03); color:var(--text-secondary);">
+          <input type="text" class="form-control" id="modal-demand-gps-address" placeholder="Click 'Use Current Location' or 'Pin on Map'..." readonly style="background:rgba(255,255,255,0.03); color:var(--text-secondary);">
+          <!-- GPS Location Feedback Chip -->
+          <div id="demand-location-detected-chip" style="display:none; margin-top:6px; font-size:0.75rem; color:#059669; background:rgba(5,150,105,0.08); border:1px solid rgba(5,150,105,0.25); border-radius:6px; padding:4px 8px; align-items:center; justify-content:space-between;">
+            <span id="demand-location-chip-text" data-i18n="gps_acquired">📍 GPS Coordinates Acquired</span>
+            <button type="button" id="btn-demand-clear-gps" style="background:transparent; border:none; color:#059669; font-weight:700; cursor:pointer; font-size:0.8rem;" title="Clear GPS">×</button>
+          </div>
+          <!-- Interactive Google Maps Location Picker Container -->
+          <div id="demand-modal-location-map-wrap" style="display:none; margin-top:10px; border-radius:10px; overflow:hidden; border:1px solid rgba(59,130,246,0.4); background:rgba(15,23,42,0.9); box-shadow:0 4px 20px rgba(0,0,0,0.3);">
+            <div style="padding:6px 12px; background:rgba(30,41,59,0.95); font-size:0.78rem; color:var(--text-secondary); display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(255,255,255,0.08);">
+              <span style="display:flex; align-items:center; gap:6px;">📍 <b data-i18n="pin_location_label">Pin Location:</b> <span data-i18n="pin_location_hint">Click map or drag marker to set pinpoint position</span></span>
+            </div>
+            <div id="demand-modal-pin-map" style="height:220px; width:100%; z-index:1;"></div>
+          </div>
         </div>
 
         <div class="form-group">
@@ -888,15 +907,8 @@
           <input type="text" class="form-control" id="modal-demand-address" placeholder="e.g. House/Flat No. 42, Block B, Street 5, Near Metro Gate 2" data-i18n-placeholder="ph_detailed_address" required style="min-height:46px;">
         </div>
 
-        <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px;">
-          <div class="form-group">
-            <label class="form-label" data-i18n="lbl_budget">Estimated Cost</label>
-            <input type="text" class="form-control" id="modal-demand-budget" placeholder="e.g. ₹50 Lakhs / R$ 300,000" data-i18n-placeholder="ph_budget">
-          </div>
-          <div class="form-group">
-            <label class="form-label" data-i18n="lbl_est_beneficiaries">Estimated People Benefited</label>
-            <input type="text" class="form-control" id="modal-demand-beneficiaries" placeholder="e.g. 5,000 residents" data-i18n-placeholder="ph_beneficiaries">
-          </div>
+        <div style="font-size:0.8rem; color:var(--text-muted); margin-bottom:14px;">
+          <em>Note: AI will automatically estimate project cost and beneficiaries based on your description.</em>
         </div>
 
         <div class="form-group">
