@@ -3,7 +3,8 @@ FROM python:3.12-slim
 
 ENV PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1 \
-    PORT=8080
+    PORT=8080 \
+    PYTHONPATH=/app/backend
 
 WORKDIR /app
 
@@ -14,7 +15,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy requirements and install
-COPY requirements.txt ./
+COPY config/requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy application source code
@@ -27,4 +28,4 @@ EXPOSE 8080
 HEALTHCHECK CMD curl --fail http://localhost:8080/api/brics/nodes || exit 1
 
 # Launch High-Performance Modern Web Server
-CMD ["python", "-m", "uvicorn", "server:app", "--host", "0.0.0.0", "--port", "8080"]
+CMD ["python", "-m", "uvicorn", "backend.server:app", "--host", "0.0.0.0", "--port", "8080"]
