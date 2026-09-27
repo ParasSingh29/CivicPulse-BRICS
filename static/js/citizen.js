@@ -455,7 +455,7 @@ window.loadComplaints = async function() {
   try {
     const res = await fetch('/api/complaints');
     AppState.complaints = await res.json();
-    renderTrackedComplaints(AppState.complaints);
+    filterTrackedComplaints();
 
     // Update KPI complaints count
     const kpiComplaints = document.getElementById('kpi-complaints');
@@ -596,14 +596,125 @@ function formatDescriptionHTML(desc) {
   return html;
 }
 
+window.trackFilterMode = 'mine';
+
+function getCurrentLoggedInUser() {
+  try {
+    const userJson = localStorage.getItem('civicpulse_user');
+    if (userJson) {
+      const u = JSON.parse(userJson);
+      if (u && typeof u === 'object') return u;
+    }
+  } catch (e) {}
+  return {
+    name: "Priya Sharma (Verified Resident)",
+    email: "priya.sharma@delhi.gov.in",
+    user_id: "priya.sharma@delhi.gov.in"
+  };
+}
+
+function isComplaintMine(c, user) {
+  if (!c) return false;
+  if (!user) user = getCurrentLoggedInUser();
+
+  const uEmail = String(user.email || '').toLowerCase().trim();
+  const rawName = String(user.name || '').toLowerCase();
+  const uName = rawName.replace(/\(.*?\)/g, '').trim(); // e.g. "priya sharma"
+  const uId = String(user.user_id || '').toLowerCase().trim();
+  const uPhone = String(user.phone || '').replace(/\D/g, '');
+
+  const cUserId = String(c.user_id || '').toLowerCase().trim();
+  const cReportedBy = String(c.reported_by || '').toLowerCase().trim();
+  const cUserPhone = cUserId.replace(/\D/g, '');
+
+  // 1. Exact or substring match on email or user_id
+  if (uEmail && (cUserId === uEmail || cReportedBy.includes(uEmail))) return true;
+  if (uId && (cUserId === uId || cReportedBy.includes(uId))) return true;
+  
+  // 2. Phone match
+  if (uPhone && uPhone.length >= 7 && cUserPhone.includes(uPhone)) return true;
+
+  // 3. Name match
+  if (uName && uName.length >= 3) {
+    if (cReportedBy.includes(uName) || cUserId.includes(uName)) return true;
+    const parts = uName.split(/\s+/).filter(p => p.length >= 3);
+    if (parts.length > 0 && parts.every(p => cReportedBy.includes(p) || cUserId.includes(p))) return true;
+  }
+
+  // 4. Default demo user match for Priya Sharma
+  const isDemoPriya = uName.includes('priya') || uEmail.includes('priya') || uEmail.includes('demo');
+  if (isDemoPriya && (cReportedBy.includes('priya') || cUserId.includes('priya'))) {
+    return true;
+  }
+
+  return false;
+}
+
+window.setTrackFilterMode = function(mode) {
+  window.trackFilterMode = mode;
+  
+  const mineBtns = document.querySelectorAll('#btn-track-mine, .btn-track-mine');
+  const allBtns = document.querySelectorAll('#btn-track-all, .btn-track-all');
+  
+  if (mode === 'mine') {
+    mineBtns.forEach(b => {
+      b.classList.add('active', 'btn-primary');
+      b.classList.remove('btn-secondary');
+      b.style.background = 'var(--accent-primary, #3b82f6)';
+      b.style.color = '#fff';
+      b.style.border = '1px solid var(--accent-primary, #3b82f6)';
+    });
+    allBtns.forEach(b => {
+      b.classList.remove('active', 'btn-primary');
+      b.classList.add('btn-secondary');
+      b.style.background = 'rgba(255, 255, 255, 0.06)';
+      b.style.color = 'var(--text-primary, #fff)';
+      b.style.border = '1px solid var(--border-color)';
+    });
+  } else {
+    allBtns.forEach(b => {
+      b.classList.add('active', 'btn-primary');
+      b.classList.remove('btn-secondary');
+      b.style.background = 'var(--accent-primary, #3b82f6)';
+      b.style.color = '#fff';
+      b.style.border = '1px solid var(--accent-primary, #3b82f6)';
+    });
+    mineBtns.forEach(b => {
+      b.classList.remove('active', 'btn-primary');
+      b.classList.add('btn-secondary');
+      b.style.background = 'rgba(255, 255, 255, 0.06)';
+      b.style.color = 'var(--text-primary, #fff)';
+      b.style.border = '1px solid var(--border-color)';
+    });
+  }
+
+  filterTrackedComplaints();
+};
+
 function renderTrackedComplaints(complaintsList) {
   const container = document.getElementById('tracked-complaints-list');
   if (!container) return;
 
   if (!complaintsList.length) {
+    const isMineMode = window.trackFilterMode === 'mine';
+    const noReportsTitle = window.getTranslation ? window.getTranslation('msg_no_user_reports', isMineMode ? 'No Reports Filed Under Your Account' : 'No Public Reports Found') : (isMineMode ? 'No Reports Filed Under Your Account' : 'No Public Reports Found');
+    const noReportsSub = window.getTranslation ? window.getTranslation('msg_no_user_reports_sub', isMineMode ? 'You have not submitted any complaints yet under this account. Click "Track All Reports" to view community submissions or file a new report.' : 'No complaints recorded in database yet.') : (isMineMode ? 'You have not submitted any complaints yet under this account. Click "Track All Reports" to view community submissions or file a new report.' : 'No complaints recorded in database yet.');
+    const viewAllBtn = window.getTranslation ? window.getTranslation('btn_view_all_reports', 'View All Community Reports') : 'View All Community Reports';
+
     container.innerHTML = `
-      <div style="background:var(--bg-card); border:1px solid var(--border-color); border-radius:var(--radius-md); padding:32px; text-align:center; color:var(--text-muted);">
-        No complaints recorded in database yet.
+      <div style="background:var(--bg-card); border:1px solid var(--border-color); border-radius:var(--radius-md); padding:36px 20px; text-align:center; color:var(--text-muted);">
+        <div style="font-size:2.5rem; margin-bottom:10px;">${isMineMode ? '📂' : '📡'}</div>
+        <h4 style="font-size:1.1rem; color:var(--text-primary); margin-bottom:6px; font-weight:700;">
+          ${noReportsTitle}
+        </h4>
+        <p style="font-size:0.88rem; max-width:480px; margin:0 auto 16px auto; color:var(--text-secondary); line-height:1.5;">
+          ${noReportsSub}
+        </p>
+        ${isMineMode ? `
+          <button type="button" class="btn btn-secondary btn-sm" onclick="window.setTrackFilterMode('all')" style="border:1px solid var(--accent-primary); color:var(--accent-primary); font-weight:600; padding:8px 16px; cursor:pointer;">
+            🌐 ${viewAllBtn}
+          </button>
+        ` : ''}
       </div>
     `;
     return;
@@ -725,19 +836,33 @@ window.viewSMSLogs = async function(complaintId) {
 };
 
 function filterTrackedComplaints() {
+  const allComplaints = AppState.complaints || [];
+  const user = getCurrentLoggedInUser();
+  const mineComplaints = allComplaints.filter(c => isComplaintMine(c, user));
+
+  // Update badge counters
+  const bMine = document.getElementById('badge-count-mine');
+  const bAll = document.getElementById('badge-count-all');
+  if (bMine) bMine.textContent = mineComplaints.length;
+  if (bAll) bAll.textContent = allComplaints.length;
+
+  const baseList = (window.trackFilterMode === 'mine') ? mineComplaints : allComplaints;
   const query = (document.getElementById('track-search-input')?.value || '').toLowerCase().trim();
+  
   if (!query) {
-    renderTrackedComplaints(AppState.complaints);
+    renderTrackedComplaints(baseList);
     return;
   }
-  const filtered = AppState.complaints.filter(c => 
+  const filtered = baseList.filter(c => 
     c.id.toLowerCase().includes(query) ||
     c.description.toLowerCase().includes(query) ||
     c.category.toLowerCase().includes(query) ||
-    JSON.stringify(c.location || {}).toLowerCase().includes(query)
+    JSON.stringify(c.location || {}).toLowerCase().includes(query) ||
+    (c.reported_by || '').toLowerCase().includes(query)
   );
   renderTrackedComplaints(filtered);
 }
+window.filterTrackedComplaints = filterTrackedComplaints;
 
 // Google TTS audio playback
 window.playTTS = async function(text) {
