@@ -325,68 +325,108 @@ function renderDemands(demandsList) {
   const beneficiariesLabel = window.i18n ? window.i18n('lbl_beneficiaries', 'People Benefited') : 'Beneficiaries';
   const proposedByLabel = window.i18n ? window.i18n('lbl_proposed_by', 'Proposed by') : 'Proposed By';
 
-  container.innerHTML = demandsList.map(d => `
-    <div class="demand-card" id="card-${d.id}">
-      <!-- WARM GOLDEN UPVOTE BUTTON & REAL-TIME COUNTER -->
-      <div class="upvote-box" onclick="handleUpvote('${d.id}')" title="Click to Upvote / Support this Demand">
-        <span class="upvote-icon">${window.AppIcons.chevron_up}</span>
-        <span class="upvote-count" id="count-${d.id}">${d.upvotes.toLocaleString()}</span>
-        <span class="upvote-label">${upvoteText}</span>
+  let upvotedDemands = [];
+  try { upvotedDemands = JSON.parse(localStorage.getItem('civicpulse_upvoted_demands') || '[]'); } catch(e) {}
+  const voterId = localStorage.getItem('civicpulse_voter_id') || '';
+
+  container.innerHTML = demandsList.map(d => {
+    const isUpvoted = upvotedDemands.includes(d.id) || (voterId && (d.upvoted_by || []).includes(voterId));
+    return `
+      <div class="demand-card" id="card-${d.id}">
+        <!-- WARM GOLDEN UPVOTE BUTTON & REAL-TIME COUNTER -->
+        <div class="upvote-box ${isUpvoted ? 'upvoted' : ''}" onclick="handleUpvote('${d.id}')" title="Click to Upvote / Support this Demand">
+          <span class="upvote-icon">${window.AppIcons.chevron_up}</span>
+          <span class="upvote-count" id="count-${d.id}">${d.upvotes.toLocaleString()}</span>
+          <span class="upvote-label">${upvoteText}</span>
+        </div>
+
+        <div class="demand-body">
+          <div class="demand-header">
+            <span class="demand-title">${d.title}</span>
+            <span class="pill ${d.status.includes('Sanctioned') ? 'pill-resolved' : (d.status.includes('Review') ? 'pill-progress' : 'pill-pending')}">
+              ● ${d.status}
+            </span>
+          </div>
+
+          <div class="demand-meta">
+            <span>${window.AppIcons.map_pin} <b>${d.address || d.ward}</b></span>
+            <span>${window.AppIcons.tag} <b>${d.sector}</b></span>
+            <span>${window.AppIcons.coins} ${estCostLabel}: <b>${d.estimated_budget}</b></span>
+            <span>${window.AppIcons.users} ${beneficiariesLabel}: <b>${d.beneficiaries}</b></span>
+          </div>
+
+          <p class="demand-desc">${d.description}</p>
+
+          <div class="demand-footer">
+            <span>${proposedByLabel}: <b>${d.author}</b></span>
+            <span>Date: ${d.date}</span>
+          </div>
+        </div>
       </div>
-
-      <div class="demand-body">
-        <div class="demand-header">
-          <span class="demand-title">${d.title}</span>
-          <span class="pill ${d.status.includes('Sanctioned') ? 'pill-resolved' : (d.status.includes('Review') ? 'pill-progress' : 'pill-pending')}">
-            ● ${d.status}
-          </span>
-        </div>
-
-        <div class="demand-meta">
-          <span>${window.AppIcons.map_pin} <b>${d.address || d.ward}</b></span>
-          <span>${window.AppIcons.tag} <b>${d.sector}</b></span>
-          <span>${window.AppIcons.coins} ${estCostLabel}: <b>${d.estimated_budget}</b></span>
-          <span>${window.AppIcons.users} ${beneficiariesLabel}: <b>${d.beneficiaries}</b></span>
-        </div>
-
-        <p class="demand-desc">${d.description}</p>
-
-        <div class="demand-footer">
-          <span>${proposedByLabel}: <b>${d.author}</b></span>
-          <span>Date: ${d.date}</span>
-        </div>
-      </div>
-    </div>
-  `).join('');
+    `;
+  }).join('');
 }
 window.renderDemands = renderDemands;
 
 // Global Upvote Handler
 window.handleUpvote = async function(demandId) {
   const countEl = document.getElementById(`count-${demandId}`);
-  if (countEl) {
-    // Optimistic UI bump
-    const currentCount = parseInt(countEl.textContent.replace(/,/g, '')) || 0;
-    countEl.textContent = (currentCount + 1).toLocaleString();
-    countEl.style.transform = 'scale(1.25)';
-    countEl.style.color = '#059669';
-    setTimeout(() => {
-      countEl.style.transform = 'scale(1)';
-      countEl.style.color = '';
-    }, 250);
+  const upvoteBox = countEl ? countEl.closest('.upvote-box') : null;
+
+  // Track client-side upvoted demands in localStorage
+  let upvotedDemands = [];
+  try {
+    upvotedDemands = JSON.parse(localStorage.getItem('civicpulse_upvoted_demands') || '[]');
+  } catch(e) {}
+
+  if (upvotedDemands.includes(demandId)) {
+    showToast('You have already upvoted this proposal!', 'info');
+    if (upvoteBox) upvoteBox.classList.add('upvoted');
+    return;
+  }
+
+  let voterId = localStorage.getItem('civicpulse_voter_id');
+  if (!voterId) {
+    voterId = 'voter_' + Math.random().toString(36).substring(2, 9) + '_' + Date.now();
+    localStorage.setItem('civicpulse_voter_id', voterId);
   }
 
   try {
     const res = await fetch(`/api/demands/${demandId}/upvote`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ voter_id: 'citizen_session_' + (navigator.userAgent || '') })
+      body: JSON.stringify({ voter_id: voterId })
     });
     const result = await res.json();
     if (result.status === 'ok') {
       showToast('Upvote recorded! CapEx prioritization weight updated.', 'success');
+      if (countEl && result.upvotes !== undefined) {
+        countEl.textContent = Number(result.upvotes).toLocaleString();
+        countEl.style.transform = 'scale(1.25)';
+        countEl.style.color = '#059669';
+        setTimeout(() => {
+          countEl.style.transform = 'scale(1)';
+          countEl.style.color = '';
+        }, 250);
+      }
+      const targetDemand = (window.AppState && window.AppState.demands) ? window.AppState.demands.find(d => d.id === demandId) : null;
+      if (targetDemand) targetDemand.upvotes = result.upvotes;
+
+      if (!upvotedDemands.includes(demandId)) {
+        upvotedDemands.push(demandId);
+        localStorage.setItem('civicpulse_upvoted_demands', JSON.stringify(upvotedDemands));
+      }
+      if (upvoteBox) upvoteBox.classList.add('upvoted');
     } else {
       showToast(result.message || 'Already upvoted!', 'info');
+      if (countEl && result.upvotes !== undefined) {
+        countEl.textContent = Number(result.upvotes).toLocaleString();
+      }
+      if (!upvotedDemands.includes(demandId)) {
+        upvotedDemands.push(demandId);
+        localStorage.setItem('civicpulse_upvoted_demands', JSON.stringify(upvotedDemands));
+      }
+      if (upvoteBox) upvoteBox.classList.add('upvoted');
     }
   } catch (err) {
     console.error('Error upvoting:', err);
@@ -1473,6 +1513,59 @@ window.setupAICitizenAgent = function() {
     }
   };
 
+  const all10Categories = [
+    { name: 'Roads, Bridges & Arterial Corridors', short: 'Roads & Bridges' },
+    { name: 'Water Supply & Pipeline Leakage', short: 'Water & Pipeline' },
+    { name: 'Electricity, Streetlights & Grid', short: 'Electricity & Grid' },
+    { name: 'Waste Management & Sanitation', short: 'Waste & Sanitation' },
+    { name: 'Public Transport & Transit Hubs', short: 'Public Transport' },
+    { name: 'Stormwater Drainage & Monsoon Floods', short: 'Stormwater & Floods' },
+    { name: 'Public Health, Clinics & Vector Control', short: 'Health & Clinics' },
+    { name: 'Government Schools & Public Facilities', short: 'Schools & Facilities' },
+    { name: 'Public Parks, Green Belts & Air Quality', short: 'Parks & Environment' },
+    { name: 'Public Safety & Emergency Infrastructure', short: 'Safety & Emergency' }
+  ];
+
+  function isRelevantCategoryInput(inputStr) {
+    if (!inputStr || inputStr.trim().length < 2) return false;
+    const lower = inputStr.toLowerCase().trim();
+    const sectorKeywords = [
+      'road', 'bridge', 'pothole', 'flyover', 'street', 'corridor', 'asphalt', 'highway', 'path', 'footpath', 'crater', 'traffic',
+      'water', 'pipe', 'pipeline', 'leak', 'leakage', 'contamination', 'drainage', 'supply', 'tap',
+      'electricity', 'light', 'streetlight', 'grid', 'power', 'blackout', 'transformer', 'pole', 'current', 'electric',
+      'waste', 'garbage', 'trash', 'sanitation', 'dump', 'clean', 'sweeping', 'litter', 'rubbish',
+      'transport', 'bus', 'metro', 'train', 'transit', 'station', 'stop', 'railway', 'commute',
+      'stormwater', 'flood', 'monsoon', 'drain', 'overflow', 'nullah', 'waterlogging', 'rain',
+      'health', 'hospital', 'clinic', 'vector', 'mosquito', 'dispensary', 'doctor', 'ambulance', 'fever', 'dengue',
+      'school', 'education', 'facility', 'building', 'playground', 'classroom',
+      'park', 'green', 'tree', 'air', 'quality', 'pollution', 'garden', 'plant', 'environment',
+      'safety', 'emergency', 'cctv', 'camera', 'police', 'lighting', 'security', 'hazard', 'danger'
+    ];
+    if (all10Categories.some(c => c.name.toLowerCase().includes(lower) || c.short.toLowerCase().includes(lower) || lower.includes(c.short.toLowerCase()))) {
+      return true;
+    }
+    return sectorKeywords.some(kw => lower.includes(kw));
+  }
+
+  function isRelevantDescriptionInput(inputStr) {
+    if (!inputStr || inputStr.trim().length < 4) return false;
+    const lower = inputStr.toLowerCase().trim();
+    const spamWords = ['asdf', 'ghjk', 'qwerty', 'zxcv', 'blah', 'test123', '???', '...', 'hi', 'hello', 'hey', '12345', 'abc', 'ok', 'no'];
+    if (spamWords.includes(lower)) return false;
+    if (/^[^a-zA-Z0-9]+$/.test(lower)) return false;
+    if (/^\d+$/.test(lower) && lower.length < 5) return false;
+    return true;
+  }
+
+  function isRelevantLocationInput(inputStr) {
+    if (!inputStr || inputStr.trim().length < 3) return false;
+    const lower = inputStr.toLowerCase().trim();
+    const spamWords = ['asdf', 'ghjk', 'qwerty', 'zxcv', 'blah', 'test', '???', '...', 'hi', 'hello', 'hey', '123', 'no', 'yes', 'ok'];
+    if (spamWords.includes(lower)) return false;
+    if (/^[^a-zA-Z0-9]+$/.test(lower)) return false;
+    return true;
+  }
+
   async function handleUserInput(text) {
     if (!text || !text.trim()) return;
     const cleanText = text.trim();
@@ -1480,19 +1573,73 @@ window.setupAICitizenAgent = function() {
     inputEl.value = '';
 
     if (session.step === 0) {
+      if (!isRelevantCategoryInput(cleanText)) {
+        setTimeout(() => {
+          appendBotMessage(`
+            <div style="background:rgba(239,68,68,0.15); border:1px solid rgba(239,68,68,0.35); border-radius:12px; padding:12px; color:#f87171; margin-bottom:8px;">
+              ⚠️ <b>Irrelevant Input for Step 1 (Category Selection)</b><br>
+              I didn't recognize a valid civic infrastructure sector in <i>"${escapeHtml(cleanText)}"</i>.
+            </div>
+            <b>Please stick to Step 1:</b> Select an issue category from the buttons above or type a sector like <b>Roads, Water Leakage, Electricity, Garbage, Transport, or Drainage</b>.
+          `);
+        }, 350);
+        return; // STICK TO STEP 0, DO NOT ADVANCE!
+      }
+
       session.category = cleanText;
       session.step = 1;
       setTimeout(renderStep, 350);
+
     } else if (session.step === 1) {
+      if (!isRelevantDescriptionInput(cleanText)) {
+        setTimeout(() => {
+          appendBotMessage(`
+            <div style="background:rgba(239,68,68,0.15); border:1px solid rgba(239,68,68,0.35); border-radius:12px; padding:12px; color:#f87171; margin-bottom:8px;">
+              ⚠️ <b>Irrelevant or Too Short Description</b><br>
+              Please provide a meaningful description of the issue for <b>${escapeHtml(session.category)}</b>.
+            </div>
+            <b>Please stick to Step 2:</b> Describe what is broken, severity, or landmarks.<br>
+            <i>Example: "Large deep pothole on Main Ring Road near Sector 4 flyover causing traffic congestion."</i>
+          `);
+        }, 350);
+        return; // STICK TO STEP 1, DO NOT ADVANCE!
+      }
+
       session.description = cleanText;
       session.step = 2;
       setTimeout(renderStep, 350);
+
     } else if (session.step === 2) {
+      if (!isRelevantLocationInput(cleanText)) {
+        setTimeout(() => {
+          appendBotMessage(`
+            <div style="background:rgba(239,68,68,0.15); border:1px solid rgba(239,68,68,0.35); border-radius:12px; padding:12px; color:#f87171; margin-bottom:8px;">
+              ⚠️ <b>Irrelevant Location Input</b><br>
+              <i>"${escapeHtml(cleanText)}"</i> does not appear to be a valid street address or landmark.
+            </div>
+            <b>Please stick to Step 3:</b> Provide a street address, sector, or click <b>📍 Auto-Detect Current GPS Location</b>.<br>
+            <i>Example: "Block B Main Market, Janakpuri, New Delhi"</i>
+          `);
+        }, 350);
+        return; // STICK TO STEP 2, DO NOT ADVANCE!
+      }
+
       session.address = cleanText;
       session.step = 3;
       setTimeout(renderStep, 350);
+
     } else if (session.step === 3) {
-      await submitTicket();
+      const lower = cleanText.toLowerCase();
+      if (lower.includes('submit') || lower.includes('yes') || lower.includes('confirm') || lower.includes('go') || lower.includes('ok')) {
+        await submitTicket();
+      } else {
+        setTimeout(() => {
+          appendBotMessage(`
+            <b>Step 4 Ready:</b> Your report for <b>${escapeHtml(session.category)}</b> at <b>${escapeHtml(session.address)}</b> is ready!<br><br>
+            Click the green <b>🚀 Submit Official Ticket Now</b> button below or type <b>"submit"</b> to file your official ticket.
+          `);
+        }, 350);
+      }
     }
   }
 
