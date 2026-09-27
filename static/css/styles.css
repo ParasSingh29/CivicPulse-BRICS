@@ -253,6 +253,87 @@ body {
   -moz-osx-font-smoothing: grayscale;
   transition: background-color var(--transition-normal), color var(--transition-normal);
   overflow-x: hidden;
+  position: relative;
+}
+
+/* ==========================================================================
+   CURSOR-REACTIVE PARTICLE CANVAS BACKGROUND
+   ========================================================================== */
+
+#bg-particle-canvas {
+  position: fixed !important;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  pointer-events: none !important;
+  z-index: 0 !important;
+  will-change: transform;
+}
+
+/* Ensure all direct body children sit above the canvas */
+body > *:not(#bg-particle-canvas) {
+  position: relative;
+  z-index: 1;
+}
+
+/* ==========================================================================
+   MICRO-ANIMATIONS: HOVER LIFT ON CARDS
+   ========================================================================== */
+
+.sector-card {
+  transition: transform 0.22s cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 0.22s cubic-bezier(0.4, 0, 0.2, 1),
+              border-color 0.22s ease !important;
+}
+.sector-card:hover {
+  transform: translateY(-5px) scale(1.015) !important;
+  box-shadow: 0 16px 40px -8px var(--accent-glow) !important;
+}
+
+.complaint-card, .demand-card, .proposal-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease !important;
+}
+.complaint-card:hover, .demand-card:hover, .proposal-card:hover {
+  transform: translateY(-3px) !important;
+  box-shadow: 0 12px 30px -6px rgba(0,0,0,0.5) !important;
+}
+
+/* Button hover glow pulse */
+.btn-portal-action, .btn-primary {
+  transition: transform 0.18s ease, box-shadow 0.18s ease, opacity 0.18s ease !important;
+}
+.btn-portal-action:hover:not(:disabled), .btn-primary:hover:not(:disabled) {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 8px 24px -4px var(--accent-glow) !important;
+}
+.btn-portal-action:active:not(:disabled), .btn-primary:active:not(:disabled) {
+  transform: translateY(0px) !important;
+}
+
+/* Map border radius */
+#modal-pin-map, #demand-modal-pin-map {
+  border-radius: 12px !important;
+  overflow: hidden !important;
+}
+#modal-location-map-wrap, #demand-modal-location-map-wrap {
+  border-radius: 12px !important;
+  overflow: hidden !important;
+}
+
+/* ==========================================================================
+   TOAST NOTIFICATION UPGRADES
+   ========================================================================== */
+
+.toast-notification {
+  border-left: 4px solid var(--accent-primary) !important;
+  animation: toastSlideIn 0.35s cubic-bezier(0.4, 0, 0.2, 1) forwards !important;
+}
+.toast-notification.success { border-left-color: #10b981 !important; }
+.toast-notification.error   { border-left-color: #f43f5e !important; }
+.toast-notification.warning { border-left-color: #f59e0b !important; }
+
+@keyframes toastSlideIn {
+  from { opacity: 0; transform: translateX(40px) scale(0.95); }
+  to   { opacity: 1; transform: translateX(0) scale(1); }
 }
 
 /* Scrollbar */
