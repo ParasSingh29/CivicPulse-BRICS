@@ -315,7 +315,8 @@ window.GlobalProblemMapSystem = {
         const popupHtml = `
           <div style="font-family:var(--font-sans); min-width:200px; color:#0f172a;">
             <div style="font-weight:700; font-size:0.9rem; margin-bottom:4px; color:#1e293b;">${c.flag} ${c.category || 'Infrastructure Report'}</div>
-            <div style="font-size:0.8rem; color:#475569; margin-bottom:6px;">📍 ${c.city}, ${c.country}</div>
+            <div style="font-size:0.8rem; color:#475569; margin-bottom:4px;">📍 ${c.city}, ${c.country}</div>
+            <div style="font-size:0.76rem; color:#2563eb; margin-bottom:6px; font-weight:600;">👤 Reported by: ${c.reported_by || c.user_id || 'Citizen'}</div>
             <div style="font-size:0.8rem; color:#334155; margin-bottom:8px;">${c.description ? c.description.substring(0, 90) + '...' : ''}</div>
             <div style="display:flex; justify-content:space-between; align-items:center;">
               <span style="font-size:0.72rem; padding:2px 8px; border-radius:12px; font-weight:700; color:#fff; background:${markerColor};">
@@ -364,6 +365,8 @@ window.GlobalProblemMapSystem = {
         badgeStyle = 'background:rgba(16,185,129,0.12); color:#34d399; border:1px solid rgba(16,185,129,0.3);';
       }
 
+      const reporterName = c.reported_by || c.user_id || 'Citizen';
+
       return `
         <tr class="problem-row" style="cursor:pointer; border-bottom:1px solid var(--border-subtle); transition:background 0.2s;" onclick="GlobalProblemMapSystem.focusMap('${mapId}', '${c.id}', ${c.lat}, ${c.lon})">
           <td style="padding:10px 12px; font-size:0.8rem; font-family:var(--font-mono); color:var(--accent-primary);">
@@ -375,6 +378,7 @@ window.GlobalProblemMapSystem = {
           </td>
           <td style="padding:10px 12px; font-size:0.82rem; color:var(--text-secondary);">
             <div style="font-weight:600; color:var(--text-primary); margin-bottom:2px;">${c.category || 'General Report'}</div>
+            <div style="font-size:0.74rem; color:var(--accent-primary); font-weight:600; margin-bottom:2px;">👤 ${reporterName}</div>
             <div style="font-size:0.75rem; color:var(--text-muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:220px;">
               ${c.description || c.address || ''}
             </div>

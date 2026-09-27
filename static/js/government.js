@@ -291,6 +291,7 @@ async function loadGovComplaints() {
           <div style="font-size:0.82rem; color:var(--text-muted); margin-bottom:12px; display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
             <span>${window.AppIcons.map_pin}</span>
             <span>${(window.getTranslation && window.getTranslation('label_location')) || 'Location'}: <b>${address}</b> (Lat: ${lat.toFixed(4)}°, Lon: ${lon.toFixed(4)}°) • ${(window.getTranslation && window.getTranslation('lbl_date')) || 'Date'}: ${c.timestamp}</span>
+            <span style="background:rgba(59,130,246,0.12); color:#60a5fa; border:1px solid rgba(59,130,246,0.3); padding:2px 8px; border-radius:12px; font-weight:600; margin-left:4px;">👤 ${(window.getTranslation && window.getTranslation('lbl_reported_by')) || 'Reported by'}: ${c.reported_by || c.user_id || 'Citizen'}</span>
           </div>
 
           ${(c.photo_url || c.resolution_photo) ? `

@@ -104,13 +104,25 @@ def init_database():
     if cursor.fetchone()[0] == 0:
         salt = secrets.token_hex(16)
         pwd_hash = hashlib.pbkdf2_hmac("sha256", "citizen123".encode("utf-8"), bytes.fromhex(salt), 100_000).hex()
-        cursor.execute("""
-        INSERT INTO users (email, name, phone, password_hash, salt, address, city, pincode, state, country, role)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        """, (
-            "paras@civicpulse.org", "Paras Singh", "+91 98101 23456",
-            pwd_hash, salt, "A-42 Ring Road, Pitampura", "New Delhi", "110034", "Delhi", "India", "citizen"
-        ))
+        seed_users = [
+            ("paras@civicpulse.org", "Paras Singh", "+91 98101 23456", "A-42 Ring Road, Pitampura", "New Delhi", "110034", "Delhi", "India", "citizen"),
+            ("citizen_delhi@gov.in", "Rajesh Kumar", "+91 98111 22334", "Sector 7, Rohini", "New Delhi", "110085", "Delhi", "India", "citizen"),
+            ("priya@delhi.gov.in", "Dr. Priya Sharma", "+91 98112 33445", "Rohini Sector 14", "New Delhi", "110085", "Delhi", "India", "citizen"),
+            ("commuter_mumbai@gov.in", "Aarav Mehta", "+91 98200 11223", "Dadar West", "Mumbai", "400028", "Maharashtra", "India", "citizen"),
+            ("freight_mumbai@gov.in", "Vikram Transport Co.", "+91 98200 44556", "Kurla East", "Mumbai", "400024", "Maharashtra", "India", "citizen"),
+            ("citizen_mumbai@gov.in", "Neha Patil", "+91 98200 77889", "Andheri West", "Mumbai", "400053", "Maharashtra", "India", "citizen"),
+            ("techie_blr@gov.in", "Karthik Raja", "+91 98450 12345", "Electronic City Phase 1", "Bengaluru", "560100", "Karnataka", "India", "citizen"),
+            ("citizen_blr@gov.in", "Ananya Gowda", "+91 98450 67890", "Bellandur", "Bengaluru", "560103", "Karnataka", "India", "citizen"),
+            ("carlos@sp.gov.br", "Carlos Mendes", "+55 11 98101 5566", "Av Paulista 1000", "São Paulo", "01310-100", "SP", "Brazil", "citizen"),
+            ("sao_paulo@gov.br", "Fernanda Silva", "+55 11 98102 7788", "Rua Augusta", "São Paulo", "01305-000", "SP", "Brazil", "citizen"),
+            ("sipho@jhb.gov.za", "Sipho Nkosi", "+27 11 981 7788", "Soweto West", "Johannesburg", "1818", "Gauteng", "South Africa", "citizen"),
+            ("water_jhb@gov.za", "Thabo Mbeki", "+27 11 981 9900", "Diepsloot", "Johannesburg", "2187", "Gauteng", "South Africa", "citizen"),
+        ]
+        for u in seed_users:
+            cursor.execute("""
+            INSERT OR IGNORE INTO users (email, name, phone, password_hash, salt, address, city, pincode, state, country, role)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (u[0], u[1], u[2], pwd_hash, salt, u[3], u[4], u[5], u[6], u[7], u[8]))
         conn.commit()
 
     # Seed Default Officials if empty
@@ -166,13 +178,71 @@ init_database()
 # 2. COMPLAINT OPERATIONS
 # ==============================================================================
 
+def resolve_user_name(user_id, conn=None):
+    """Resolves human display name for a given user_id (email, phone, or ID)."""
+    if not user_id:
+        return "Anonymous Citizen"
+
+    close_conn = False
+    if conn is None:
+        conn = get_db_connection()
+        close_conn = True
+
+    try:
+        cursor = conn.cursor()
+        uid_clean = str(user_id).strip()
+
+        # 1. Lookup in users table
+        cursor.execute("SELECT name FROM users WHERE email = ? OR phone = ? OR name = ?", (uid_clean, uid_clean, uid_clean))
+        row = cursor.fetchone()
+        if row and row["name"]:
+            return row["name"]
+
+        # 2. Lookup in officials table
+        cursor.execute("SELECT name FROM officials WHERE email = ? OR phone = ? OR official_id = ? OR name = ?", (uid_clean, uid_clean, uid_clean, uid_clean))
+        row_off = cursor.fetchone()
+        if row_off and row_off["name"]:
+            return row_off["name"]
+    except Exception:
+        pass
+    finally:
+        if close_conn:
+            conn.close()
+
+    # Fallback heuristics for emails, phones, or raw strings
+    uid_str = str(user_id).strip()
+    if "@" in uid_str:
+        prefix = uid_str.split("@")[0]
+        known_map = {
+            "paras": "Paras Singh",
+            "citizen_delhi": "Rajesh Kumar",
+            "priya": "Dr. Priya Sharma",
+            "commuter_mumbai": "Aarav Mehta",
+            "freight_mumbai": "Vikram Transport Co.",
+            "citizen_mumbai": "Neha Patil",
+            "techie_blr": "Karthik Raja",
+            "citizen_blr": "Ananya Gowda",
+            "carlos": "Carlos Mendes",
+            "sao_paulo": "Fernanda Silva",
+            "sipho": "Sipho Nkosi",
+            "water_jhb": "Thabo Mbeki"
+        }
+        if prefix in known_map:
+            return known_map[prefix]
+
+        clean = prefix.replace(".", " ").replace("_", " ").title()
+        return clean
+    elif uid_str.startswith("+") or (len(uid_str) >= 8 and uid_str.replace(" ", "").replace("-", "").isdigit()):
+        return f"Citizen ({uid_str})"
+
+    return uid_str
+
 def get_all_complaints(city=None):
     """Fetches complaints ordered by timestamp descending, optionally filtered by city."""
     conn = get_db_connection()
     cursor = conn.cursor()
     cursor.execute("SELECT * FROM complaints ORDER BY timestamp DESC")
     rows = cursor.fetchall()
-    conn.close()
 
     complaints = []
     for r in rows:
@@ -186,9 +256,12 @@ def get_all_complaints(city=None):
                 loc = {}
 
         keys = r.keys() if hasattr(r, 'keys') else []
+        rep_name = resolve_user_name(r["user_id"], conn=conn)
+
         complaint = {
             "id": r["id"],
             "user_id": r["user_id"],
+            "reported_by": rep_name,
             "category": r["category"],
             "description": r["description"],
             "location": loc,
@@ -208,6 +281,8 @@ def get_all_complaints(city=None):
                 continue
 
         complaints.append(complaint)
+
+    conn.close()
     return complaints
 
 def save_complaint(user_id, category, description, location, photo_url=None):
