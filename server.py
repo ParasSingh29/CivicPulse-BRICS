@@ -194,14 +194,11 @@ async def get_complaints_api(request):
     query_params = request.query_params
     city = query_params.get("city")
     sector = query_params.get("sector")
-    ward = query_params.get("ward")
 
     complaints = get_all_complaints(city=city)
 
     if sector and sector != "All Sectors":
         complaints = [c for c in complaints if c.get("category") == sector]
-    if ward and ward != "All Wards":
-        complaints = [c for c in complaints if ward.lower() in str(c.get("location", "")).lower()]
 
     return JSONResponse(complaints)
 
@@ -210,8 +207,7 @@ async def submit_complaint_api(request):
     form = await request.form()
     category = form.get("category", "General Municipal / Other Infrastructure")
     description = form.get("description", "")
-    ward = form.get("ward", "Central Ward")
-    address = form.get("address", "") or ward
+    address = form.get("address", "")
     user_id = form.get("user_id", "Citizen")
     phone = str(form.get("phone", "")).strip()
     if phone:
@@ -268,7 +264,7 @@ async def submit_complaint_api(request):
 
     curr_node = get_brics_node(active_node_state["id"])
     loc_data = {
-        "address": f"{address}, {ward}",
+        "address": address,
         "latitude": lat,
         "longitude": lon,
         "city": curr_node.get("country", "India")
@@ -368,8 +364,7 @@ async def test_send_sms_api(request):
 async def get_demands_api(request):
     """Returns community demands filtered by active country code."""
     c_code = request.query_params.get("country_code", active_node_state["code"])
-    ward = request.query_params.get("ward")
-    demands = get_all_demands(country_code=c_code, ward=ward)
+    demands = get_all_demands(country_code=c_code)
     return JSONResponse(demands)
 
 async def submit_demand_api(request):
@@ -378,7 +373,7 @@ async def submit_demand_api(request):
     c_code = data.get("country_code", active_node_state["code"])
     new_demand = save_demand(
         country_code=c_code,
-        ward=data.get("ward", "All Wards"),
+        address=data.get("address", ""),
         sector=data.get("sector", "Roads, Bridges & Arterial Corridors"),
         title=data.get("title", ""),
         description=data.get("description", ""),

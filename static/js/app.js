@@ -505,7 +505,7 @@ async function loadBRICSContext() {
     }
 
     updateHeaderBanner();
-    populateWardSelectors();
+    // populateWardSelectors removed
   } catch (err) {
     console.error('Error loading BRICS nodes:', err);
   }
@@ -523,7 +523,7 @@ async function switchBRICSNode(code, silent = false) {
     AppState.activeCode = data.code;
     localStorage.setItem('civicpulse_active_node', data.code);
     updateHeaderBanner();
-    populateWardSelectors();
+    // populateWardSelectors removed
 
     // Refresh citizen and government views for the new nation
     if (window.renderSectorCards) window.renderSectorCards();
@@ -600,20 +600,7 @@ function updateHeaderBanner() {
   }
 }
 
-function populateWardSelectors() {
-  const wards = AppState.activeNode?.wards || [];
-  const complaintWardSelect = document.getElementById('complaint-ward-select');
-  const modalDemandWard = document.getElementById('modal-demand-ward');
-  const demandFilterWard = document.getElementById('demand-filter-ward');
-
-  const optionsHtml = wards.map(w => `<option value="${w.name}">${w.name}</option>`).join('');
-
-  if (complaintWardSelect) complaintWardSelect.innerHTML = optionsHtml;
-  if (modalDemandWard) modalDemandWard.innerHTML = optionsHtml;
-  if (demandFilterWard) {
-    demandFilterWard.innerHTML = '<option value="All Wards">All Sub-Districts / Wards</option>' + optionsHtml;
-  }
-}
+// populateWardSelectors removed
 
 function openNodeSwitcherModal() {
   // Disabled post-login: node cannot be changed after login

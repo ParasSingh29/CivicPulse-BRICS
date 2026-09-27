@@ -150,7 +150,6 @@ function setupCitizenEvents() {
       const formData = new FormData();
       formData.append('category', document.getElementById('selected-category-input').value);
       formData.append('description', document.getElementById('complaint-desc-input').value);
-      formData.append('ward', document.getElementById('complaint-ward-select')?.value || 'Central Ward');
       
       const detailedAddr = document.getElementById('complaint-address-input')?.value.trim() || '';
       const autoGpsAddr = document.getElementById('complaint-gps-address')?.value.trim() || '';
@@ -238,7 +237,7 @@ function setupCitizenEvents() {
       const payload = {
         title: document.getElementById('modal-demand-title').value,
         sector: document.getElementById('modal-demand-sector').value,
-        ward: document.getElementById('modal-demand-ward').value,
+        address: document.getElementById('modal-demand-address').value,
         estimated_budget: document.getElementById('modal-demand-budget').value || '₹500 Cr',
         beneficiaries: document.getElementById('modal-demand-beneficiaries').value || '100,000 residents',
         description: document.getElementById('modal-demand-desc').value,
@@ -265,10 +264,8 @@ function setupCitizenEvents() {
 
   // Search & Filter Demands
   const demandSearchInput = document.getElementById('demand-search-input');
-  const demandFilterWard = document.getElementById('demand-filter-ward');
 
   if (demandSearchInput) demandSearchInput.addEventListener('input', filterDemands);
-  if (demandFilterWard) demandFilterWard.addEventListener('change', filterDemands);
 
   // Search Complaints
   const trackSearchInput = document.getElementById('track-search-input');
@@ -330,7 +327,7 @@ function renderDemands(demandsList) {
         </div>
 
         <div class="demand-meta">
-          <span>${window.AppIcons.map_pin} <b>${d.ward}</b></span>
+          <span>${window.AppIcons.map_pin} <b>${d.address || d.ward}</b></span>
           <span>${window.AppIcons.tag} <b>${d.sector}</b></span>
           <span>${window.AppIcons.coins} ${estCostLabel}: <b>${d.estimated_budget}</b></span>
           <span>${window.AppIcons.users} ${beneficiariesLabel}: <b>${d.beneficiaries}</b></span>
@@ -382,17 +379,13 @@ window.handleUpvote = async function(demandId) {
 
 function filterDemands() {
   const query = (document.getElementById('demand-search-input')?.value || '').toLowerCase().trim();
-  const selectedWard = document.getElementById('demand-filter-ward')?.value || 'All Wards';
 
   let filtered = AppState.demands;
-  if (selectedWard !== 'All Wards') {
-    filtered = filtered.filter(d => d.ward.toLowerCase().includes(selectedWard.toLowerCase()));
-  }
   if (query) {
     filtered = filtered.filter(d => 
       d.title.toLowerCase().includes(query) ||
       d.description.toLowerCase().includes(query) ||
-      d.ward.toLowerCase().includes(query) ||
+      (d.address || d.ward || '').toLowerCase().includes(query) ||
       d.sector.toLowerCase().includes(query)
     );
   }
@@ -788,7 +781,6 @@ async function applyCoordinates(lat, lon, accuracy = 15, source = 'GPS Satellite
     const geo = await res.json();
 
     const addr = (geo && geo.status === 'ok' && geo.address) ? geo.address : `Near Coordinates: ${lat.toFixed(4)}, ${lon.toFixed(4)}`;
-    const ward = (geo && geo.status === 'ok' && geo.ward) ? geo.ward : '';
 
     const gpsAddressInput = document.getElementById('complaint-gps-address');
 
@@ -807,7 +799,7 @@ async function applyCoordinates(lat, lon, accuracy = 15, source = 'GPS Satellite
     // Show detected GPS badge chip
     if (locChip && locChipText) {
       locChip.style.display = 'inline-flex';
-      locChipText.innerHTML = `📍 <b>${source}:</b> ${lat.toFixed(4)}°, ${lon.toFixed(4)}° (±${Math.round(accuracy)}m)${ward ? ' • ' + ward : ''}`;
+      locChipText.innerHTML = `📍 <b>${source}:</b> ${lat.toFixed(4)}°, ${lon.toFixed(4)}° (±${Math.round(accuracy)}m)`;
     }
 
     if (locBtnLabel) locBtnLabel.textContent = 'Location Set ✓';
@@ -1415,7 +1407,7 @@ window.setupAICitizenAgent = function() {
     } else if (session.step === 2) {
       appendBotMessage(`
         <div style="font-weight:700; color:#a78bfa; margin-bottom:6px;">Description Recorded!</div>
-        <b>Step 3:</b> What is the location or ward address of the issue?<br>
+        <b>Step 3:</b> What is the location or address of the issue?<br>
         You can type the address below, auto-detect GPS, and optionally attach a photo:
         <div style="display:flex; gap:10px; margin-top:10px; flex-wrap:wrap;">
           <button id="btn-chat-gps" style="padding:8px 16px; border-radius:20px; background:#06b6d4; color:#fff; border:none; font-size:0.84rem; cursor:pointer; font-weight:600; display:inline-flex; align-items:center; gap:6px;">
@@ -1484,7 +1476,7 @@ window.setupAICitizenAgent = function() {
       formData.append('category', session.category || 'Roads, Bridges & Arterial Corridors');
       formData.append('description', session.description || 'Grievance reported via AI Citizen Assistant.');
       formData.append('address', session.address || 'Outer Circle, Connaught Place, New Delhi');
-      formData.append('ward', session.ward || 'Ward 04 - Connaught Place / Central');
+      // ward removed
       if (session.photoFile) {
         formData.append('photo', session.photoFile);
       }
@@ -1500,7 +1492,7 @@ window.setupAICitizenAgent = function() {
           <div style="font-weight:700; color:#10b981; font-size:1.05rem; margin-bottom:6px;">🎉 Ticket Successfully Registered!</div>
           <b>Ticket ID:</b> <span style="color:#38bdf8; font-weight:700;">#CP-${result.id}</span><br>
           <b>Category:</b> ${escapeHtml(session.category)}<br>
-          <b>Ward:</b> ${escapeHtml(session.ward)}<br>
+          <b>Address:</b> ${escapeHtml(session.address)}<br>
           <b>Gemini Severity Score:</b> <span style="color:#f59e0b; font-weight:700;">8.5 / 10.0 (High Priority)</span><br>
           <b>Assigned Team:</b> Junior Engineering Line Team #04<br><br>
           <a href="#" onclick="window.switchTab('cit-tab-track'); return false;" style="color:#10b981; font-weight:700; text-decoration:underline;">🔍 Track Live Status on My Reports Tab</a>
@@ -1542,12 +1534,11 @@ window.setupAICitizenAgent = function() {
       try {
         const res = await fetch('/api/geocode/reverse?lat=28.6315&lon=77.2167');
         const data = await res.json();
-        const addressStr = `${data.address} (${data.ward})`;
+        const addressStr = `${data.address}`;
         gpsBtn.textContent = `📍 Location: ${data.address}`;
-        session.ward = data.ward;
         handleUserInput(addressStr);
       } catch (err) {
-        handleUserInput('Outer Circle, Connaught Place, New Delhi (Ward 04)');
+        handleUserInput('Outer Circle, Connaught Place, New Delhi');
       }
       return;
     }

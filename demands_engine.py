@@ -4,8 +4,8 @@ from datetime import datetime
 
 DEMANDS_FILE = "demands.json"
 
-def get_all_demands(country_code=None, ward=None):
-    """Retrieves all community demands from demands.json, optionally filtered by country and ward."""
+def get_all_demands(country_code=None):
+    """Retrieves all community demands from demands.json, optionally filtered by country."""
     if not os.path.exists(DEMANDS_FILE):
         return []
     try:
@@ -18,15 +18,11 @@ def get_all_demands(country_code=None, ward=None):
         c_clean = str(country_code).upper().strip()
         demands = [d for d in demands if d.get("country_code", "").upper() == c_clean]
 
-    if ward and ward != "All Wards":
-        w_clean = str(ward).strip().lower()
-        demands = [d for d in demands if w_clean in d.get("ward", "").lower()]
-
     # Default sort by upvotes descending
     demands.sort(key=lambda x: x.get("upvotes", 0), reverse=True)
     return demands
 
-def save_demand(country_code, ward, sector, title, description, estimated_budget="", beneficiaries="", author="Citizen Council"):
+def save_demand(country_code, address, sector, title, description, estimated_budget="", beneficiaries="", author="Citizen Council"):
     """Saves a new community demand proposal and replicates to Firebase Firestore."""
     demands = get_all_demands()
     new_id = f"DEM-{country_code.upper()}-{datetime.now().strftime('%Y%m%d%H%M%S')}"
@@ -34,7 +30,7 @@ def save_demand(country_code, ward, sector, title, description, estimated_budget
     new_demand = {
         "id": new_id,
         "country_code": str(country_code).upper(),
-        "ward": str(ward),
+        "address": str(address),
         "sector": str(sector),
         "title": str(title),
         "description": str(description),

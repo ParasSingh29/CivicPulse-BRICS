@@ -456,9 +456,7 @@
       <!-- Filter and Search Bar -->
       <div style="display:flex; gap:12px; margin-bottom:20px; flex-wrap:wrap;">
         <input type="text" class="form-control" id="demand-search-input" placeholder="Search projects by title, neighborhood, or keyword..." data-i18n-placeholder="ph_search_demands" style="flex:2; min-width:240px;">
-        <select class="form-control" id="demand-filter-ward" style="flex:1; min-width:180px;">
-          <option value="All Wards" data-i18n="opt_all_wards">All Neighborhoods / Wards</option>
-        </select>
+        <!-- Ward filter removed as requested -->
       </div>
 
       <!-- Demands Grid -->
@@ -863,19 +861,31 @@
           <input type="text" class="form-control" id="modal-demand-title" placeholder="e.g. New Park and Solar Lighting in Sector 4" data-i18n-placeholder="ph_project_title" required>
         </div>
 
-        <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px;">
-          <div class="form-group">
-            <label class="form-label" data-i18n="lbl_category">Category *</label>
-            <select class="form-control" id="modal-demand-sector">
-              <!-- Populated by JS -->
-            </select>
+        <div class="form-group">
+          <label class="form-label" data-i18n="lbl_category">Category *</label>
+          <select class="form-control" id="modal-demand-sector">
+            <!-- Populated by JS -->
+          </select>
+        </div>
+
+        <div class="form-group">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+            <label class="form-label" style="margin-bottom:0;" data-i18n="lbl_auto_gps_location">Auto-Detected GPS Location</label>
+            <div style="display:flex; gap:8px; align-items:center;">
+              <button type="button" class="btn-location-detect" id="btn-demand-use-current-location" title="Detect GPS coordinates and fill address">
+                <svg class="svg-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polygon points="3 11 22 2 13 21 11 13 3 11"/>
+                </svg>
+                <span id="demand-loc-btn-label" data-i18n="btn_use_current_location">Use Current Location</span>
+              </button>
+            </div>
           </div>
-          <div class="form-group">
-            <label class="form-label" data-i18n="lbl_neighborhood_ward">Neighborhood / Ward *</label>
-            <select class="form-control" id="modal-demand-ward">
-              <!-- Populated by JS -->
-            </select>
-          </div>
+          <input type="text" class="form-control" id="modal-demand-gps-address" placeholder="Click 'Use Current Location'..." readonly style="background:rgba(255,255,255,0.03); color:var(--text-secondary);">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" style="margin-bottom:6px;" data-i18n="lbl_detailed_address">Detailed Address & Landmark *</label>
+          <input type="text" class="form-control" id="modal-demand-address" placeholder="e.g. House/Flat No. 42, Block B, Street 5, Near Metro Gate 2" data-i18n-placeholder="ph_detailed_address" required style="min-height:46px;">
         </div>
 
         <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px;">
