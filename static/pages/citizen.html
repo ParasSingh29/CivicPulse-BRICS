@@ -272,48 +272,9 @@
 
 
       <!-- ====================================================================
-           SECTION: BRICS SOVEREIGN NATIONS TELEMETRY MATRIX (ALL COUNTRIES DATA TABLE)
-           ==================================================================== -->
-      <section class="card" style="margin-bottom:32px; margin-top:24px;">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:10px;">
-          <div>
-            <h3 style="font-size:1.2rem; font-weight:700; margin:0 0 4px 0; color:var(--text-primary);">
-              🌐 BRICS+ Sovereign Nations Telemetry Matrix
-            </h3>
-            <p style="font-size:0.85rem; color:var(--text-muted); margin:0;">
-              Real-time problem tracking, resolution health index, and active municipal officers across all 11 BRICS member states.
-            </p>
-          </div>
-          <span class="nav-badge" style="background:rgba(37,99,235,0.12); color:#60a5fa; border:1px solid rgba(37,99,235,0.3);">
-            11 Sovereign Nodes Live
-          </span>
-        </div>
-
-        <div style="overflow-x:auto;">
-          <table class="table" style="width:100%; border-collapse:collapse;">
-            <thead>
-              <tr style="border-bottom:2px solid var(--border-color); text-align:left; font-size:0.82rem; color:var(--text-muted);">
-                <th style="padding:12px;">Country / Sovereign Node</th>
-                <th style="padding:12px;">Primary Hub City</th>
-                <th style="padding:12px; text-align:center;">Total Problems</th>
-                <th style="padding:12px; text-align:center; color:#ef4444;">🔴 Red Critical</th>
-                <th style="padding:12px; text-align:center; color:#f59e0b;">🟡 Yellow In Progress</th>
-                <th style="padding:12px; text-align:center; color:#10b981;">🟢 Green Resolved</th>
-                <th style="padding:12px; text-align:center;">Health Index</th>
-                <th style="padding:12px; text-align:right;">Actions</th>
-              </tr>
-            </thead>
-            <tbody id="cit-country-telemetry-body">
-              <!-- Dynamically populated by GlobalProblemMapSystem -->
-            </tbody>
-          </table>
-        </div>
-      </section>
-
-      <!-- ====================================================================
            SECTION: GLOBAL PROBLEMS MAP & FILTERABLE DATA MATRIX
            ==================================================================== -->
-      <section class="card problem-map-table-section" style="margin-bottom:36px;">
+      <section class="card problem-map-table-section" style="margin-bottom:32px; margin-top:28px;">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:18px; flex-wrap:wrap; gap:12px;">
           <div>
             <h3 style="font-size:1.2rem; font-weight:700; margin:0 0 4px 0; color:var(--text-primary);">
@@ -381,6 +342,45 @@
               </tbody>
             </table>
           </div>
+        </div>
+      </section>
+
+      <!-- ====================================================================
+           SECTION: BRICS SOVEREIGN NATIONS TELEMETRY MATRIX (ALL COUNTRIES DATA TABLE)
+           ==================================================================== -->
+      <section class="card" style="margin-bottom:36px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:10px;">
+          <div>
+            <h3 style="font-size:1.2rem; font-weight:700; margin:0 0 4px 0; color:var(--text-primary);">
+              🌐 BRICS+ Sovereign Nations Telemetry Matrix
+            </h3>
+            <p style="font-size:0.85rem; color:var(--text-muted); margin:0;">
+              Real-time problem tracking, resolution health index, and active municipal officers across all 11 BRICS member states.
+            </p>
+          </div>
+          <span class="nav-badge" style="background:rgba(37,99,235,0.12); color:#60a5fa; border:1px solid rgba(37,99,235,0.3);">
+            11 Sovereign Nodes Live
+          </span>
+        </div>
+
+        <div style="overflow-x:auto;">
+          <table class="table" style="width:100%; border-collapse:collapse;">
+            <thead>
+              <tr style="border-bottom:2px solid var(--border-color); text-align:left; font-size:0.82rem; color:var(--text-muted);">
+                <th style="padding:12px;">Country / Sovereign Node</th>
+                <th style="padding:12px;">Primary Hub City</th>
+                <th style="padding:12px; text-align:center;">Total Problems</th>
+                <th style="padding:12px; text-align:center; color:#ef4444;">🔴 Red Critical</th>
+                <th style="padding:12px; text-align:center; color:#f59e0b;">🟡 Yellow In Progress</th>
+                <th style="padding:12px; text-align:center; color:#10b981;">🟢 Green Resolved</th>
+                <th style="padding:12px; text-align:center;">Health Index</th>
+                <th style="padding:12px; text-align:right;">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="cit-country-telemetry-body">
+              <!-- Dynamically populated by GlobalProblemMapSystem -->
+            </tbody>
+          </table>
         </div>
       </section>
 
