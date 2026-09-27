@@ -869,7 +869,11 @@ function initModalPinMap(lat, lon) {
     modalPinMap = L.map(container, {
       center: [lat, lon],
       zoom: 15,
-      zoomControl: true
+      zoomControl: true,
+      scrollWheelZoom: true,
+      touchZoom: true,
+      doubleClickZoom: true,
+      boxZoom: true
     });
 
     // OpenStreetMap Standard tiles — colorful, free, no API key required

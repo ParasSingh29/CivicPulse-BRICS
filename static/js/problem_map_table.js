@@ -44,10 +44,13 @@ window.GlobalProblemMapSystem = {
       delete this.instances[mapId];
     }
 
-    // Default center (New Delhi / BRICS overview)
+    // Default center (New Delhi / BRICS overview) with full standard scroll wheel & touch zoom enabled
     const map = L.map(mapId, {
       zoomControl: true,
-      scrollWheelZoom: false
+      scrollWheelZoom: true,
+      touchZoom: true,
+      doubleClickZoom: true,
+      boxZoom: true
     }).setView([20.0, 45.0], 3);
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -62,6 +65,7 @@ window.GlobalProblemMapSystem = {
       map,
       heatGroup,
       markersGroup,
+      rawHeatLayer: null,
       markersMap: {},
       config
     };
@@ -226,46 +230,69 @@ window.GlobalProblemMapSystem = {
       counterBadge.textContent = `${showTxt} ${filtered.length} ${ofTxt} ${this.complaintsData.length} ${probTxt}`;
     }
 
-    // Clear map layers
+    // Clear existing markers & heat layers
     markersGroup.clearLayers();
     heatGroup.clearLayers();
+    if (instance.rawHeatLayer) {
+      try { map.removeLayer(instance.rawHeatLayer); } catch(e) {}
+      instance.rawHeatLayer = null;
+    }
     instance.markersMap = {};
 
     const bounds = [];
 
-    // Render Heatmap Layer if requested (mode is 'heat' or 'both')
+    // Render Heatmap Density Visualization if requested (mode is 'heat' or 'both')
     if (mapMode === 'heat' || mapMode === 'both') {
-      if (window.L && L.heatLayer) {
-        const heatPoints = filtered.map(c => {
-          const st = c.status.toLowerCase();
-          let weight = 0.5;
-          if (st.includes('pending') || st.includes('critical')) weight = 1.0;
-          else if (st.includes('progress') || st.includes('dispatch')) weight = 0.65;
-          else if (st.includes('resolved') || st.includes('fixed')) weight = 0.3;
-          return [c.lat, c.lon, weight];
-        });
-        L.heatLayer(heatPoints, {
-          radius: 28,
-          blur: 16,
-          maxZoom: 15,
-          gradient: { 0.2: '#3b82f6', 0.5: '#10b981', 0.8: '#f59e0b', 1.0: '#ef4444' }
-        }).addTo(heatGroup);
-      } else {
-        // Fallback Heat Circles if Leaflet.heat script is loading or offline
-        filtered.forEach(c => {
-          const st = c.status.toLowerCase();
-          let heatColor = '#ef4444';
-          if (st.includes('progress') || st.includes('dispatch')) heatColor = '#f59e0b';
-          else if (st.includes('resolved') || st.includes('fixed')) heatColor = '#10b981';
+      const heatPoints = filtered.map(c => {
+        const st = c.status.toLowerCase();
+        let weight = 0.5;
+        if (st.includes('pending') || st.includes('critical')) weight = 1.0;
+        else if (st.includes('progress') || st.includes('dispatch')) weight = 0.7;
+        else if (st.includes('resolved') || st.includes('fixed')) weight = 0.4;
+        return [c.lat, c.lon, weight];
+      });
 
-          L.circleMarker([c.lat, c.lon], {
-            radius: 24,
-            fillColor: heatColor,
-            fillOpacity: 0.35,
-            stroke: false
-          }).addTo(heatGroup);
-        });
+      // 1. Native Leaflet.heat layer directly attached to map
+      if (window.L && typeof L.heatLayer === 'function' && heatPoints.length > 0) {
+        try {
+          instance.rawHeatLayer = L.heatLayer(heatPoints, {
+            radius: 38,
+            blur: 22,
+            maxZoom: 15,
+            max: 1.0,
+            minOpacity: 0.45,
+            gradient: { 0.2: '#2563eb', 0.5: '#10b981', 0.8: '#f59e0b', 1.0: '#ef4444' }
+          }).addTo(map);
+        } catch(e) {
+          console.warn('L.heatLayer render fallback:', e);
+        }
       }
+
+      // 2. Translucent glowing radial heat intensity circles for guaranteed high visibility at all zoom scales
+      filtered.forEach(c => {
+        const st = c.status.toLowerCase();
+        let heatColor = '#ef4444'; // Pending Red Heat
+        if (st.includes('progress') || st.includes('dispatch')) heatColor = '#f59e0b'; // Progress Yellow
+        else if (st.includes('resolved') || st.includes('fixed')) heatColor = '#10b981'; // Resolved Green
+
+        // Outer glow aura
+        L.circleMarker([c.lat, c.lon], {
+          radius: 28,
+          fillColor: heatColor,
+          fillOpacity: 0.35,
+          stroke: false
+        }).addTo(heatGroup);
+
+        // Core heat pulse
+        L.circleMarker([c.lat, c.lon], {
+          radius: 12,
+          fillColor: heatColor,
+          fillOpacity: 0.75,
+          stroke: true,
+          color: '#ffffff',
+          weight: 1.5
+        }).addTo(heatGroup);
+      });
     }
 
     // Render Pin Markers if requested (mode is 'pin' or 'both')
@@ -278,7 +305,7 @@ window.GlobalProblemMapSystem = {
 
         const customIcon = L.divIcon({
           className: 'custom-map-pin',
-          html: `<div style="background-color:${markerColor}; width:14px; height:14px; border-radius:50%; border:2px solid #fff; box-shadow:0 0 8px ${markerColor};"></div>`,
+          html: `<div style="background-color:${markerColor}; width:14px; height:14px; border-radius:50%; border:2px solid #fff; box-shadow:0 0 10px ${markerColor};"></div>`,
           iconSize: [14, 14],
           iconAnchor: [7, 7]
         });

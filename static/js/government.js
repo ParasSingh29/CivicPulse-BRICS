@@ -559,7 +559,11 @@ function initOrUpdateMap() {
     govMap = L.map('map', {
       center: [defaultLat, defaultLon],
       zoom: 12,
-      zoomControl: true
+      zoomControl: true,
+      scrollWheelZoom: true,
+      touchZoom: true,
+      doubleClickZoom: true,
+      boxZoom: true
     });
 
     // Sleek Map Tiles
