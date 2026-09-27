@@ -1535,12 +1535,7 @@ select.form-control option {
 }
 
 .login-node-bar {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  flex-wrap: wrap;
-  margin-top: 14px;
+  display: none !important;
 }
 
 .portal-grid {
@@ -3061,11 +3056,7 @@ select.form-control option {
 }
 
 .login-node-bar {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-  justify-content: center;
-  flex-wrap: wrap;
+  display: none !important;
 }
 
 .portal-grid {
