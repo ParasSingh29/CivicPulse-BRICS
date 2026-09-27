@@ -178,7 +178,7 @@ function setupCitizenEvents() {
         complaintForm.reset();
         delete complaintForm.dataset.lat;
         delete complaintForm.dataset.lon;
-        const locChip = document.getElementById('location-detected-chip') || document.getElementById('demand-location-detected-chip');
+        const locChip = activeModal ? activeModal.querySelector('#location-detected-chip, #demand-location-detected-chip') : document.getElementById('location-detected-chip');
         if (locChip) locChip.style.display = 'none';
         if (incidentModal) incidentModal.classList.remove('active');
         await window.loadComplaints();
@@ -746,7 +746,7 @@ function destroyModalPinMap() {
     modalPinMap.remove();
     modalPinMap = null;
     modalPinMarker = null;
-    const container = document.querySelector('.modal-box:not([style*="display: none"]) #modal-pin-map') || document.querySelector('.modal-box:not([style*="display: none"]) #demand-modal-pin-map') || document.getElementById('modal-pin-map');
+    const container = document.querySelector('.modal-overlay.active #modal-pin-map') || document.querySelector('.modal-overlay.active #demand-modal-pin-map') || document.getElementById('modal-pin-map');
     if (container) container.innerHTML = '';
   }
 }
@@ -754,13 +754,14 @@ window.destroyModalPinMap = destroyModalPinMap;
 
 // Core Helper: Apply reverse geocoded coordinates to form & interactive pin map
 async function applyCoordinates(lat, lon, accuracy = 15, source = 'GPS Satellite Fix') {
-  const addressInput = document.getElementById('complaint-address-input') || document.getElementById('modal-demand-address');
-  const wardSelect = document.getElementById('complaint-ward-select') || document.getElementById('modal-demand-ward');
-  const locChip = document.getElementById('location-detected-chip') || document.getElementById('demand-location-detected-chip');
-  const locChipText = document.getElementById('location-chip-text') || document.getElementById('demand-location-chip-text');
-  const locBtnLabel = document.getElementById('loc-btn-label') || document.getElementById('demand-loc-btn-label');
-  const complaintForm = document.getElementById('complaint-form') || document.getElementById('propose-demand-form');
-  const btnUseLocation = document.getElementById('btn-use-current-location') || document.getElementById('btn-demand-use-current-location');
+  const activeModal = document.querySelector('.modal-overlay.active');
+  const addressInput = activeModal ? activeModal.querySelector('#complaint-address-input, #modal-demand-address') : document.getElementById('complaint-address-input');
+  const wardSelect = activeModal ? activeModal.querySelector('#complaint-ward-select, #modal-demand-ward') : document.getElementById('complaint-ward-select');
+  const locChip = activeModal ? activeModal.querySelector('#location-detected-chip, #demand-location-detected-chip') : document.getElementById('location-detected-chip');
+  const locChipText = activeModal ? activeModal.querySelector('#location-chip-text, #demand-location-chip-text') : document.getElementById('location-chip-text');
+  const locBtnLabel = activeModal ? activeModal.querySelector('#loc-btn-label, #demand-loc-btn-label') : document.getElementById('loc-btn-label');
+  const complaintForm = activeModal ? activeModal.querySelector('#complaint-form, #propose-demand-form') : document.getElementById('complaint-form');
+  const btnUseLocation = activeModal ? activeModal.querySelector('#btn-use-current-location, #btn-demand-use-current-location') : document.getElementById('btn-use-current-location');
 
   try {
     if (complaintForm) {
@@ -782,7 +783,7 @@ async function applyCoordinates(lat, lon, accuracy = 15, source = 'GPS Satellite
 
     const addr = (geo && geo.status === 'ok' && geo.address) ? geo.address : `Near Coordinates: ${lat.toFixed(4)}, ${lon.toFixed(4)}`;
 
-    const gpsAddressInput = document.getElementById('complaint-gps-address') || document.getElementById('modal-demand-gps-address');
+    const gpsAddressInput = activeModal ? activeModal.querySelector('#complaint-gps-address, #modal-demand-gps-address') : document.getElementById('complaint-gps-address');
 
     if (gpsAddressInput) {
       gpsAddressInput.value = addr;
@@ -813,7 +814,7 @@ async function applyCoordinates(lat, lon, accuracy = 15, source = 'GPS Satellite
     if (window.showToast) window.showToast(`📍 Location acquired: ${addr}`, 'success');
   } catch (err) {
     console.warn('Reverse geocode error:', err);
-    const gpsAddressInput = document.getElementById('complaint-gps-address') || document.getElementById('modal-demand-gps-address');
+    const gpsAddressInput = activeModal ? activeModal.querySelector('#complaint-gps-address, #modal-demand-gps-address') : document.getElementById('complaint-gps-address');
     if (gpsAddressInput && !gpsAddressInput.value.trim()) {
       gpsAddressInput.value = `GPS: ${lat.toFixed(4)}, ${lon.toFixed(4)}`;
       gpsAddressInput.dataset.autoFilled = 'true';
@@ -838,7 +839,7 @@ window.applyCoordinates = applyCoordinates;
 
 // Initialize Leaflet map for pinning defect location
 function initModalPinMap(lat, lon) {
-  const container = document.querySelector('.modal-box:not([style*="display: none"]) #modal-pin-map') || document.querySelector('.modal-box:not([style*="display: none"]) #demand-modal-pin-map') || document.getElementById('modal-pin-map');
+  const container = document.querySelector('.modal-overlay.active #modal-pin-map') || document.querySelector('.modal-overlay.active #demand-modal-pin-map') || document.getElementById('modal-pin-map');
   if (!container || typeof L === 'undefined') return;
 
   const hint = document.getElementById('map-pin-coords-hint');
@@ -898,9 +899,9 @@ window.initModalPinMap = initModalPinMap;
 
 // Toggle map container visibility
 function toggleModalPinMap() {
-  const mapWrap = document.querySelector('.modal-box:not([style*="display: none"]) #modal-location-map-wrap') || document.querySelector('.modal-box:not([style*="display: none"]) #demand-modal-location-map-wrap') || document.getElementById('modal-location-map-wrap');
-  const btnTogglePinMap = document.querySelector('.modal-box:not([style*="display: none"]) #btn-toggle-pin-map') || document.querySelector('.modal-box:not([style*="display: none"]) #btn-demand-toggle-pin-map') || document.getElementById('btn-toggle-pin-map');
-  const pinBtnLabel = document.querySelector('.modal-box:not([style*="display: none"]) #pin-map-btn-label') || document.querySelector('.modal-box:not([style*="display: none"]) #demand-pin-map-btn-label') || document.getElementById('pin-map-btn-label');
+  const mapWrap = document.querySelector('.modal-overlay.active #modal-location-map-wrap') || document.querySelector('.modal-overlay.active #demand-modal-location-map-wrap') || document.getElementById('modal-location-map-wrap');
+  const btnTogglePinMap = document.querySelector('.modal-overlay.active #btn-toggle-pin-map') || document.querySelector('.modal-overlay.active #btn-demand-toggle-pin-map') || document.getElementById('btn-toggle-pin-map');
+  const pinBtnLabel = document.querySelector('.modal-overlay.active #pin-map-btn-label') || document.querySelector('.modal-overlay.active #demand-pin-map-btn-label') || document.getElementById('pin-map-btn-label');
   if (!mapWrap) return;
 
   const isHidden = mapWrap.style.display === 'none' || !mapWrap.style.display;
@@ -930,8 +931,9 @@ window.toggleModalPinMap = toggleModalPinMap;
 
 // Core Function: Detect Location (Real GPS or Urban Center Reverse Geocoding)
 async function triggerLocationDetection() {
-  const btnUseLocation = document.getElementById('btn-use-current-location') || document.getElementById('btn-demand-use-current-location');
-  const locBtnLabel = document.getElementById('loc-btn-label') || document.getElementById('demand-loc-btn-label');
+  const activeModal = document.querySelector('.modal-overlay.active');
+  const btnUseLocation = activeModal ? activeModal.querySelector('#btn-use-current-location, #btn-demand-use-current-location') : document.getElementById('btn-use-current-location');
+  const locBtnLabel = activeModal ? activeModal.querySelector('#loc-btn-label, #demand-loc-btn-label') : document.getElementById('loc-btn-label');
 
   if (btnUseLocation) {
     btnUseLocation.classList.add('loading');
@@ -991,9 +993,9 @@ async function triggerLocationDetection() {
 // Clear GPS location data
 function clearLocationData() {
   const complaintForm = document.getElementById('complaint-form') || document.getElementById('propose-demand-form');
-  const gpsAddressInput = document.getElementById('complaint-gps-address') || document.getElementById('modal-demand-gps-address');
+  const gpsAddressInput = activeModal ? activeModal.querySelector('#complaint-gps-address, #modal-demand-gps-address') : document.getElementById('complaint-gps-address');
   const addressInput = document.getElementById('complaint-address-input') || document.getElementById('modal-demand-address');
-  const locChip = document.getElementById('location-detected-chip') || document.getElementById('demand-location-detected-chip');
+  const locChip = activeModal ? activeModal.querySelector('#location-detected-chip, #demand-location-detected-chip') : document.getElementById('location-detected-chip');
 
   if (complaintForm) {
     delete complaintForm.dataset.lat;
@@ -1257,7 +1259,7 @@ document.addEventListener('click', (e) => {
   }
 
   // 1. Click "Use Current Location" button
-  const locBtn = e.target.closest('#btn-use-current-location');
+  const locBtn = e.target.closest('#btn-use-current-location, #btn-demand-use-current-location');
   if (locBtn) {
     e.preventDefault();
     e.stopPropagation();
@@ -1266,7 +1268,7 @@ document.addEventListener('click', (e) => {
   }
 
   // 2. Click "Clear GPS" button on chip
-  const clearGpsBtn = e.target.closest('#btn-clear-gps');
+  const clearGpsBtn = e.target.closest('#btn-clear-gps, #btn-demand-clear-gps');
   if (clearGpsBtn) {
     e.preventDefault();
     e.stopPropagation();
@@ -1597,3 +1599,5 @@ window.handleNotifyMe = function() {
     window.showToast('Subscribed! We will notify you when WhatsApp & Telegram bots go live.', 'success');
   }
 };
+
+
