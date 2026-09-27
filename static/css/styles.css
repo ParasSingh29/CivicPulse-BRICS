@@ -4203,5 +4203,26 @@ h1, h2, h3, .hero-title, .nav-title {
   font-variant-numeric: tabular-nums;
 }
 
+/* ==========================================================================
+   REMOVE ALL SMALL HEADER BADGES / POPUPS ACROSS THE WEBSITE
+   ========================================================================== */
+.nav-badge,
+.submodule-context-badge,
+.launch-card-badge,
+.gov-ticker-badge,
+.home-welcome-badge,
+[data-i18n="badge_open_standard"],
+[data-i18n="badge_cloud_connected"],
+[data-i18n="badge_live_data"] {
+  display: none !important;
+}
+
+/* Maintain essential table/map counter badges */
+#cit-map-counter-badge,
+#city-map-counter-badge,
+#central-map-counter-badge {
+  display: inline-flex !important;
+}
+
 
 
