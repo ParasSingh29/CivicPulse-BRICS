@@ -117,34 +117,89 @@
             Report local problems, vote on neighborhood improvements, and track repairs in real time.
           </p>
 
-          <form id="citizen-login-form" class="portal-login-form">
-            <div class="form-group">
-              <label class="form-label" for="citizen-email" data-i18n="lbl_citizen_email">Resident Email or Username *</label>
-              <input type="email" class="form-control" id="citizen-email" value="citizen@delhi.gov.in" placeholder="e.g. resident@delhi.gov.in" data-i18n-placeholder="ph_citizen_email" required>
-            </div>
-            <div class="form-group">
-              <label class="form-label" for="citizen-password" data-i18n="lbl_password">Password *</label>
-              <input type="password" class="form-control" id="citizen-password" value="CivicPulse2026!" required>
-            </div>
-
-            <button type="submit" class="btn-portal-action" id="btn-submit-citizen" style="background:#059669; color:#ffffff; box-shadow:0 4px 16px rgba(5,150,105,0.35); margin-top:4px;">
-              <span data-i18n="btn_sign_in_citizen">Sign In to Citizen Portal</span>
-              <svg class="svg-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          <!-- Mode Switcher Tabs -->
+          <div class="auth-mode-tabs" id="auth-tabs-citizen">
+            <button type="button" class="auth-mode-btn active" id="btn-mode-login-citizen" onclick="window.switchAuthMode('citizen', 'login')">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+              <span>Sign In</span>
             </button>
-
-            <div class="login-divider">
-              <span data-i18n="lbl_or">OR</span>
-            </div>
-
-            <button type="button" class="btn-demo-quick" id="btn-demo-citizen">
-              <svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-              <span data-i18n="btn_demo_citizen">Enter Citizen Portal (1-Click Demo)</span>
+            <button type="button" class="auth-mode-btn" id="btn-mode-reg-citizen" onclick="window.switchAuthMode('citizen', 'register')">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
+              <span>Register Account</span>
             </button>
-          </form>
+          </div>
+
+          <!-- SIGN IN VIEW -->
+          <div id="citizen-login-view" class="auth-view">
+            <form id="citizen-login-form" class="portal-login-form">
+              <div class="form-group">
+                <label class="form-label" for="citizen-email" data-i18n="lbl_citizen_email">Resident Email or Username *</label>
+                <input type="email" class="form-control" id="citizen-email" value="" placeholder="Enter resident email or username" data-i18n-placeholder="ph_citizen_email" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="citizen-password" data-i18n="lbl_password">Password *</label>
+                <input type="password" class="form-control" id="citizen-password" value="" placeholder="Enter password" required>
+              </div>
+
+              <button type="submit" class="btn-portal-action" id="btn-submit-citizen" style="background:#059669; color:#ffffff; box-shadow:0 4px 16px rgba(5,150,105,0.35); margin-top:4px;">
+                <span data-i18n="btn_sign_in_citizen">Sign In to Citizen Portal</span>
+                <svg class="svg-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+              </button>
+
+              <div class="login-divider">
+                <span data-i18n="lbl_or">OR</span>
+              </div>
+
+              <button type="button" class="btn-demo-quick" id="btn-demo-citizen">
+                <svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                <span data-i18n="btn_demo_citizen">Enter Citizen Portal (1-Click Demo)</span>
+              </button>
+            </form>
+          </div>
+
+          <!-- REGISTER VIEW -->
+          <div id="citizen-register-view" class="auth-view" style="display:none;">
+            <form id="citizen-register-form" class="portal-login-form">
+              <div class="form-group">
+                <label class="form-label">Full Name *</label>
+                <input type="text" class="form-control" id="reg-citizen-name" placeholder="e.g. Ananya Patel" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Email Address *</label>
+                <input type="email" class="form-control" id="reg-citizen-email" placeholder="e.g. ananya@example.com" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Phone Number</label>
+                <input type="tel" class="form-control" id="reg-citizen-phone" placeholder="e.g. +91 98765 43210">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Create Password *</label>
+                <input type="password" class="form-control" id="reg-citizen-password" placeholder="At least 6 characters" required minlength="6">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Confirm Password *</label>
+                <input type="password" class="form-control" id="reg-citizen-confirm" placeholder="Re-enter password" required minlength="6">
+              </div>
+
+              <button type="submit" class="btn-portal-action" style="background:#059669; color:#ffffff; box-shadow:0 4px 16px rgba(5,150,105,0.35); margin-top:4px;">
+                <span>Create Account & Sign In</span>
+                <svg class="svg-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+              </button>
+
+              <div class="login-divider">
+                <span data-i18n="lbl_or">OR</span>
+              </div>
+
+              <button type="button" class="btn-demo-quick" id="btn-demo-citizen-reg">
+                <svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                <span data-i18n="btn_demo_citizen">Enter Citizen Portal (1-Click Demo)</span>
+              </button>
+            </form>
+          </div>
         </div>
 
         <!-- BLOCK 2: CITY OFFICIAL PORTAL LOGIN -->
-        <div class="portal-card" style="border-top: 3px solid #10b981;">
+        <div class="portal-card city-card" style="border-top: 3px solid #10b981;">
           <div class="portal-header">
             <div class="portal-icon" style="background:rgba(16,185,129,0.15); color:#10b981; border:1px solid rgba(16,185,129,0.3);">
               <svg class="svg-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -161,30 +216,81 @@
             Review and resolve complaints for your city, synthesize AI structural plans, file reports to Centre, and upvote peer cities.
           </p>
 
-          <form id="city-login-form" class="portal-login-form">
-            <div class="form-group">
-              <label class="form-label" for="city-email" data-i18n="lbl_city_email">Municipal Official Email *</label>
-              <input type="email" class="form-control" id="city-email" value="vikram.sharma@delhi.gov.in" placeholder="e.g. vikram.sharma@delhi.gov.in" required data-i18n-placeholder="ph_city_email">
-            </div>
-            <div class="form-group">
-              <label class="form-label" for="city-password" data-i18n="lbl_password">Password *</label>
-              <input type="password" class="form-control" id="city-password" value="CivicPulse2026!" required>
-            </div>
-
-            <button type="submit" class="btn-portal-action" id="btn-submit-city" style="background:#059669; color:#ffffff; margin-top:4px;">
-              <span data-i18n="btn_sign_in_city">Sign In to City Official Portal</span>
-              <svg class="svg-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          <!-- Mode Switcher Tabs -->
+          <div class="auth-mode-tabs" id="auth-tabs-city">
+            <button type="button" class="auth-mode-btn active" id="btn-mode-login-city" onclick="window.switchAuthMode('city', 'login')">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+              <span>Sign In</span>
             </button>
-
-            <div class="login-divider">
-              <span data-i18n="lbl_or">OR</span>
-            </div>
-
-            <button type="button" class="btn-demo-quick" id="btn-demo-city" style="border-color:rgba(16,185,129,0.3); color:#10b981;">
-              <svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-              <span data-i18n="btn_demo_city">Enter City Official Portal (1-Click Demo)</span>
+            <button type="button" class="auth-mode-btn" id="btn-mode-reg-city" onclick="window.switchAuthMode('city', 'register')">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
+              <span>Register Account</span>
             </button>
-          </form>
+          </div>
+
+          <!-- SIGN IN VIEW -->
+          <div id="city-login-view" class="auth-view">
+            <form id="city-login-form" class="portal-login-form">
+              <div class="form-group">
+                <label class="form-label" for="city-email" data-i18n="lbl_city_email">Municipal Official Email *</label>
+                <input type="email" class="form-control" id="city-email" value="" placeholder="Enter municipal email address" required data-i18n-placeholder="ph_city_email">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="city-password" data-i18n="lbl_password">Password *</label>
+                <input type="password" class="form-control" id="city-password" value="" placeholder="Enter password" required>
+              </div>
+
+              <button type="submit" class="btn-portal-action" id="btn-submit-city" style="background:#059669; color:#ffffff; margin-top:4px;">
+                <span data-i18n="btn_sign_in_city">Sign In to City Official Portal</span>
+                <svg class="svg-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+              </button>
+
+              <div class="login-divider">
+                <span data-i18n="lbl_or">OR</span>
+              </div>
+
+              <button type="button" class="btn-demo-quick" id="btn-demo-city" style="border-color:rgba(16,185,129,0.3); color:#10b981;">
+                <svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                <span data-i18n="btn_demo_city">Enter City Official Portal (1-Click Demo)</span>
+              </button>
+            </form>
+          </div>
+
+          <!-- REGISTER VIEW -->
+          <div id="city-register-view" class="auth-view" style="display:none;">
+            <form id="city-register-form" class="portal-login-form">
+              <div class="form-group">
+                <label class="form-label">Full Official Name *</label>
+                <input type="text" class="form-control" id="reg-city-name" placeholder="e.g. Er. Rajiv Gupta" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Municipal Government Email *</label>
+                <input type="email" class="form-control" id="reg-city-email" placeholder="e.g. rajiv.gupta@delhi.gov.in" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Create Password *</label>
+                <input type="password" class="form-control" id="reg-city-password" placeholder="At least 6 characters" required minlength="6">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Confirm Password *</label>
+                <input type="password" class="form-control" id="reg-city-confirm" placeholder="Re-enter password" required minlength="6">
+              </div>
+
+              <button type="submit" class="btn-portal-action" style="background:#059669; color:#ffffff; margin-top:4px;">
+                <span>Register Official & Sign In</span>
+                <svg class="svg-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+              </button>
+
+              <div class="login-divider">
+                <span data-i18n="lbl_or">OR</span>
+              </div>
+
+              <button type="button" class="btn-demo-quick" id="btn-demo-city-reg" style="border-color:rgba(16,185,129,0.3); color:#10b981;">
+                <svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                <span data-i18n="btn_demo_city">Enter City Official Portal (1-Click Demo)</span>
+              </button>
+            </form>
+          </div>
         </div>
 
         <!-- BLOCK 3: CENTRAL OFFICIAL GOVERNMENT HUB LOGIN -->
@@ -211,24 +317,82 @@
             Supervise assigned city officers and problem health meters, sanction city proposals, synthesize BRICS Joint Ventures, and review partner requests.
           </p>
 
-          <form id="gov-login-form" class="portal-login-form">
-            <div class="form-group">
-              <label class="form-label" for="gov-email" data-i18n="lbl_gov_email">Official Government Email *</label>
-              <input type="email" class="form-control" id="gov-email" value="director.general@brics.gov" placeholder="e.g. official@brics.gov" data-i18n-placeholder="ph_gov_email" required>
-            </div>
-            <div class="form-group">
-              <label class="form-label" for="gov-password" data-i18n="lbl_password">Password *</label>
-              <input type="password" class="form-control" id="gov-password" value="CivicPulse2026!" required>
-            </div>
-
-            <button type="submit" class="btn-portal-action btn-primary" id="btn-submit-gov" style="background:#2563eb; border-color:#2563eb; margin-top:4px;">
-              <span data-i18n="btn_sign_in_gov">Sign In to Government Hub</span>
-              <svg class="svg-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          <!-- Mode Switcher Tabs -->
+          <div class="auth-mode-tabs" id="auth-tabs-gov">
+            <button type="button" class="auth-mode-btn active" id="btn-mode-login-gov" onclick="window.switchAuthMode('gov', 'login')">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+              <span>Sign In</span>
             </button>
+            <button type="button" class="auth-mode-btn" id="btn-mode-reg-gov" onclick="window.switchAuthMode('gov', 'register')">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
+              <span>Register Account</span>
+            </button>
+          </div>
 
-            <div class="login-divider">
-              <span data-i18n="lbl_or">OR</span>
-            </div>
+          <!-- SIGN IN VIEW -->
+          <div id="gov-login-view" class="auth-view">
+            <form id="gov-login-form" class="portal-login-form">
+              <div class="form-group">
+                <label class="form-label" for="gov-email" data-i18n="lbl_gov_email">Official Government Email *</label>
+                <input type="email" class="form-control" id="gov-email" value="" placeholder="Enter government email address" data-i18n-placeholder="ph_gov_email" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="gov-password" data-i18n="lbl_password">Password *</label>
+                <input type="password" class="form-control" id="gov-password" value="" placeholder="Enter password" required>
+              </div>
+
+              <button type="submit" class="btn-portal-action btn-primary" id="btn-submit-gov" style="background:#2563eb; border-color:#2563eb; margin-top:4px;">
+                <span data-i18n="btn_sign_in_gov">Sign In to Government Hub</span>
+                <svg class="svg-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+              </button>
+
+              <div class="login-divider">
+                <span data-i18n="lbl_or">OR</span>
+              </div>
+
+              <button type="button" class="btn-demo-quick" id="btn-demo-gov" style="border-color:rgba(37,99,235,0.3); color:#60a5fa;">
+                <svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                <span data-i18n="btn_demo_gov">Enter Central Official Portal (1-Click Demo)</span>
+              </button>
+            </form>
+          </div>
+
+          <!-- REGISTER VIEW -->
+          <div id="gov-register-view" class="auth-view" style="display:none;">
+            <form id="gov-register-form" class="portal-login-form">
+              <div class="form-group">
+                <label class="form-label">Full Director / Official Name *</label>
+                <input type="text" class="form-control" id="reg-gov-name" placeholder="e.g. Dr. Sunita Rao" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Sovereign Government Email *</label>
+                <input type="email" class="form-control" id="reg-gov-email" placeholder="e.g. sunita.rao@brics.gov" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Create Password *</label>
+                <input type="password" class="form-control" id="reg-gov-password" placeholder="At least 6 characters" required minlength="6">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Confirm Password *</label>
+                <input type="password" class="form-control" id="reg-gov-confirm" placeholder="Re-enter password" required minlength="6">
+              </div>
+
+              <button type="submit" class="btn-portal-action btn-primary" style="background:#2563eb; border-color:#2563eb; margin-top:4px;">
+                <span>Register Central Account & Sign In</span>
+                <svg class="svg-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+              </button>
+
+              <div class="login-divider">
+                <span data-i18n="lbl_or">OR</span>
+              </div>
+
+              <button type="button" class="btn-demo-quick" id="btn-demo-gov-reg" style="border-color:rgba(37,99,235,0.3); color:#60a5fa;">
+                <svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                <span data-i18n="btn_demo_gov">Enter Central Official Portal (1-Click Demo)</span>
+              </button>
+            </form>
+          </div>
+        </div>
 
             <button type="button" class="btn-demo-quick" id="btn-demo-gov" style="border-color:rgba(37,99,235,0.3); color:#60a5fa;">
               <svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>

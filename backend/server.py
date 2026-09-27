@@ -156,6 +156,49 @@ async def auth_login_api(request):
         "redirect_url": redirect_url
     })
 
+async def auth_register_api(request):
+    """Registers a new user (Citizen, City Official, or Central Official) and logs them in."""
+    try:
+        data = await request.json()
+    except Exception:
+        data = {}
+    
+    name = str(data.get("name", "")).strip() or "Registered User"
+    email = str(data.get("email", "")).strip() or "user@civicpulse.org"
+    role = str(data.get("role", "citizen")).lower()
+    city = str(data.get("city", "Delhi"))
+    phone = str(data.get("phone", ""))
+    node_code = data.get("node", active_node_state["code"])
+
+    if "city" in role or "municipal" in role:
+        redirect_url = "/city-official"
+        user_role = "city_official"
+        display_name = f"{name} (Municipal Official)"
+    elif "central" in role or "national" in role or "gov" in role:
+        redirect_url = "/central-official"
+        user_role = "central_official"
+        display_name = f"{name} (Government Hub Officer)"
+    else:
+        redirect_url = "/citizen"
+        user_role = "citizen"
+        display_name = f"{name} (Registered Resident)"
+
+    token = f"cp-token-reg-{int(datetime.now().timestamp())}"
+    return JSONResponse({
+        "status": "ok",
+        "token": token,
+        "user": {
+            "name": display_name,
+            "email": email,
+            "role": user_role,
+            "city": city,
+            "phone": phone,
+            "node": node_code
+        },
+        "redirect_url": redirect_url,
+        "message": "Account registered successfully!"
+    })
+
 async def auth_logout_api(request):
     """Handles logout and provides login redirect."""
     return JSONResponse({"status": "ok", "redirect_url": "/login"})
@@ -812,6 +855,7 @@ routes = [
     Route("/CivicPulse-BRICS_Pitch_Deck.pptx", endpoint=download_pitch_deck_pptx, methods=["GET"]),
     Route("/api/v1/download-pitch-deck", endpoint=download_pitch_deck_pptx, methods=["GET"]),
     Route("/api/auth/login", endpoint=auth_login_api, methods=["POST"]),
+    Route("/api/auth/register", endpoint=auth_register_api, methods=["POST"]),
     Route("/api/auth/logout", endpoint=auth_logout_api, methods=["POST"]),
     Route("/api/auth/me", endpoint=auth_me_api, methods=["GET"]),
     Route("/api/brics/nodes", endpoint=get_brics_nodes_api, methods=["GET"]),
