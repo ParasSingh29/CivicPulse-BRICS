@@ -199,7 +199,9 @@ def resolve_user_name(user_id, conn=None):
         known_map = {
             "paras": "Paras Singh",
             "citizen_delhi": "Rajesh Kumar",
-            "priya": "Dr. Priya Sharma",
+            "priya": "Priya Sharma",
+            "priya.sharma": "Priya Sharma",
+            "priyasharma": "Priya Sharma",
             "commuter_mumbai": "Aarav Mehta",
             "freight_mumbai": "Vikram Transport Co.",
             "citizen_mumbai": "Neha Patil",
@@ -215,6 +217,8 @@ def resolve_user_name(user_id, conn=None):
 
         clean = prefix.replace(".", " ").replace("_", " ").title()
         return clean
+    elif "priya" in uid_str.lower():
+        return "Priya Sharma"
     elif uid_str.startswith("+") or (len(uid_str) >= 8 and uid_str.replace(" ", "").replace("-", "").isdigit()):
         return f"Citizen ({uid_str})"
 

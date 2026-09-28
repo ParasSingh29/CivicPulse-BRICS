@@ -310,10 +310,8 @@ async def submit_complaint_api(request):
     category = form.get("category", "General Municipal / Other Infrastructure")
     description = form.get("description", "")
     address = form.get("address", "")
-    user_id = form.get("user_id", "Citizen")
+    user_id = form.get("user_id") or form.get("user_name") or "priya.sharma@delhi.gov.in"
     phone = str(form.get("phone", "")).strip()
-    if phone:
-        user_id = phone
     lat = float(form.get("latitude", 28.6139))
     lon = float(form.get("longitude", 77.2090))
 

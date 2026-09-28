@@ -216,10 +216,14 @@ function setupCitizenEvents() {
       const finalAddress = detailedAddr ? (autoGpsAddr ? `${detailedAddr} [GPS: ${autoGpsAddr}]` : detailedAddr) : (autoGpsAddr || 'Location Provided');
       formData.append('address', finalAddress);
       
+      const currentUser = getCurrentLoggedInUser();
+      const userIdVal = currentUser.email || currentUser.user_id || currentUser.name || 'priya.sharma@delhi.gov.in';
+      formData.append('user_id', userIdVal);
+      formData.append('user_name', currentUser.name || 'Priya Sharma');
+
       const userPhone = document.getElementById('complaint-phone-input')?.value.trim() || '';
       if (userPhone) {
         formData.append('phone', userPhone);
-        formData.append('user_id', userPhone);
       }
       
       const photoFile = document.getElementById('complaint-photo-input')?.files[0];

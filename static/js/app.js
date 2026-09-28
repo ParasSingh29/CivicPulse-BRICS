@@ -269,6 +269,21 @@ function setupEventListeners() {
     if (targetId === 'cit-tab-report' && window.renderSectorCards) window.renderSectorCards();
     if (targetId === 'cit-tab-demands' && window.loadCitizenDemands) window.loadCitizenDemands();
     if (targetId === 'cit-tab-track' && window.loadComplaints) window.loadComplaints();
+    if (targetId === 'cit-tab-data' && window.GlobalProblemMapSystem) {
+      if (document.getElementById('cit-geospatial-map')) {
+        window.GlobalProblemMapSystem.init({
+          mapId: 'cit-geospatial-map',
+          tableBodyId: 'cit-map-table-body',
+          countrySelectId: 'cit-map-country-filter',
+          citySelectId: 'cit-map-city-filter',
+          statusSelectId: 'cit-map-status-filter',
+          searchInputId: 'cit-map-search-input',
+          mapModeSelectId: 'cit-map-mode-select',
+          counterBadgeId: 'cit-map-counter-badge',
+          countryTableBodyId: 'cit-country-telemetry-body'
+        });
+      }
+    }
 
     if (targetId === 'central-tab-officers' && window.loadCityOfficersOverview) window.loadCityOfficersOverview();
     if (targetId === 'central-tab-proposals-review' && window.loadCentralProposals) window.loadCentralProposals();

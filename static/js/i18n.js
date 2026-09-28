@@ -9,9 +9,114 @@
  */
 
 window.I18N = {
-  "en": { "nav_back": "Back", "nav_home": "Home", "btn_use_current_location": "Use Current Location", "btn_voice_input": "Voice Input" },
-  "hi": {}, "pt": {}, "ru": {}, "zh": {}, "ar": {}, "id": {}, "fa": {}, "am": {}, "zu": {}, "af": {}, "xh": {},
-  "bn": {}, "mr": {}, "ta": {}, "te": {}, "gu": {}, "kn": {}, "ml": {}, "pa": {}, "or": {}, "as": {}, "ur": {}
+  "en": {
+    "nav_back": "Back", "nav_home": "Home", "app_title": "CivicPulse-BRICS", "card_citizen_title": "Citizen Portal",
+    "badge_official_bulletin": "OFFICIAL BULLETIN",
+    "txt_official_bulletin": "📢 Cabinet Directive: Citizen Grievance Submissions & Participatory Demands Prioritized under Smart Cities DPI Framework",
+    "cit_badge_resident": "Verified Resident • Delhi", "modal_report_title": "Report an Issue",
+    "modal_report_sub": "Add details, photos, or voice notes for fast municipal resolution.",
+    "lbl_selected_category": "Selected Category", "lbl_problem": "What is the problem? *",
+    "btn_voice_input": "Speak with AI", "ph_desc": "Describe what is broken, nearest landmark or shop, and how it affects people...",
+    "lbl_add_photo": "Photo (Optional)", "lbl_add_voice": "Voice (Optional)",
+    "lbl_auto_gps_location": "Auto-Detected GPS Location", "btn_use_current_location": "Use Current Location",
+    "btn_pin_on_map": "Pin on Map", "lbl_detailed_address": "Detailed Address & Landmark *",
+    "ph_detailed_address": "e.g. House/Flat No. 42, Block B, Street 5, Near Metro Gate 2",
+    "mobile_phone_label": "📱 Mobile Phone for Real-Time SMS Updates",
+    "mobile_phone_desc": "Instant SMS updates will be dispatched for status changes & repair teams.",
+    "btn_cancel": "Cancel", "btn_submit_report": "Submit Report", "btn_submit_voting": "Submit for Voting"
+  },
+  "hi": {
+    "nav_back": "वापस", "nav_home": "मुख्य पृष्ठ", "app_title": "सिविकपल्स-ब्रिक्स", "card_citizen_title": "नागरिक पोर्टल",
+    "badge_official_bulletin": "आधिकारिक बुलेटिन",
+    "txt_official_bulletin": "📢 कैबिनेट निर्देश: नागरिक शिकायतें और सहभागी मांगें प्राथमिकता पर हल की जाएंगी",
+    "cit_badge_resident": "सत्यापित निवासी • दिल्ली", "modal_report_title": "समस्या दर्ज करें",
+    "modal_report_sub": "त्वरित नगर निगम समाधान के लिए विवरण, फोटो या वॉयस नोट्स जोड़ें।",
+    "lbl_selected_category": "चयनित श्रेणी", "lbl_problem": "क्या समस्या है? *",
+    "btn_voice_input": "AI से बोलें", "ph_desc": "बताएं कि क्या टूटा है, निकटतम लैंडमार्क या दुकान, और यह लोगों को कैसे प्रभावित करता है...",
+    "lbl_add_photo": "फोटो (वैकल्पिक)", "lbl_add_voice": "वॉयस (वैकल्पिक)",
+    "lbl_auto_gps_location": "ऑटो-डिटेक्टेड जीपीएस स्थान", "btn_use_current_location": "वर्तमान स्थान का उपयोग करें",
+    "btn_pin_on_map": "मानचित्र पर पिन करें", "lbl_detailed_address": "विस्तृत पता और लैंडमार्क *",
+    "ph_detailed_address": "जैसे मकान/फ्लैट नं. 42, ब्लॉक बी, गली 5, मेट्रो गेट 2 के पास",
+    "mobile_phone_label": "📱 रीयल-टाइम एसएमएस अपडेट के लिए मोबाइल नंबर",
+    "mobile_phone_desc": "स्थिति परिवर्तन और मरम्मत टीमों के लिए त्वरित एसएमएस अपडेट भेजे जाएंगे।",
+    "btn_cancel": "रद्द करें", "btn_submit_report": "रिपोर्ट जमा करें", "btn_submit_voting": "वोटिंग के लिए सबमिट करें"
+  },
+  "pt": {
+    "nav_back": "Voltar", "nav_home": "Início", "app_title": "CivicPulse-BRICS", "card_citizen_title": "Portal do Cidadão",
+    "badge_official_bulletin": "BOLETIM OFICIAL",
+    "txt_official_bulletin": "📢 Diretiva do Gabinete: Reclamações de cidadãos prioritárias na infraestrutura Smart Cities",
+    "cit_badge_resident": "Residente Verificado • Délhi", "modal_report_title": "Reportar um Problema",
+    "modal_report_sub": "Adicione detalhes, fotos ou notas de voz para resolução municipal rápida.",
+    "lbl_selected_category": "Categoria Selecionada", "lbl_problem": "Qual é o problema? *",
+    "btn_voice_input": "Falar com IA", "ph_desc": "Descreva o que está danificado, ponto de referência mais próximo...",
+    "lbl_add_photo": "Foto (Opcional)", "lbl_add_voice": "Voz (Opcional)",
+    "lbl_auto_gps_location": "Localização GPS Detectada", "btn_use_current_location": "Usar Localização Atual",
+    "btn_pin_on_map": "Marcar no Mapa", "lbl_detailed_address": "Endereço Detalhado *",
+    "ph_detailed_address": "ex. Rua 5, Bloco B, perto do portão do metrô 2",
+    "mobile_phone_label": "📱 Celular para Atualizações em Tempo Real",
+    "mobile_phone_desc": "Alertas SMS instantâneos serão enviados sobre o status do reparo.",
+    "btn_cancel": "Cancelar", "btn_submit_report": "Enviar Relatório", "btn_submit_voting": "Enviar para Votação"
+  },
+  "ru": {
+    "nav_back": "Назад", "nav_home": "Главная", "app_title": "CivicPulse-BRICS", "card_citizen_title": "Портал граждан",
+    "badge_official_bulletin": "ОФИЦИАЛЬНЫЙ БЮЛЛЕТЕНЬ",
+    "txt_official_bulletin": "📢 Директива: Жалобы граждан обрабатываются в приоритетном порядке",
+    "cit_badge_resident": "Проверенный житель • Дели", "modal_report_title": "Сообщить о проблеме",
+    "modal_report_sub": "Добавьте описание, фото или голосовую заметку для быстрого решения.",
+    "lbl_selected_category": "Выбранная категория", "lbl_problem": "В чем проблема? *",
+    "btn_voice_input": "Голосовой ввод ИИ", "ph_desc": "Опишите повреждение, ориентир или магазин...",
+    "lbl_add_photo": "Фото (необязательно)", "lbl_add_voice": "Голос (необязательно)",
+    "lbl_auto_gps_location": "GPS Местоположение", "btn_use_current_location": "Текущее местоположение",
+    "btn_pin_on_map": "Отметить на карте", "lbl_detailed_address": "Подробный адрес *",
+    "ph_detailed_address": "например, дом 42, блок Б, около метро",
+    "mobile_phone_label": "📱 Телефон для СМС уведомлений",
+    "mobile_phone_desc": "СМС уведомления о статусе ремонта.",
+    "btn_cancel": "Отмена", "btn_submit_report": "Отправить отчет", "btn_submit_voting": "Отправить на голосование"
+  },
+  "zh": {
+    "nav_back": "返回", "nav_home": "首页", "app_title": "CivicPulse-BRICS", "card_citizen_title": "市民门户",
+    "badge_official_bulletin": "官方公告",
+    "txt_official_bulletin": "📢 内阁指令：市民投诉与参与性需求在智慧城市框架下优先处理",
+    "cit_badge_resident": "已验证居民 • 德里", "modal_report_title": "报告问题",
+    "modal_report_sub": "添加详细信息、照片或语音，以获得快速的市政解决。",
+    "lbl_selected_category": "已选类别", "lbl_problem": "有什么问题？*",
+    "btn_voice_input": "AI语音输入", "ph_desc": "描述损坏内容、最近的地标或商店...",
+    "lbl_add_photo": "照片（可选）", "lbl_add_voice": "语音（可选）",
+    "lbl_auto_gps_location": "自动检测GPS位置", "btn_use_current_location": "使用当前位置",
+    "btn_pin_on_map": "在地图上标记", "lbl_detailed_address": "详细地址与地标 *",
+    "ph_detailed_address": "例如：B座5街42号，靠近地铁2号门",
+    "mobile_phone_label": "📱 用于实时短信更新的手机号",
+    "mobile_phone_desc": "修缮进度将通过短信及时通知。",
+    "btn_cancel": "取消", "btn_submit_report": "提交报告", "btn_submit_voting": "提交投票"
+  },
+  "ta": {
+    "nav_back": "பின்செல்", "nav_home": "முகப்பு", "app_title": "சிவிக்பல்ஸ்-பிரிக்ஸ்", "card_citizen_title": "குடிமக்கள் தளம்",
+    "modal_report_title": "சிக்கலை புகாரளி", "lbl_selected_category": "தேர்ந்தெடுக்கப்பட்ட வகை", "lbl_problem": "என்ன பிரச்சினை? *",
+    "btn_voice_input": "AI உடன் பேசுங்கள்", "lbl_add_photo": "புகைப்படம் (விருப்பம்)", "lbl_add_voice": "குரல் (விருப்பம்)",
+    "btn_use_current_location": "தற்போதைய இடத்தைப் பயன்படுத்து", "btn_pin_on_map": "வரைபடத்தில் குறிக்கவும்",
+    "lbl_detailed_address": "விரிவான முகவரி *", "mobile_phone_label": "📱 மொபைல் எண்", "btn_cancel": "ரத்துசெய்", "btn_submit_report": "சமர்ப்பி"
+  },
+  "te": {
+    "nav_back": "వెనుకకు", "nav_home": "హోమ్", "app_title": "సివిక్‌పల్స్-బ్రిక్స్", "card_citizen_title": "పౌర వేదిక",
+    "modal_report_title": "సమస్యను నివేదించండి", "lbl_selected_category": "ఎంచుకున్న వర్గం", "lbl_problem": "సమస్య ఏమిటి? *",
+    "btn_voice_input": "AIతో మాట్లాడండి", "lbl_add_photo": "ఫోటో (ఐచ్ఛికం)", "lbl_add_voice": "వాయిస్ (ఐచ్ఛికం)",
+    "btn_use_current_location": "ప్రస్తుత స్థానాన్ని ఉపయోగించండి", "btn_pin_on_map": "మ్యాప్‌లో పిన్ చేయండి",
+    "lbl_detailed_address": "వివరమైన చిరునామా *", "mobile_phone_label": "📱 మొబైల్ ఫోన్", "btn_cancel": "రద్దు చేయి", "btn_submit_report": "సమర్పించు"
+  },
+  "bn": {
+    "nav_back": "ফিরে যান", "nav_home": "হোম", "app_title": "সিভিকপালস-ব্রিকস", "card_citizen_title": "নাগরিক পোর্টাল",
+    "modal_report_title": "সমস্যা রিপোর্ট করুন", "lbl_selected_category": "নির্বাচিত বিভাগ", "lbl_problem": "সমস্যা কি? *",
+    "btn_voice_input": "AI এর সাথে কথা বলুন", "lbl_add_photo": "ছবি (ঐচ্ছিক)", "lbl_add_voice": "ভয়েস (ঐচ্ছিক)",
+    "btn_use_current_location": "বর্তমান অবস্থান ব্যবহার করুন", "btn_pin_on_map": "ম্যাপে পিন করুন",
+    "lbl_detailed_address": "বিস্তারিত ঠিকানা *", "mobile_phone_label": "📱 মোবাইল নম্বর", "btn_cancel": "বাতিল", "btn_submit_report": "জমা দিন"
+  },
+  "mr": {
+    "nav_back": "मागे", "nav_home": "मुख्य पृष्ठ", "app_title": "सिव्हिकपल्स-ब्रिक्स", "card_citizen_title": "नागरिक पोर्टल",
+    "modal_report_title": "तक्रार नोंदवा", "lbl_selected_category": "निवडलेली श्रेणी", "lbl_problem": "समस्या काय आहे? *",
+    "btn_voice_input": "AI शी बोला", "lbl_add_photo": "फोटो (पर्यायी)", "lbl_add_voice": "व्हॉइस (पर्यायी)",
+    "btn_use_current_location": "सध्याचे स्थान वापरा", "btn_pin_on_map": "नकाशावर पिन करा",
+    "lbl_detailed_address": "सविस्तर पत्ता *", "mobile_phone_label": "📱 मोबाईल क्रमांक", "btn_cancel": "रद्द करा", "btn_submit_report": "सबमिट करा"
+  }
 };
 
 /**
@@ -340,7 +445,12 @@ window.initLanguage = function() {
 
   window.setLanguage(initialLang);
 
-  // Setup change event listeners on all language dropdowns
+  // Setup change event listeners on all language dropdowns (direct + delegation)
+  document.addEventListener('change', (e) => {
+    if (e.target && (e.target.id === 'lang-selector' || e.target.id === 'login-lang-select' || e.target.classList.contains('lang-select'))) {
+      window.setLanguage(e.target.value);
+    }
+  });
   document.querySelectorAll('#lang-selector, #login-lang-select, .lang-select').forEach(sel => {
     if (sel) {
       sel.addEventListener('change', (e) => {
