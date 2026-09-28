@@ -30,7 +30,7 @@ from demands_engine import get_all_demands, save_demand, upvote_demand
 from megaplan_engine import generate_ai_mega_plans
 from budget_engine import calculate_budget_alignment
 from public_data_helper import fetch_live_delhi_weather
-from gemini_helper import run_vision_agent, transcribe_and_translate_multilingual_audio, triage_complaint
+from gemini_helper import run_vision_agent, transcribe_and_translate_multilingual_audio, triage_complaint, evaluate_dynamic_severity
 from tts_helper import generate_speech_audio
 from messaging_gateway import (
     process_messaging_complaint,
@@ -319,6 +319,7 @@ async def submit_complaint_api(request):
 
     ai_notes = ""
     photo_url = None
+    severity_val = None
 
     # Check if photo was uploaded (file or base64)
     photo_file = form.get("photo")
@@ -333,7 +334,8 @@ async def submit_complaint_api(request):
             photo_url = f"/static/uploads/{fname}"
 
             if len(photo_bytes) > 500:
-                v_res = run_vision_agent(photo_bytes)
+                v_res = run_vision_agent(photo_bytes, description=description, category=category)
+                severity_val = v_res.get('severity')
                 ai_notes += f"\n\n[Sentinel Vision]: {v_res['defect']} (Severity: {v_res['severity']}/10, Risk: {v_res['hazard']}). {v_res['diagnostic']}"
 
     photo_base64 = form.get("photo_base64")
@@ -360,8 +362,12 @@ async def submit_complaint_api(request):
             if native_txt:
                 ai_notes += f"\n\n[Voice Note]: {native_txt} -> {eng_summary}"
 
+    if severity_val is None:
+        severity_val = evaluate_dynamic_severity(description, category)
+        ai_notes += f"\n\n[Sentinel Severity]: Severity: {severity_val}/10"
+
     final_desc = str(description) + ai_notes
-    urgency = triage_complaint(final_desc)
+    urgency = triage_complaint(final_desc, category)
     final_desc += f"\n\n[Priority]: {urgency}"
 
     curr_node = get_brics_node(active_node_state["id"])
@@ -384,6 +390,7 @@ async def submit_complaint_api(request):
         "status": "created",
         "id": cid,
         "category": category,
+        "severity": severity_val,
         "urgency": urgency,
         "description": final_desc,
         "photo_url": photo_url

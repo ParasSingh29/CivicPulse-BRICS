@@ -111,14 +111,18 @@ window.renderSectorCards = function() {
 
       // Open incident modal or scroll to inline complaint form
       const incidentModal = document.getElementById('incident-modal');
+      const aiReportView = document.getElementById('modal-ai-report-view');
+      const complaintForm = document.getElementById('complaint-form');
       if (incidentModal) {
+        if (aiReportView) aiReportView.style.display = 'none';
+        if (complaintForm) complaintForm.style.display = 'grid';
         incidentModal.classList.add('active');
         setTimeout(() => {
           const descInput = document.getElementById('complaint-desc-input');
           if (descInput) descInput.focus();
         }, 120);
       } else {
-        const formEl = document.getElementById('complaint-form') || document.getElementById('propose-demand-form') || document.getElementById('propose-demand-form');
+        const formEl = document.getElementById('complaint-form') || document.getElementById('propose-demand-form');
         if (formEl) {
           formEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
           setTimeout(() => {
@@ -139,34 +143,76 @@ function setupCitizenEvents() {
   const incidentModal = document.getElementById('incident-modal');
   const btnCloseIncident = document.getElementById('btn-close-incident-modal');
   const btnCancelIncident = document.getElementById('btn-cancel-incident-modal');
+  const aiReportView = document.getElementById('modal-ai-report-view');
+
+  const resetModalViews = () => {
+    if (aiReportView) aiReportView.style.display = 'none';
+    const formEl = document.getElementById('complaint-form');
+    if (formEl) {
+      formEl.reset();
+      formEl.style.display = 'grid';
+    }
+  };
 
   if (btnCloseIncident && incidentModal) {
-    btnCloseIncident.addEventListener('click', () => incidentModal.classList.remove('active'));
+    btnCloseIncident.addEventListener('click', () => {
+      incidentModal.classList.remove('active');
+      resetModalViews();
+    });
   }
   if (btnCancelIncident && incidentModal) {
-    btnCancelIncident.addEventListener('click', () => incidentModal.classList.remove('active'));
+    btnCancelIncident.addEventListener('click', () => {
+      incidentModal.classList.remove('active');
+      resetModalViews();
+    });
   }
   if (incidentModal) {
     incidentModal.addEventListener('click', (e) => {
-      if (e.target === incidentModal) incidentModal.classList.remove('active');
+      if (e.target === incidentModal) {
+        incidentModal.classList.remove('active');
+        resetModalViews();
+      }
     });
   }
 
+  // Back & Track Action Buttons inside AI Report View
+  const btnAiBack = document.getElementById('btn-ai-report-back');
+  if (btnAiBack) {
+    btnAiBack.onclick = () => {
+      resetModalViews();
+      if (incidentModal) incidentModal.classList.remove('active');
+    };
+  }
+
+  const btnAiTrack = document.getElementById('btn-ai-report-track');
+  if (btnAiTrack) {
+    btnAiTrack.onclick = async () => {
+      resetModalViews();
+      if (incidentModal) incidentModal.classList.remove('active');
+      if (window.switchTab) {
+        window.switchTab('cit-tab-track');
+      } else {
+        const trackTabBtn = document.querySelector('[data-target="cit-tab-track"]');
+        if (trackTabBtn) trackTabBtn.click();
+      }
+    };
+  }
+
   // Complaint Form Submission
-  const complaintForm = document.getElementById('complaint-form') || document.getElementById('propose-demand-form') || document.getElementById('propose-demand-form');
+  const complaintForm = document.getElementById('complaint-form') || document.getElementById('propose-demand-form');
   if (complaintForm) {
     complaintForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       const btn = document.getElementById('btn-submit-complaint');
       btn.disabled = true;
-      btn.innerHTML = `<span>${window.AppIcons.refresh}</span> <span>Running Sentinel AI Triage...</span>`;
+      btn.innerHTML = `<span>${window.AppIcons ? window.AppIcons.refresh : '⏳'}</span> <span>Running Gemini AI Triage...</span>`;
 
       const formData = new FormData();
-      formData.append('category', document.getElementById('selected-category-input').value);
-      formData.append('description', document.getElementById('complaint-desc-input').value);
+      formData.append('category', document.getElementById('selected-category-input')?.value || 'Roads & Bridges');
+      formData.append('description', document.getElementById('complaint-desc-input')?.value || '');
       
-      const detailedAddr = document.getElementById('complaint-address-input') || document.getElementById('modal-demand-address') || document.getElementById('modal-demand-address')?.value.trim() || '';
-      const autoGpsAddr = document.getElementById('complaint-gps-address') || document.getElementById('modal-demand-gps-address') || document.getElementById('modal-demand-gps-address')?.value.trim() || '';
+      const detailedAddr = document.getElementById('complaint-address-input')?.value.trim() || '';
+      const autoGpsAddr = document.getElementById('complaint-gps-address')?.value.trim() || '';
       const finalAddress = detailedAddr ? (autoGpsAddr ? `${detailedAddr} [GPS: ${autoGpsAddr}]` : detailedAddr) : (autoGpsAddr || 'Location Provided');
       formData.append('address', finalAddress);
       
@@ -176,10 +222,10 @@ function setupCitizenEvents() {
         formData.append('user_id', userPhone);
       }
       
-      const photoFile = document.getElementById('complaint-photo-input').files[0];
+      const photoFile = document.getElementById('complaint-photo-input')?.files[0];
       if (photoFile) formData.append('photo', photoFile);
 
-      const audioFile = document.getElementById('complaint-audio-input').files[0];
+      const audioFile = document.getElementById('complaint-audio-input')?.files[0];
       if (audioFile) formData.append('audio', audioFile);
 
       try {
@@ -189,20 +235,63 @@ function setupCitizenEvents() {
         });
         const result = await res.json();
         showToast(`Complaint registered successfully! Token #${result.id}`, 'success');
-        complaintForm.reset();
+        
         delete complaintForm.dataset.lat;
         delete complaintForm.dataset.lon;
-        const locChip = activeModal ? activeModal.querySelector('#location-detected-chip, #demand-location-detected-chip') : document.getElementById('location-detected-chip') || document.getElementById('demand-location-detected-chip');
+        const locChip = document.getElementById('location-detected-chip') || document.getElementById('demand-location-detected-chip');
         if (locChip) locChip.style.display = 'none';
-        if (incidentModal) incidentModal.classList.remove('active');
-        await window.loadComplaints();
 
-        // Switch to track tab
-        if (window.switchTab) {
-          window.switchTab('cit-tab-track');
+        if (window.loadComplaints) await window.loadComplaints();
+
+        // Render AI Report View inside modal
+        const aiView = document.getElementById('modal-ai-report-view');
+        if (aiView) {
+          const ticketIdEl = document.getElementById('ai-report-ticket-id');
+          if (ticketIdEl) ticketIdEl.textContent = `#CP-${result.id}`;
+
+          const sevMatch = (result.description || '').match(/Severity:\s*([\d.]+)\/10/i);
+          const sevNum = sevMatch ? parseFloat(sevMatch[1]) : parseFloat(result.severity || 6.5);
+          const sevScoreStr = sevNum.toFixed(1);
+
+          const scoreEl = document.getElementById('ai-report-sev-score');
+          if (scoreEl) scoreEl.textContent = sevScoreStr;
+
+          const barEl = document.getElementById('ai-report-sev-bar');
+          const badgeEl = document.getElementById('ai-report-sev-badge');
+          const urgencyTag = document.getElementById('ai-report-urgency-tag');
+
+          const pct = Math.min(100, Math.max(10, (sevNum / 10) * 100));
+          if (barEl) barEl.style.width = `${pct}%`;
+
+          if (sevNum >= 8.0) {
+            if (badgeEl) { badgeEl.style.color = '#ef4444'; badgeEl.style.background = 'rgba(239,68,68,0.15)'; badgeEl.style.borderColor = 'rgba(239,68,68,0.3)'; }
+            if (urgencyTag) { urgencyTag.textContent = 'Critical Hazard / High Priority'; urgencyTag.style.color = '#ef4444'; }
+            if (barEl) barEl.style.background = 'linear-gradient(90deg, #f59e0b, #ef4444)';
+          } else if (sevNum >= 5.0) {
+            if (badgeEl) { badgeEl.style.color = '#f59e0b'; badgeEl.style.background = 'rgba(245,158,11,0.15)'; badgeEl.style.borderColor = 'rgba(245,158,11,0.3)'; }
+            if (urgencyTag) { urgencyTag.textContent = 'Moderate Risk Priority'; urgencyTag.style.color = '#f59e0b'; }
+            if (barEl) barEl.style.background = 'linear-gradient(90deg, #3b82f6, #f59e0b)';
+          } else {
+            if (badgeEl) { badgeEl.style.color = '#10b981'; badgeEl.style.background = 'rgba(16,185,129,0.15)'; badgeEl.style.borderColor = 'rgba(16,185,129,0.3)'; }
+            if (urgencyTag) { urgencyTag.textContent = 'Minor Defect / Standard Priority'; urgencyTag.style.color = '#10b981'; }
+            if (barEl) barEl.style.background = 'linear-gradient(90deg, #10b981, #3b82f6)';
+          }
+
+          const catEl = document.getElementById('ai-report-category');
+          if (catEl) catEl.textContent = result.category || document.getElementById('selected-category-input')?.value || 'Municipal Infrastructure';
+
+          const addrEl = document.getElementById('ai-report-address');
+          if (addrEl) addrEl.textContent = finalAddress;
+
+          const notesEl = document.getElementById('ai-report-notes');
+          if (notesEl) notesEl.textContent = result.description || 'Gemini AI automated risk triage completed.';
+
+          // Switch modal view from form to AI report
+          complaintForm.style.display = 'none';
+          aiView.style.display = 'block';
         } else {
-          const trackTabBtn = document.querySelector('[data-target="cit-tab-track"]');
-          if (trackTabBtn) trackTabBtn.click();
+          if (incidentModal) incidentModal.classList.remove('active');
+          if (window.switchTab) window.switchTab('cit-tab-track');
         }
       } catch (err) {
         showToast('Error registering complaint. Please retry.', 'error');
@@ -1786,13 +1875,17 @@ window.setupAICitizenAgent = function() {
       });
       const result = await res.json();
 
+      const sevMatch = (result.description || '').match(/Severity:\s*([\d.]+)\/10/i);
+      const sevVal = sevMatch ? sevMatch[1] : (result.severity ? Number(result.severity).toFixed(1) : '6.5');
+      const rawUrg = result.urgency ? result.urgency.split('-')[0].trim() : (parseFloat(sevVal) >= 8.0 ? 'High Priority' : (parseFloat(sevVal) >= 5.0 ? 'Medium Priority' : 'Low Priority'));
+
       appendBotMessage(`
         <div style="background:rgba(16,185,129,0.15); border:1px solid rgba(16,185,129,0.4); border-radius:12px; padding:14px; margin-top:4px;">
           <div style="font-weight:700; color:#10b981; font-size:1.05rem; margin-bottom:6px;">🎉 Ticket Successfully Registered!</div>
           <b>Ticket ID:</b> <span style="color:#38bdf8; font-weight:700;">#CP-${result.id}</span><br>
           <b>Category:</b> ${escapeHtml(session.category)}<br>
           <b>Address:</b> ${escapeHtml(session.address)}<br>
-          <b>Gemini Severity Score:</b> <span style="color:#f59e0b; font-weight:700;">8.5 / 10.0 (High Priority)</span><br>
+          <b>Gemini Severity Score:</b> <span style="color:#f59e0b; font-weight:700;">${sevVal} / 10.0 (${escapeHtml(rawUrg)})</span><br>
           <b>Assigned Team:</b> Junior Engineering Line Team #04<br><br>
           <a href="#" onclick="window.switchTab('cit-tab-track'); return false;" style="color:#10b981; font-weight:700; text-decoration:underline;">🔍 Track Live Status on My Reports Tab</a>
         </div>

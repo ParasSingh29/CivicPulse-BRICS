@@ -82,13 +82,19 @@ def process_messaging_complaint(sender_id, message_text, brics_node, channel="Wh
     if photo_bytes and len(photo_bytes) > 500:
         try:
             from gemini_helper import run_vision_agent
-            v_res = run_vision_agent(photo_bytes)
-            ai_vision_note = f"\n\n[Sentinel Vision AI]: {v_res.get('defect', 'Infrastructure Defect')} (Severity: {v_res.get('severity', 7)}/10, Risk: {v_res.get('hazard', 'High')}). {v_res.get('diagnostic', '')}"
+            v_res = run_vision_agent(photo_bytes, description=message_text, category=cat)
+            sev_val = v_res.get('severity') or 6.5
+            ai_vision_note = f"\n\n[Sentinel Vision AI]: {v_res.get('defect', 'Infrastructure Defect')} (Severity: {sev_val}/10, Risk: {v_res.get('hazard', 'High')}). {v_res.get('diagnostic', '')}"
         except Exception as ve:
             print(f"[Chatbot Vision Error] {ve}")
 
+    if not ai_vision_note:
+        from gemini_helper import evaluate_dynamic_severity
+        dyn_sev = evaluate_dynamic_severity(message_text, cat)
+        ai_vision_note = f"\n\n[Sentinel Severity]: Severity: {dyn_sev}/10"
+
     full_triage_text = f"Problem: {cat} | Address: {final_address} | Details: {message_text}{ai_vision_note}"
-    urgency = triage_complaint(full_triage_text)
+    urgency = triage_complaint(full_triage_text, cat)
 
     # Save to persistent database with exact location address
     node_coords = brics_node.get("coordinates", {})
